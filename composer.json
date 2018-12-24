@@ -1,0 +1,49 @@
+{
+    "name": "prateekkarki/laragen",
+    "type": "library",
+    "description": "Extended generators for laravel",
+    "keywords": [
+        "prateekkarki",
+        "laragen"
+    ],
+    "homepage": "https://github.com/prateekkarki/laragen",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Prateek Karki",
+            "email": "pratiek.karki@gmail.com",
+            "homepage": "http://prateekkarki.com.np",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php" : "~5.6|~7.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit" : ">=5.4.3",
+        "squizlabs/php_codesniffer": "^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Prateekkarki\\Laragen\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Prateekkarki\\Laragen\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "check-style": "phpcs src tests",
+        "fix-style": "phpcbf src tests"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
