@@ -1,10 +1,10 @@
 <?php
 namespace Prateekkarki\Laragen;
 
+use Illuminate\Support\ServiceProvider;
+
 class LaraCrudServiceProvider extends ServiceProvider
 {
-    protected $defer = true;
-
     /**
      * Run on application loading
      */
@@ -20,7 +20,8 @@ class LaraCrudServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(
-            __DIR__ . '/../config/laragen.php', 'laragen'
+            __DIR__ . '/../config/laragen.php', 
+            'laragen'
         );
     }
     /**
