@@ -74,6 +74,4 @@ class Laragen extends Command
 
         file_put_contents(app_path("/Http/Controllers/{$name}Controller.php"), $controllerTemplate);
     }
-
-
 }

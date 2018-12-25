@@ -20,7 +20,7 @@ class LaraCrudServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(
-            __DIR__ . '/../config/laragen.php', 
+            __DIR__ . '/../config/laragen.php',
             'laragen'
         );
     }

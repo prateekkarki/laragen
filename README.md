@@ -1,4 +1,4 @@
-# laragen
+# Laragen : Extensive generators for laravel
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Software License][ico-license]](LICENSE.md)
@@ -6,20 +6,14 @@
 [![Quality Score][ico-code-quality]][link-code-quality]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-Generators for laravel
+This is a work in progress. Please check back later for complete package.
 
-## Structure
+## Features
+Generate and scaffold everything required for a basic laravel project. Starting with controllers, models, requests, views, assets, migrations, seeders, routes. More to be added in future releases.
 
-If any of the following are applicable to your project, then the directory structure should follow industry best practices by being named the following.
+## Usage
 
-```
-bin/        
-config/
-src/
-tests/
-vendor/
-```
-
+This package is a work in progress. Please check back later.
 
 ## Install
 
@@ -28,6 +22,7 @@ Via Composer
 ``` bash
 $ composer require prateekkarki/laragen
 ```
+
 
 ## Security
 
