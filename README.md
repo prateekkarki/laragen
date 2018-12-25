@@ -29,13 +29,6 @@ Via Composer
 $ composer require prateekkarki/laragen
 ```
 
-## Usage
-
-``` php
-$skeleton = new Prateekkarki\Laragen();
-echo $skeleton->echoPhrase('Hello, League!');
-```
-
 ## Security
 
 If you discover any security related issues, please email pratiek.karki@gmail.com instead of using the issue tracker.
