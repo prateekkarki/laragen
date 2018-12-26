@@ -2,8 +2,9 @@
 namespace Prateekkarki\Laragen;
 
 use Illuminate\Support\ServiceProvider;
+use Prateekkarki\Laragen\Commands\Generate;
 
-class LaraCrudServiceProvider extends ServiceProvider
+class LaragenServiceProvider extends ServiceProvider
 {
     /**
      * Run on application loading
@@ -12,7 +13,7 @@ class LaraCrudServiceProvider extends ServiceProvider
     {
         $this->publishes([
             __DIR__ . '/../config/laragen.php' => config_path('laragen.php')
-        ], 'laragen-config');
+        ], 'config');
     }
     /**
      * Run after all boot method completed
@@ -23,6 +24,13 @@ class LaraCrudServiceProvider extends ServiceProvider
             __DIR__ . '/../config/laragen.php',
             'laragen'
         );
+
+        $this->app->bind('command.laragen:make', Generate::class);
+
+        $this->commands([
+            'command.laragen:make',
+        ]);
+
     }
     /**
      * To register laragen as first level command. E.g. laragen:generate
