@@ -1,4 +1,4 @@
-# Laragen : Extensive generators for laravel
+# Laragen: Extensive generators for laravel
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Software License][ico-license]](LICENSE.md)
@@ -13,7 +13,7 @@ Generate and scaffold everything required for a basic laravel project. Starting 
 
 ## Usage
 
-This package is a work in progress. Please check back later.
+To be updated later.
 
 ## Install
 
@@ -21,6 +21,7 @@ Via Composer
 
 ``` bash
 $ composer require prateekkarki/laragen
+$ php artisan vendor:publish --provider="Prateekkarki\Laragen\LaragenServiceProvider"
 ```
 
 
