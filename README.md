@@ -2,7 +2,7 @@
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Software License][ico-license]](LICENSE.md)
-[![Build Status][ico-travis]][link-travis]
+[![Build Status][ico-scrutinizerbuild]][link-scrutinizerbuild]
 [![Quality Score][ico-code-quality]][link-code-quality]
 [![Total Downloads][ico-downloads]][link-downloads]
 
@@ -40,12 +40,14 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 [ico-version]: https://img.shields.io/packagist/v/prateekkarki/laragen.svg?style=flat-square
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
 [ico-travis]: https://img.shields.io/travis/prateekkarki/laragen/master.svg?style=flat-square
+[ico-scrutinizerbuild]: https://scrutinizer-ci.com/g/prateekkarki/laragen/badges/build.png?b=master
 [ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/prateekkarki/laragen.svg?style=flat-square
 [ico-code-quality]: https://img.shields.io/scrutinizer/g/prateekkarki/laragen.svg?style=flat-square
 [ico-downloads]: https://img.shields.io/packagist/dt/prateekkarki/laragen.svg?style=flat-square
 
 [link-packagist]: https://packagist.org/packages/prateekkarki/laragen
 [link-travis]: https://travis-ci.org/prateekkarki/laragen
+[link-scrutinizerbuild]: https://scrutinizer-ci.com/g/prateekkarki/laragen/?branch=master
 [link-scrutinizer]: https://scrutinizer-ci.com/g/prateekkarki/laragen/code-structure
 [link-code-quality]: https://scrutinizer-ci.com/g/prateekkarki/laragen
 [link-downloads]: https://packagist.org/packages/prateekkarki/laragen
