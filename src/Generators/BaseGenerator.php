@@ -1,9 +1,23 @@
 <?php
 
 namespace Prateekkarki\Laragen\Generators;
+use Prateekkarki\Laragen\Models\Module;
+
 
 class BaseGenerator
-{
+{	
+	protected $module;
+
+    public function getModule()
+    {
+        return $this->module;
+    }
+
+    public function setModule(Module $module)
+    {
+        $this->module = $module;
+    }
+
     public function getStub($type)
     {
         return file_get_contents(__DIR__ . "/../resources/stubs/" . $type . ".stub");

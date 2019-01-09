@@ -31,7 +31,7 @@ class Module
 
     public function getModuleName()
     {
-        return $this->module->name;
+        return $this->name;
     }
 
     public function getModelName()

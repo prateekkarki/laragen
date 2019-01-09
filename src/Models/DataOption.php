@@ -4,8 +4,6 @@ namespace Prateekkarki\Laragen\Models;
 
 class DataOption
 {
-    const DELIMETER = ':';
-
     const TYPE_PARENT = 'parent';
 
     const TYPE_RELATED = 'related';
@@ -45,7 +43,7 @@ class DataOption
     {
         $this->column = $columnName;
         $this->size = false;
-        $this->optionArray = explode(self::DELIMETER, $optionString);
+        $this->optionArray = explode(':', $optionString);
     }
 
     public function getSchema()

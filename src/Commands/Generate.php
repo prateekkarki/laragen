@@ -4,6 +4,7 @@ namespace Prateekkarki\Laragen\Commands;
 
 use Illuminate\Console\Command;
 use Prateekkarki\Laragen\Generators\Migration as MigrationGenerator;
+use Prateekkarki\Laragen\Generators\Model as ModelGenerator;
 use Prateekkarki\Laragen\Models\Module;
 
 class Generate extends Command
@@ -27,10 +28,14 @@ class Generate extends Command
      *
      * @return void
      */
-    public function __construct(MigrationGenerator $migrationGenerator)
+    public function __construct(
+        MigrationGenerator $migrationGenerator,
+        ModelGenerator $modelGenerator
+    )
     {
         parent::__construct();
         $this->migrationGenerator = $migrationGenerator;
+        $this->modelGenerator = $modelGenerator;
     }
 
     /**
@@ -45,6 +50,7 @@ class Generate extends Command
             $moduleArray['name'] = $moduleName;
             $module = new Module($moduleArray);
             $this->migrationGenerator->generate($module);
+            $this->modelGenerator->generate($module);
         }
     }
 }
