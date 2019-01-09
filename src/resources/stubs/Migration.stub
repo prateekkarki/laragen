@@ -11,12 +11,11 @@ class Create{{modelNamePlural}}Table extends Migration
      */
     public function up()
     {
-        Schema::create('{{modelNamePluralLowerCase}}', function (Blueprint $table) {
+        Schema::create('{{moduleName}}', function (Blueprint $table) {
             $table->increments('id');
-            {{modelTableData}}
+            {{modelTableSchema}}
             $table->timestamps();
         });
-
     }
 
     /**
@@ -24,6 +23,6 @@ class Create{{modelNamePlural}}Table extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('{{modelNamePluralLowerCase}}');
+        Schema::dropIfExists('{{moduleName}}');
     }
 }
