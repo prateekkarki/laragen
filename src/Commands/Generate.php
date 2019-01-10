@@ -3,6 +3,9 @@
 namespace Prateekkarki\Laragen\Commands;
 
 use Illuminate\Console\Command;
+use Prateekkarki\Laragen\Generators\Migration as MigrationGenerator;
+use Prateekkarki\Laragen\Generators\Model as ModelGenerator;
+use Prateekkarki\Laragen\Models\Module;
 
 class Generate extends Command
 {
@@ -25,9 +28,14 @@ class Generate extends Command
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(
+        MigrationGenerator $migrationGenerator,
+        ModelGenerator $modelGenerator
+    )
     {
         parent::__construct();
+        $this->migrationGenerator = $migrationGenerator;
+        $this->modelGenerator = $modelGenerator;
     }
 
     /**
@@ -38,65 +46,11 @@ class Generate extends Command
     public function handle()
     {
         $config = config('laragen');
-        foreach ($config['modules'] as $model => $module) {
-            $this->migration(ucfirst(str_singular($model)), $module);
+        foreach ($config['modules'] as $moduleName => $moduleArray) {
+            $moduleArray['name'] = $moduleName;
+            $module = new Module($moduleArray);
+            $this->migrationGenerator->generate($module);
+            $this->modelGenerator->generate($module);
         }
-    }
-
-    protected function migration($model, $module)
-    {
-        $migrationTemplate = str_replace(
-            [
-                '{{modelName}}',
-                '{{modelNamePlural}}',
-                '{{modelNamePluralLowerCase}}',
-                '{{modelTableData}}',
-                '{{modelTimestampType}}'
-            ],
-            [
-                $model,
-                str_plural($model),
-                strtolower(str_plural($model)),
-                '',
-                ''
-            ],
-            $this->getStub('Migration')
-        );
-        file_put_contents($this->laravel->databasePath(). "/migrations/" . date('Y_m_d_His') . "_create_" . strtolower(str_plural($model)) . "_table.php", $migrationTemplate);
-    }
-
-    protected function model($model)
-    {
-        $modelTemplate = str_replace(
-            ['{{modelName}}'],
-            [$model],
-            $this->getStub('Model')
-        );
-
-        file_put_contents(app_path("/Models/{$model}.php"), $modelTemplate);
-    }
-
-    protected function controller($model)
-    {
-        $controllerTemplate = str_replace(
-            [
-                '{{modelName}}',
-                '{{modelNamePluralLowerCase}}',
-                '{{modelNameSingularLowerCase}}'
-            ],
-            [
-                $model,
-                strtolower(str_plural($model)),
-                strtolower($model)
-            ],
-            $this->getStub('Controller')
-        );
-
-        file_put_contents(app_path("/Http/Controllers/{$model}Controller.php"), $controllerTemplate);
-    }
-
-    protected function getStub($type)
-    {
-        return file_get_contents(__DIR__ . "/../resources/stubs/" . $type . ".stub");
     }
 }
