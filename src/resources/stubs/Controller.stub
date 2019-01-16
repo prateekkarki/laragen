@@ -10,14 +10,14 @@ class {{modelName}}Controller extends Controller
 {
     public function index(Request $request): View
     {
-        return view('{{modelNamePluralLowerCase}}.index', [
-            '{{modelNamePluralLowerCase}}' => {{modelName}}::latest()->paginate(20)
+        return view('{{moduleName}}.index', [
+            '{{moduleName}}' => {{modelName}}::latest()->paginate(20)
         ]);
     }
 
     public function show(Request $request, {{modelName}} ${{modelNameSingularLowerCase}}): View
     {
-        return view('{{modelNamePluralLowerCase}}.show', [
+        return view('{{moduleName}}.show', [
             '{{modelNameSingularLowerCase}}' => ${{modelNameSingularLowerCase}}
         ]);
     }

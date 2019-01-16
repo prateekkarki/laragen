@@ -3,10 +3,14 @@
 namespace Prateekkarki\Laragen\Generators;
 use Prateekkarki\Laragen\Models\Module;
 
-
 class BaseGenerator
 {	
 	protected $module;
+
+    public function __construct(Module $module)
+    {
+        $this->setModule($module);
+    }
 
     public function getModule()
     {
@@ -23,9 +27,9 @@ class BaseGenerator
         return file_get_contents(__DIR__ . "/../resources/stubs/" . $type . ".stub");
     }
 
-    public function buildTemplate($stub, $variables)
+    public function buildTemplate($stub, $replacements)
     {
-        return str_replace(array_keys($variables), array_values($variables), $this->getStub($stub));
+        return str_replace(array_keys($replacements), array_values($replacements), $this->getStub($stub));
     }
 
     public function getTabs($number)

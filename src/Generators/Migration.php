@@ -8,19 +8,17 @@ class Migration extends BaseGenerator implements GeneratorInterface
 {
     protected static $counter = 0;
 
-    public function generate(Module $module)
+    public function generate()
     {
-        $this->setModule($module);
-
         $migrationTemplate = $this->buildTemplate('Migration', [
-            '{{modelName}}'         => $module->getModelName(),
-            '{{modelNamePlural}}'   => $module->getModelNamePlural(),
-            '{{moduleName}}'        => $module->getModuleName(),
+            '{{modelName}}'         => $this->module->getModelName(),
+            '{{modelNamePlural}}'   => $this->module->getModelNamePlural(),
+            '{{moduleName}}'        => $this->module->getModuleName(),
             '{{modelTableSchema}}'  => $this->getSchema()
         ]);
         
         $dateSuffix = (int)date('His') + ++self::$counter;
-        file_put_contents(database_path() . "/migrations/" . date('Y_m_d_') . $dateSuffix . "_create_" . $module->getModuleName() . "_table.php", $migrationTemplate);
+        file_put_contents(database_path() . "/migrations/" . date('Y_m_d_') . $dateSuffix . "_create_" . $this->module->getModuleName() . "_table.php", $migrationTemplate);
     }
 
     protected function getSchema()

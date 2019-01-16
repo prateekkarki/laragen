@@ -5,5 +5,5 @@ use Prateekkarki\Laragen\Models\Module;
 
 interface GeneratorInterface
 {
-    public function generate(Module $module);
+    public function generate();
 }

@@ -19,6 +19,5 @@ class {{modelName}} extends Model
     protected $fillable = [
         {{massAssignables}}
     ];
-
     {{foreignMethods}}
 }

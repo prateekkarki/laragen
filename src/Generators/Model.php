@@ -5,17 +5,15 @@ use Prateekkarki\Laragen\Models\Module;
 
 class Model extends BaseGenerator implements GeneratorInterface
 {
-    public function generate(Module $module)
+    public function generate()
     {
-        $this->setModule($module);
-
-        $migrationTemplate = $this->buildTemplate('Model', [
-            '{{modelName}}'       => $module->getModelName(),
+        $modelTemplate = $this->buildTemplate('Model', [
+            '{{modelName}}'       => $this->module->getModelName(),
             '{{massAssignables}}' => $this->getMassAssignables(),
             '{{foreignMethods}}'  => $this->getForeignMethods()
         ]);
 
-        file_put_contents(base_path("app/Models/" . $module->getModelName() . ".php"), $migrationTemplate);
+        file_put_contents(base_path("app/Models/" . $this->module->getModelName() . ".php"), $modelTemplate);
     }
 
     protected function getMassAssignables()
@@ -38,8 +36,8 @@ class Model extends BaseGenerator implements GeneratorInterface
 
         foreach ($this->module->getData() as $column => $optionString) {
             $optionArray = explode(':', $optionString);
-            if (in_array($optionArray[0], ['parent'])) {
-                $foreignMethods = $this->buildTemplate('Model-parent', [
+            if ($optionArray[0] == 'parent') {
+                $foreignMethods .= $this->buildTemplate('Model-parent', [
                     '{{parent}}'      => str_singular($optionArray[1]),
                     '{{parentModel}}' => ucfirst(camel_case(str_singular($optionArray[1]))),
                 ]);
