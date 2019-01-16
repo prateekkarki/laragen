@@ -1,5 +1,5 @@
 
-        public function {{parent}}(): BelongsTo
-        {
-            return $this->belongsTo({{parentModel}}::class, '{{parent}}_id');
-        }
+    public function {{parent}}(): BelongsTo
+    {
+        return $this->belongsTo({{parentModel}}::class, '{{parent}}_id');
+    }

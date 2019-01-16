@@ -3,6 +3,7 @@ namespace Prateekkarki\Laragen;
 
 use Illuminate\Support\ServiceProvider;
 use Prateekkarki\Laragen\Commands\Generate;
+use Artisan;
 
 class LaragenServiceProvider extends ServiceProvider
 {
@@ -14,6 +15,10 @@ class LaragenServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../config/laragen.php' => config_path('laragen.php')
         ], 'config');
+
+        Artisan::call('vendor:publish', [
+            '--provider' => 'Prateekkarki\Laragen\LaragenServiceProvider'
+        ]);
     }
     /**
      * Run after all boot method completed
