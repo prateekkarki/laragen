@@ -27,6 +27,16 @@ class BaseGenerator
         return file_get_contents(__DIR__ . "/../resources/stubs/" . $type . ".stub");
     }
 
+    public function getPath($path)
+    {
+        $dir = base_path($path);
+
+        if(!is_dir($dir))
+            mkdir($dir, 0755, true);
+
+        return $dir;
+    }
+
     public function buildTemplate($stub, $replacements)
     {
         return str_replace(array_keys($replacements), array_values($replacements), $this->getStub($stub));
