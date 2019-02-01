@@ -1,0 +1,7 @@
+<div class="{{modelNameSingularLowercase}}-grids">
+    @each('{{moduleName}}/_show', ${{moduleName}}, 'post', '{{moduleName}}/_empty')
+</div>
+
+<div class="d-flex justify-content-center">
+    {{ ${{moduleName}}->links() }}
+</div>

@@ -43,4 +43,9 @@ class Module
     {
         return ucfirst(camel_case($this->name));
     }
+
+    public function getModelNameSingularLowercase()
+    {
+        return str_singular($this->name);
+    }
 }

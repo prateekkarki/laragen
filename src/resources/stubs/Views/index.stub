@@ -1,0 +1,11 @@
+@extends('layouts.app')
+
+@section('content')
+
+<div class="{{moduleName}}">
+    <h2>{{modelNamePlural}}</h2>
+	<div class="wrap">
+		@include ('{{moduleName}}/_list')
+	</div>
+</div>
+@endsection
