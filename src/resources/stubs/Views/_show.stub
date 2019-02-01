@@ -1,0 +1,28 @@
+<?php 
+	// Write a helper for this
+	$stripped{{modelNameSingularLowercase}} = trim(preg_replace('/\s+/',' ', strip_tags(${{modelNameSingularLowercase}}->content))); 
+?>
+<div class="{{modelNameSingularLowercase}}-grid">
+	@if (${{modelNameSingularLowercase}}->hasThumbnail())
+		<div class="{{modelNameSingularLowercase}}-grid-pic">
+			<a href="{{ route('{{moduleName}}.show', ${{modelNameSingularLowercase}})}}">
+				{{ Html::image(${{modelNameSingularLowercase}}->thumbnail->getUrl('thumb'), ${{modelNameSingularLowercase}}->thumbnail->name, ['class' => 'card-img-top']) }}
+			</a>
+		</div>
+	@endif
+	<div class="{{modelNameSingularLowercase}}-grid-info">
+		<h3 v-pre >{{ link_to_route('{{moduleName}}.show', ${{modelNameSingularLowercase}}->title, ${{modelNameSingularLowercase}}) }}</h3>
+		<div class="{{modelNameSingularLowercase}}-single">
+			<p class="desc">
+				@if ($stripped{{modelNameSingularLowercase}}>260)
+					{{ substr($stripped{{modelNameSingularLowercase}}, 0, strpos($stripped{{modelNameSingularLowercase}}, ' ', 260))  }}...
+				@else
+					{{ $stripped{{modelNameSingularLowercase}} }}
+				@endif
+			</p>
+			{{ link_to_route('{{moduleName}}.show', 'Read More', ${{modelNameSingularLowercase}}) }}
+		</div>
+	</div>
+	<div class="clear"> </div>
+</div>
+
