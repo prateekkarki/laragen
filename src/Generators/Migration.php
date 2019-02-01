@@ -1,6 +1,7 @@
 <?php
 
 namespace Prateekkarki\Laragen\Generators;
+
 use Prateekkarki\Laragen\Models\Module;
 use Prateekkarki\Laragen\Models\DataOption;
 

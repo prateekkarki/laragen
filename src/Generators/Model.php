@@ -1,6 +1,7 @@
 <?php
 
 namespace Prateekkarki\Laragen\Generators;
+
 use Prateekkarki\Laragen\Models\Module;
 
 class Model extends BaseGenerator implements GeneratorInterface
