@@ -7,12 +7,17 @@ class View extends BaseGenerator implements GeneratorInterface
 {
     public function generate()
     {
-        $controllerTemplate = $this->buildTemplate('Views/index', [
-            '{{modelName}}'                  => $this->module->getModelName(),
-            '{{moduleName}}'                 => $this->module->getModuleName(),
-            '{{modelNameSingularLowerCase}}' => strtolower($this->module->getModelName())
-        ]);
+        // To be generated dynamically
+        $viewsToBeGenerated = ['index'];
+        
+        foreach ($viewsToBeGenerated as $view) {
+            $viewTemplate = $this->buildTemplate('Views/' . $view, [
+                '{{modelName}}'                  => $this->module->getModelName(),
+                '{{moduleName}}'                 => $this->module->getModuleName(),
+                '{{modelNameSingularLowerCase}}' => strtolower($this->module->getModelName())
+            ]);
 
-        file_put_contents(base_path("app/Http/Controllers/" . $this->module->getModelName() . "Controller" . ".php"), $controllerTemplate);
+            file_put_contents(base_path("resources/views/" . $this->module->getModuleName() . "/{$view}.blade.php"), $viewTemplate);            
+        }
     }
 }
