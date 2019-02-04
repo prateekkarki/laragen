@@ -59,9 +59,9 @@ class Generate extends Command
         $bar->finish();
         
         $this->line("\n");
-
+        
         foreach ($generatedFiles as $file) {
-            $this->info("Generated file: {$file}");
+            $this->info("Generated file: " . str_replace(base_path() . "\\", "", $file));
         }
     }
 }
