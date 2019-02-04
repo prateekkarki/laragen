@@ -18,8 +18,19 @@ class Migration extends BaseGenerator implements GeneratorInterface
             '{{modelTableSchema}}'  => $this->getSchema()
         ]);
         
-        $dateSuffix = (int)date('His') + ++self::$counter;
-        $fullFilePath = database_path() . "/migrations/" . date('Y_m_d_') . $dateSuffix . "_create_" . $this->module->getModuleName() . "_table.php";  
+        $fileCounter = (int)date('His') + ++self::$counter;
+        $filenamePrefix = date('Y_m_d_') . $fileCounter . "_";
+        $fileName = "create_" . $this->module->getModuleName() . "_table.php";
+
+        $existingFiles = scandir(database_path("migrations"));
+        
+        foreach ($existingFiles as $file) {
+            if (strpos($file, $fileName) !== false) {
+                $filenamePrefix = str_replace($fileName, "", $file);
+            }
+        }
+
+        $fullFilePath = database_path("migrations\\") . $filenamePrefix . $fileName;  
         file_put_contents($fullFilePath, $migrationTemplate);
 
         return $fullFilePath;
