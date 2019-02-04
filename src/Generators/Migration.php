@@ -19,7 +19,10 @@ class Migration extends BaseGenerator implements GeneratorInterface
         ]);
         
         $dateSuffix = (int)date('His') + ++self::$counter;
-        file_put_contents(database_path() . "/migrations/" . date('Y_m_d_') . $dateSuffix . "_create_" . $this->module->getModuleName() . "_table.php", $migrationTemplate);
+        $fullFilePath = database_path() . "/migrations/" . date('Y_m_d_') . $dateSuffix . "_create_" . $this->module->getModuleName() . "_table.php";  
+        file_put_contents($fullFilePath, $migrationTemplate);
+
+        return $fullFilePath;
     }
 
     protected function getSchema()

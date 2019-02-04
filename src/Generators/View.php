@@ -7,9 +7,9 @@ class View extends BaseGenerator implements GeneratorInterface
 {
     public function generate()
     {
-        // To be generated dynamically
-        $viewsToBeGenerated = ['index', '_list', '_show', '_empty'];
-        
+        $viewsToBeGenerated = ['index', '_list', '_show', '_empty']; // To be generated dynamically
+
+        $generatedFiles = [];
         foreach ($viewsToBeGenerated as $view) {
             $viewTemplate = $this->buildTemplate('Views/' . $view, [
                 '{{modelNameSingularLowercase}}' => $this->module->getModelNameSingularLowercase(),
@@ -17,7 +17,10 @@ class View extends BaseGenerator implements GeneratorInterface
                 '{{moduleName}}'                 => $this->module->getModuleName()
             ]);
 
-            file_put_contents($this->getPath("resources/views/" . $this->module->getModuleName()). "/{$view}.blade.php", $viewTemplate);            
+            $fullFilePath = $this->getPath("resources/views/" . $this->module->getModuleName()) . "/{$view}.blade.php";
+            file_put_contents($fullFilePath, $viewTemplate);
+            $generatedFiles[] =  $fullFilePath;         
         }
+        return $generatedFiles;
     }
 }

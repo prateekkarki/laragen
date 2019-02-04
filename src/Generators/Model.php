@@ -13,8 +13,10 @@ class Model extends BaseGenerator implements GeneratorInterface
             '{{massAssignables}}' => $this->getMassAssignables(),
             '{{foreignMethods}}'  => $this->getForeignMethods()
         ]);
-
-        file_put_contents(base_path("app/Models/" . $this->module->getModelName() . ".php"), $modelTemplate);
+        
+        $fullFilePath = $this->getPath("app/Models/") . $this->module->getModelName() . ".php";
+        file_put_contents($fullFilePath, $modelTemplate);
+        return $fullFilePath;
     }
 
     protected function getMassAssignables()
