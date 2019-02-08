@@ -32,15 +32,15 @@ class Generate extends Command
         $modules = config('laragen')['modules'];
 
         $generatedFiles = [];
+        $itemsToGenerate = array_diff($options['generated_by_default'], $options['skip_generators']);
 
-        $bar = $this->output->createProgressBar(count($modules));
+        $bar = $this->output->createProgressBar(count($modules) * count($itemsToGenerate));
+        $bar->setOverwrite(true);
         $bar->start();
 
         foreach ($modules as $moduleName => $moduleArray) {
             $moduleArray['name'] = $moduleName;
             $module = new Module($moduleArray);
-
-            $itemsToGenerate = array_diff($options['generated_by_default'], $options['skip_generators']);
             
             foreach ($itemsToGenerate as $item) {
                 $generator = "\\Prateekkarki\\Laragen\\Generators\\{$item}";
@@ -51,9 +51,9 @@ class Generate extends Command
                     $generatedFiles[] = $returnedFiles;
                 else
                     $generatedFiles = array_merge($generatedFiles, $returnedFiles);
+                
+                $bar->advance();
             }
-            
-            $bar->advance();
         }
 
         $bar->finish();
