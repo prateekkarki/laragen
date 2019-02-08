@@ -10,10 +10,10 @@ class Seeder extends BaseGenerator implements GeneratorInterface
     {
         $generatedFiles = [];
         $modelTemplate = $this->buildTemplate('Factory', [
-            '{{usedModels}}'     => $this->module->getModelName(),
-            '{{modelName}}'      => $this->getMassAssignables(),
-            '{{dataDefinition}}' => $this->getMassAssignables(),
-            '{{foreignData}}'    => $this->getForeignMethods()
+            '{{modelName}}'      => $this->module->getModelName(),
+            '{{usedModels}}'     => $this->getUsedModels(),
+            '{{dataDefinition}}' => $this->getDataDefinition(),
+            '{{foreignData}}'    => $this->getForeignData()
         ]);
         $fullFilePath = $this->getPath("database/factories/") . $this->module->getModelName() . "Factory.php";
         file_put_contents($fullFilePath, $modelTemplate);
@@ -30,5 +30,17 @@ class Seeder extends BaseGenerator implements GeneratorInterface
         
         $generatedFiles[] =  $fullFilePath;
         return $generatedFiles;         
+    }
+
+    protected function getUsedModels(){
+        return '';
+    }
+
+    protected function getDataDefinition(){
+        return '';
+    }
+
+    protected function getForeignData(){
+        return '';
     }
 }

@@ -28,19 +28,19 @@ class Generate extends Command
      */
     public function handle()
     {
-        $config = config('laragen');
+        $options = config('laragen')['options'];
+        $modules = config('laragen')['modules'];
 
         $generatedFiles = [];
 
-        $bar = $this->output->createProgressBar(count($config['modules']));
+        $bar = $this->output->createProgressBar(count($modules));
         $bar->start();
 
-        foreach ($config['modules'] as $moduleName => $moduleArray) {
+        foreach ($modules as $moduleName => $moduleArray) {
             $moduleArray['name'] = $moduleName;
             $module = new Module($moduleArray);
 
-            // ToDo: to be loaded dynamically
-            $itemsToGenerate = ['Migration', 'Controller', 'Model', 'View', 'Seeder'];
+            $itemsToGenerate = array_diff($options['generated_by_default'], $options['skip_generators']);
             
             foreach ($itemsToGenerate as $item) {
                 $generator = "\\Prateekkarki\\Laragen\\Generators\\{$item}";
