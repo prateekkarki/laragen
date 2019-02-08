@@ -40,7 +40,7 @@ class Generate extends Command
             $module = new Module($moduleArray);
 
             // ToDo: to be loaded dynamically
-            $itemsToGenerate = ['Migration', 'Controller', 'Model', 'View'];
+            $itemsToGenerate = ['Migration', 'Controller', 'Model', 'View', 'Seeder'];
             
             foreach ($itemsToGenerate as $item) {
                 $generator = "\\Prateekkarki\\Laragen\\Generators\\{$item}";
