@@ -2,7 +2,8 @@
 
 return [
 	'options' => [
-		'generated_by_default' => ['migration', 'controller', 'model'],
+		'generated_by_default' => ['Migration', 'Controller', 'Model', 'View', 'Seeder'],
+		'skip_generators' => [],
 		'override' => true
 	],
 	'modules' => [
@@ -11,7 +12,7 @@ return [
 		// 		'multiple'=>[]
 		// 		'images'=>'single'   	//Images type: single, multiple
 
-		'categories'	=> [
+		'categories' => [
 			'data'=> [
 				// Separated by ':', numeric value represents size of the field its 192 by default and is optional
 				
@@ -34,7 +35,7 @@ return [
 			'images'=>'single'
 		],
 
-		'tags'	=> [
+		'tags' => [
 			'data'=> [
 				'title' 			=> 'string:128'
 			]

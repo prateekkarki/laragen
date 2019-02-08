@@ -1,0 +1,10 @@
+<?php
+{{usedModels}}
+use Faker\Generator;
+
+$factory->define({{modelName}}::class, function (Generator $faker) {
+    return [
+{{dataDefinition}}
+{{foreignData}}
+    ];
+});

@@ -13,34 +13,27 @@ class Model extends BaseGenerator implements GeneratorInterface
             '{{massAssignables}}' => $this->getMassAssignables(),
             '{{foreignMethods}}'  => $this->getForeignMethods()
         ]);
-
-        file_put_contents(base_path("app/Models/" . $this->module->getModelName() . ".php"), $modelTemplate);
+        
+        $fullFilePath = $this->getPath("app/Models/") . $this->module->getModelName() . ".php";
+        file_put_contents($fullFilePath, $modelTemplate);
+        return $fullFilePath;
     }
 
     protected function getMassAssignables()
     {
-        $massAssignables = [];
-
-        foreach ($this->module->getData() as $column => $optionString) {
-            $optionArray = explode(':', $optionString);
-            if (in_array($optionArray[0], ['string', 'int', 'text', 'bool', 'date'])) {
-                $massAssignables[] = "'" . $column . "'";
-            }
-        }
-
-        return implode(', ', $massAssignables);
+        return "'" . implode("', '", $this->module->getNativeColumns()) . "'";
     }
 
     protected function getForeignMethods()
     {
         $foreignMethods = "";
 
-        foreach ($this->module->getData() as $column => $optionString) {
-            $optionArray = explode(':', $optionString);
-            if ($optionArray[0] == 'parent') {
+        foreach ($this->module->getForeignColumns('parent') as $parents) {
+            foreach ($parents as $column => $parent) {
                 $foreignMethods .= $this->buildTemplate('Model-parent', [
-                    '{{parent}}'      => str_singular($optionArray[1]),
-                    '{{parentModel}}' => ucfirst(camel_case(str_singular($optionArray[1]))),
+                    '{{parent}}'      => str_singular($parent),
+                    '{{columnName}}'  => str_singular($column),
+                    '{{parentModel}}' => ucfirst(camel_case(str_singular($parent)))
                 ]);
             }
         }

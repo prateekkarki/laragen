@@ -28,6 +28,47 @@ class Module
     {
         return $this->data;
     }
+    
+    public function getNativeColumns()
+    {
+        $data = [];
+        foreach ($this->data as $column => $optionString) {
+            $optionArray = explode(':', $optionString);
+            if (in_array($optionArray[0], ['string', 'int', 'text', 'bool', 'date'])) {
+                $data[] = $column;
+            }
+        }
+        return $data;
+    }
+    
+    public function getNativeData()
+    {
+        $data = [];
+        foreach ($this->data as $column => $optionString) {
+            $optionArray = explode(':', $optionString);
+            if (in_array($optionArray[0], ['string', 'int', 'text', 'bool', 'date', 'datetime'])) {
+                $data[] = [$column => $optionArray[0]];
+            }
+        }
+        return $data;
+    }
+
+    public function getForeignColumns($type = 'all')
+    {
+        if(is_array($type))
+            $types = $type;
+        else
+            $types = ($type == "all") ? ['parent', 'related'] : [$type];
+        
+        $data = [];
+        foreach ($this->data as $column => $optionString) {
+            $optionArray = explode(':', $optionString);
+            if (in_array($optionArray[0], $types)) {
+                $data[] = [$column => $optionArray[1]];
+            }
+        }
+        return $data;
+    }
 
     public function getModuleName()
     {

@@ -28,19 +28,40 @@ class Generate extends Command
      */
     public function handle()
     {
-        $config = config('laragen');
-        foreach ($config['modules'] as $moduleName => $moduleArray) {
+        $options = config('laragen')['options'];
+        $modules = config('laragen')['modules'];
+
+        $generatedFiles = [];
+        $itemsToGenerate = array_diff($options['generated_by_default'], $options['skip_generators']);
+
+        $bar = $this->output->createProgressBar(count($modules) * count($itemsToGenerate));
+        $bar->setOverwrite(true);
+        $bar->start();
+
+        foreach ($modules as $moduleName => $moduleArray) {
             $moduleArray['name'] = $moduleName;
             $module = new Module($moduleArray);
-
-            // ToDo: to be loaded dynamically
-            $itemsToGenerate = ['Migration', 'Controller', 'Model', 'View'];
-
+            
             foreach ($itemsToGenerate as $item) {
                 $generator = "\\Prateekkarki\\Laragen\\Generators\\{$item}";
                 $itemGenerator = new $generator($module);
-                $itemGenerator->generate();
+                $returnedFiles = $itemGenerator->generate();
+                
+                if(!is_array($returnedFiles)) 
+                    $generatedFiles[] = $returnedFiles;
+                else
+                    $generatedFiles = array_merge($generatedFiles, $returnedFiles);
+                
+                $bar->advance();
             }
+        }
+
+        $bar->finish();
+        
+        $this->line("\n");
+        
+        foreach ($generatedFiles as $file) {
+            $this->info("Generated file: " . str_replace(base_path() . "\\", "", $file));
         }
     }
 }

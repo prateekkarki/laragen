@@ -37,6 +37,11 @@ class BaseGenerator
         return $dir;
     }
 
+    public function moduleToModelName($moduleName)
+    {
+        return ucfirst(camel_case(str_singular($moduleName)));
+    }
+
     public function buildTemplate($stub, $replacements)
     {
         return str_replace(array_keys($replacements), array_values($replacements), $this->getStub($stub));
