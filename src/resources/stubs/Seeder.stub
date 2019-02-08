@@ -1,0 +1,16 @@
+<?php
+
+{{usedModels}}
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+
+class {{modelName}}Seeder extends Seeder
+{
+    /**
+     * Seed the application's database.
+     */
+    public function run(): void
+    {
+        factory({{modelName}}::class, 5)->create();
+    }
+}

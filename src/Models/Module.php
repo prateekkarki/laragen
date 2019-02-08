@@ -40,6 +40,18 @@ class Module
         }
         return $data;
     }
+    
+    public function getNativeData()
+    {
+        $data = [];
+        foreach ($this->data as $column => $optionString) {
+            $optionArray = explode(':', $optionString);
+            if (in_array($optionArray[0], ['string', 'int', 'text', 'bool', 'date', 'datetime'])) {
+                $data[] = [$column => $optionArray[0]];
+            }
+        }
+        return $data;
+    }
 
     public function getForeignColumns($type = 'all')
     {
