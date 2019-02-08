@@ -21,30 +21,18 @@ class Model extends BaseGenerator implements GeneratorInterface
 
     protected function getMassAssignables()
     {
-        $massAssignables = [];
-
-        foreach ($this->module->getData() as $column => $optionString) {
-            $optionArray = explode(':', $optionString);
-            if (in_array($optionArray[0], ['string', 'int', 'text', 'bool', 'date'])) {
-                $massAssignables[] = "'" . $column . "'";
-            }
-        }
-
-        return implode(', ', $massAssignables);
+        return "'" . implode("', '", $this->module->getNativeColumns()) . "'";
     }
 
     protected function getForeignMethods()
     {
         $foreignMethods = "";
 
-        foreach ($this->module->getData() as $column => $optionString) {
-            $optionArray = explode(':', $optionString);
-            if ($optionArray[0] == 'parent') {
-                $foreignMethods .= $this->buildTemplate('Model-parent', [
-                    '{{parent}}'      => str_singular($optionArray[1]),
-                    '{{parentModel}}' => ucfirst(camel_case(str_singular($optionArray[1]))),
-                ]);
-            }
+        foreach ($this->module->getForeignColumns('parent') as $column => $parent) {
+            $foreignMethods .= $this->buildTemplate('Model-parent', [
+                '{{parent}}'      => str_singular($parent),
+                '{{parentModel}}' => ucfirst(camel_case(str_singular($parent))),
+            ]);
         }
 
         return $foreignMethods;
