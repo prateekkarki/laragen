@@ -48,6 +48,7 @@ class Module
         else
             $types = ($type == "all") ? ['parent', 'related'] : [$type];
         
+        $data = [];
         foreach ($this->data as $column => $optionString) {
             $optionArray = explode(':', $optionString);
             if (in_array($optionArray[0], $types)) {

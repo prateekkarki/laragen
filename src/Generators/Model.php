@@ -28,11 +28,14 @@ class Model extends BaseGenerator implements GeneratorInterface
     {
         $foreignMethods = "";
 
-        foreach ($this->module->getForeignColumns('parent') as $column => $parent) {
-            $foreignMethods .= $this->buildTemplate('Model-parent', [
-                '{{parent}}'      => str_singular($parent),
-                '{{parentModel}}' => ucfirst(camel_case(str_singular($parent))),
-            ]);
+        foreach ($this->module->getForeignColumns('parent') as $parents) {
+            foreach ($parents as $column => $parent) {
+                $foreignMethods .= $this->buildTemplate('Model-parent', [
+                    '{{parent}}'      => str_singular($parent),
+                    '{{columnName}}'  => str_singular($column),
+                    '{{parentModel}}' => ucfirst(camel_case(str_singular($parent)))
+                ]);
+            }
         }
 
         return $foreignMethods;
