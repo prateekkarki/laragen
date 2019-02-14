@@ -23,8 +23,8 @@
                     {{ ${{modelNameSingularLowercase}}->content }}
                 </p>
                 
-                <a href="{{ route('{{moduleName}}.show', ${{modelNameSingularLowercase}}) }}">
-                    Read More
+                <a href="{{ route('{{moduleName}}.index') }}">
+                    Back to {{moduleName}}
                 </a>
             </div>
         </div>
