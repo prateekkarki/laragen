@@ -37,7 +37,9 @@ class Seeder extends BaseGenerator implements GeneratorInterface
 
         foreach ($foreignModels as $models) {
             foreach($models as $column => $module){
-                $usedModels .= PHP_EOL . "use " . $namespace . $this->moduleToModelName($module) . ";";
+                $namespace = ($module == 'users' && class_exists('App\\User')) ? "App\\" : "App\\Models\\";
+                $class = $namespace . $this->moduleToModelName($module);
+                $usedModels .= PHP_EOL . "use " . $class . ";";
             }
         }
         return $usedModels;
