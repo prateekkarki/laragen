@@ -7,7 +7,7 @@ class View extends BaseGenerator implements GeneratorInterface
 {
     public function generate()
     {
-        $viewsToBeGenerated = ['index', '_list', '_show', '_empty']; // To be generated dynamically
+        $viewsToBeGenerated = ['index', 'show', '_list', '_show', '_empty']; // To be generated dynamically
 
         $generatedFiles = [];
         foreach ($viewsToBeGenerated as $view) {
