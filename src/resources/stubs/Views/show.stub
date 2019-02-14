@@ -13,12 +13,19 @@
         @endif
 
         <div class="{{modelNameSingularLowercase}}-grid-info">
-            <h3 v-pre >{{ link_to_route('{{moduleName}}.show', ${{modelNameSingularLowercase}}->title, ${{modelNameSingularLowercase}}) }}</h3>
+            <h3>
+                <a href="{{ route('{{moduleName}}.show', ['slug' => ${{modelNameSingularLowercase}}->slug]) }}">
+                    {{ ${{modelNameSingularLowercase}}->title }}
+                </a>
+            </h3>
             <div class="{{modelNameSingularLowercase}}-single">
                 <p class="desc">
                     {{ ${{modelNameSingularLowercase}}->content }}
                 </p>
-                {{ link_to_route('{{moduleName}}.show', 'Read More', ${{modelNameSingularLowercase}}) }}
+                
+                <a href="{{ route('{{moduleName}}.show', ['slug' => ${{modelNameSingularLowercase}}->slug]) }}">
+                    Read More
+                </a>
             </div>
         </div>
         <div class="clear"> </div>

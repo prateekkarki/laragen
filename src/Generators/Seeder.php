@@ -37,17 +37,17 @@ class Seeder extends BaseGenerator implements GeneratorInterface
 
         foreach ($foreignModels as $models) {
             foreach($models as $column => $module){
-                $usedModels .= PHP_EOL . "use " . $namespace . $this->moduleToModelName($module) . ";";
+                $namespace = ($module == 'users' && class_exists('App\\User')) ? "App\\" : "App\\Models\\";
+                $class = $namespace . $this->moduleToModelName($module);
+                $usedModels .= PHP_EOL . "use " . $class . ";";
             }
         }
         return $usedModels;
     }
 
     protected function getDataDefinition(){
-        $typeToDefinition = [];
-
         $specialTypesToDefinition = [
-            'title'             => 'title',
+            'title'             => 'realText(50)',
             'firstname'         => 'firstname',
             'lastname'          => 'lastname',
             'name'              => 'name',

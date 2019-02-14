@@ -11,19 +11,21 @@ This is a work in progress. Please check back later for complete package.
 ## Features
 Generate and scaffold everything required for a basic laravel project. Starting with controllers, models, requests, views, assets, migrations, seeders, routes. More to be added in future releases.
 
-## Usage
-
-To be updated later.
-
 ## Install
 
 Via Composer
 
 ``` bash
 $ composer require prateekkarki/laragen
-$ php artisan vendor:publish --provider="Prateekkarki\Laragen\LaragenServiceProvider"
 ```
 
+## Usage
+
+To be updated later.
+
+``` bash
+$ php artisan laragen:make
+```
 
 ## Security
 
