@@ -19,5 +19,12 @@ class {{modelName}} extends Model
     protected $fillable = [
         {{massAssignables}}
     ];
+
+    /**
+     * Check if the model has a thumbnail.
+     */
+    public function hasThumbnail(){
+        return false;
+    }
     {{foreignMethods}}
 }
