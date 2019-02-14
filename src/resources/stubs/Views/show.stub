@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('laragen.layouts.app')
 
 @section('content')
 
@@ -14,7 +14,7 @@
 
         <div class="{{modelNameSingularLowercase}}-grid-info">
             <h3>
-                <a href="{{ route('{{moduleName}}.show', ['slug' => ${{modelNameSingularLowercase}}->slug]) }}">
+                <a href="{{ route('{{moduleName}}.show', ${{modelNameSingularLowercase}}) }}">
                     {{ ${{modelNameSingularLowercase}}->title }}
                 </a>
             </h3>
@@ -23,8 +23,8 @@
                     {{ ${{modelNameSingularLowercase}}->content }}
                 </p>
                 
-                <a href="{{ route('{{moduleName}}.show', ['slug' => ${{modelNameSingularLowercase}}->slug]) }}">
-                    Read More
+                <a href="{{ route('{{moduleName}}.index') }}">
+                    Back to {{moduleName}}
                 </a>
             </div>
         </div>
