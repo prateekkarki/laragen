@@ -33,7 +33,7 @@ class Model extends BaseGenerator implements GeneratorInterface
                 $foreignMethods .= $this->buildTemplate('Model-parent', [
                     '{{parent}}'      => str_singular($parent),
                     '{{columnName}}'  => str_singular($column),
-                    '{{parentModel}}' => ucfirst(camel_case(str_singular($parent)))
+                    '{{parentModel}}' => ($parent == 'users' && class_exists('\\App\\User')) ? "\\App\\User" : ucfirst(camel_case(str_singular($parent)))
                 ]);
             }
         }
