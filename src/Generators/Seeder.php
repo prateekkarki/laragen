@@ -47,7 +47,7 @@ class Seeder extends BaseGenerator implements GeneratorInterface
 
     protected function getDataDefinition(){
         $specialTypesToDefinition = [
-            'title'             => 'title',
+            'title'             => 'realText(50)',
             'firstname'         => 'firstname',
             'lastname'          => 'lastname',
             'name'              => 'name',
