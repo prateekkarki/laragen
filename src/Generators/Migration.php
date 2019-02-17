@@ -18,9 +18,9 @@ class Migration extends BaseGenerator implements GeneratorInterface
             '{{modelTableSchema}}'  => $this->getSchema()
         ]);
         
-        $fileCounter = (int)date('His') + ++self::$counter;
-        $filenamePrefix = date('Y_m_d_') . $fileCounter . "_";
-        $fileName = "create_" . $this->module->getModuleName() . "_table.php";
+        $fileCounter = (int) date('His') + ++self::$counter;
+        $filenamePrefix = date('Y_m_d_').$fileCounter."_";
+        $fileName = "create_".$this->module->getModuleName()."_table.php";
 
         $existingFiles = scandir(database_path("migrations"));
         
@@ -30,7 +30,7 @@ class Migration extends BaseGenerator implements GeneratorInterface
             }
         }
 
-        $fullFilePath = database_path("migrations\\") . $filenamePrefix . $fileName;  
+        $fullFilePath = database_path("migrations\\").$filenamePrefix.$fileName;  
         file_put_contents($fullFilePath, $migrationTemplate);
 
         return $fullFilePath;
@@ -48,7 +48,7 @@ class Migration extends BaseGenerator implements GeneratorInterface
             $schema .= $option->getSchema();
 
             if ($column != $lastColumn) {
-                $schema .= PHP_EOL . $this->getTabs(3);
+                $schema .= PHP_EOL.$this->getTabs(3);
             }
         }
 
