@@ -5,7 +5,7 @@ use Prateekkarki\Laragen\Models\Module;
 
 class BaseGenerator
 {	
-	protected $module;
+    protected $module;
 
     public function __construct(Module $module)
     {
@@ -24,14 +24,14 @@ class BaseGenerator
 
     public function getStub($type)
     {
-        return file_get_contents(__DIR__ . "/../resources/stubs/" . $type . ".stub");
+        return file_get_contents(__DIR__."/../resources/stubs/".$type.".stub");
     }
 
     public function getPath($path)
     {
         $dir = base_path($path);
 
-        if(!is_dir($dir))
+        if (!is_dir($dir))
             mkdir($dir, 0755, true);
 
         return $dir;
@@ -50,7 +50,7 @@ class BaseGenerator
     public function getTabs($number)
     {
         $schema = "";
-        for ($i=0; $i < $number; $i++) { 
+        for ($i = 0; $i < $number; $i++) { 
             $schema .= "    ";
         }
         return $schema;
