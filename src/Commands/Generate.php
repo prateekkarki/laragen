@@ -47,7 +47,7 @@ class Generate extends Command
                 $itemGenerator = new $generator($module);
                 $returnedFiles = $itemGenerator->generate();
                 
-                if(!is_array($returnedFiles)) 
+                if (!is_array($returnedFiles)) 
                     $generatedFiles[] = $returnedFiles;
                 else
                     $generatedFiles = array_merge($generatedFiles, $returnedFiles);
@@ -61,7 +61,7 @@ class Generate extends Command
         $this->line("\n");
         
         foreach ($generatedFiles as $file) {
-            $this->info("Generated file: " . str_replace(base_path() . "\\", "", $file));
+            $this->info("Generated file: ".str_replace(base_path()."\\", "", $file));
         }
     }
 }

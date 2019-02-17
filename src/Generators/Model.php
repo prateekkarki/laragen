@@ -14,14 +14,14 @@ class Model extends BaseGenerator implements GeneratorInterface
             '{{foreignMethods}}'  => $this->getForeignMethods()
         ]);
         
-        $fullFilePath = $this->getPath("app/Models/") . $this->module->getModelName() . ".php";
+        $fullFilePath = $this->getPath("app/Models/").$this->module->getModelName().".php";
         file_put_contents($fullFilePath, $modelTemplate);
         return $fullFilePath;
     }
 
     protected function getMassAssignables()
     {
-        return "'" . implode("', '", $this->module->getNativeColumns()) . "'";
+        return "'".implode("', '", $this->module->getNativeColumns())."'";
     }
 
     protected function getForeignMethods()

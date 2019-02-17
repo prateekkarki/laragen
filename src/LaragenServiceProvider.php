@@ -13,7 +13,7 @@ class LaragenServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__ . '/../config/laragen.php' => config_path('laragen.php')
+            __DIR__.'/../config/laragen.php' => config_path('laragen.php')
         ], 'config');
 
         Artisan::call('vendor:publish', [
@@ -26,7 +26,7 @@ class LaragenServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(
-            __DIR__ . '/../config/laragen.php',
+            __DIR__.'/../config/laragen.php',
             'laragen'
         );
 

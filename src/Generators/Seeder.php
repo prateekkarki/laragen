@@ -15,37 +15,37 @@ class Seeder extends BaseGenerator implements GeneratorInterface
             '{{dataDefinition}}' => $this->getDataDefinition(),
             '{{foreignData}}'    => $this->getForeignData()
         ]);
-        $fullFilePath = $this->getPath("database/factories/") . $this->module->getModelName() . "Factory.php";
+        $fullFilePath = $this->getPath("database/factories/").$this->module->getModelName()."Factory.php";
         file_put_contents($fullFilePath, $modelTemplate);
-        $generatedFiles[] =  $fullFilePath;
+        $generatedFiles[] = $fullFilePath;
         
         $modelTemplate = $this->buildTemplate('Seeder', [
             '{{modelName}}'  => $this->module->getModelName(),
             '{{usedModels}}' => $this->getUsedModels()
         ]);
-        $fullFilePath = $this->getPath("database/seeds/") . $this->module->getModelName() . "Seeder.php";
+        $fullFilePath = $this->getPath("database/seeds/").$this->module->getModelName()."Seeder.php";
         file_put_contents($fullFilePath, $modelTemplate);
-        $generatedFiles[] =  $fullFilePath;
+        $generatedFiles[] = $fullFilePath;
         
         return $generatedFiles;         
     }
 
-    protected function getUsedModels(){
+    protected function getUsedModels() {
         $foreignModels = $this->module->getForeignColumns();
         $namespace = "App\\Models\\";
-        $usedModels = "use " . $namespace . $this->module->getModelName() . ";";
+        $usedModels = "use ".$namespace.$this->module->getModelName().";";
 
         foreach ($foreignModels as $models) {
-            foreach($models as $column => $module){
+            foreach ($models as $column => $module) {
                 $namespace = ($module == 'users' && class_exists('App\\User')) ? "App\\" : "App\\Models\\";
-                $class = $namespace . $this->moduleToModelName($module);
-                $usedModels .= PHP_EOL . "use " . $class . ";";
+                $class = $namespace.$this->moduleToModelName($module);
+                $usedModels .= PHP_EOL."use ".$class.";";
             }
         }
         return $usedModels;
     }
 
-    protected function getDataDefinition(){
+    protected function getDataDefinition() {
         $specialTypesToDefinition = [
             'title'             => 'realText(50)',
             'firstname'         => 'firstname',
@@ -84,12 +84,13 @@ class Seeder extends BaseGenerator implements GeneratorInterface
                 $specialTypes = array_keys($specialTypesToDefinition);
                 if(in_array($column,$specialTypes)){
                     $dataDefinition .= $this->getTabs(2) . "'{$column}'" . " => " . '$faker->' . $specialTypesToDefinition[$column];
-                }else{
+                } else{
                     $dataDefinition .= $this->getTabs(2) . "'{$column}'" . " => " . '$faker->' . $typeToDefinition[$type];
                 }
 
-                if($column != last($columns))
-                    $dataDefinition .= "," . PHP_EOL;
+                if($column != last($columns)) {
+                                    $dataDefinition .= "," . PHP_EOL;
+                }
             }
         }
         return $dataDefinition;
@@ -107,8 +108,9 @@ class Seeder extends BaseGenerator implements GeneratorInterface
                     '{{parentModel}}' => ucfirst(camel_case(str_singular($parent)))
                 ]);
                 
-                if($column != last($columns))
-                    $foreignData .= "," . PHP_EOL;
+                if($column != last($columns)) {
+                                    $foreignData .= "," . PHP_EOL;
+                }
             }
         }
 

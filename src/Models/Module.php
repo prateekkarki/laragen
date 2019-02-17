@@ -14,7 +14,7 @@ class Module
 
     public function __construct($module)
     {
-        $this->module = (object)$module;
+        $this->module = (object) $module;
         $this->data   = $this->module->data;
         $this->name   = $this->module->name;
     }
@@ -55,7 +55,7 @@ class Module
 
     public function getForeignColumns($type = 'all')
     {
-        if(is_array($type))
+        if (is_array($type))
             $types = $type;
         else
             $types = ($type == "all") ? ['parent', 'related'] : [$type];
