@@ -13,7 +13,7 @@ class Controller extends BaseGenerator implements GeneratorInterface
             '{{modelNameSingularLowerCase}}' => strtolower($this->module->getModelName())
         ]);
         
-        $fullFilePath = $this->getPath("app/Http/Controllers/") . $this->module->getModelName() . "Controller" . ".php";
+        $fullFilePath = $this->getPath("app/Http/Controllers/").$this->module->getModelName()."Controller".".php";
         file_put_contents($fullFilePath, $controllerTemplate);
         return $fullFilePath;
     }

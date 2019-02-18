@@ -50,13 +50,13 @@ class DataOption
     {
         if ($this->hasSpecialSchema()) {
             $schema = $this->processSpecialSchema();
-        }else{
+        } else {
             foreach ($this->optionArray as $option) {
                 if ($option == self::COLUMN_UNIQUE)         $this->hasUnique();
-                if (is_numeric($option) && $option <= 2048) $this->hasSize((int)$option);
+                if (is_numeric($option) && $option <= 2048) $this->hasSize((int) $option);
             }
 
-            $schema = '$table->' . $this->getType() . "('{$this->column}'";
+            $schema = '$table->'.$this->getType()."('{$this->column}'";
             $schema .= $this->hasSize() ? ", {$this->getSize()})" : ")";
             $schema .= $this->isUnique() ? "->unique()" : "";
             $schema .= ";";
@@ -64,23 +64,23 @@ class DataOption
         return $schema;
     }
 
-    protected function getType(){
+    protected function getType() {
         return $this->keyToType[array_shift($this->optionArray)];
     }
 
-    protected function getSize(){
+    protected function getSize() {
         return $this->size;
     }
     
-    protected function isUnique(){
+    protected function isUnique() {
         return $this->uniqueFlag;
     }
 
-    protected function hasUnique($set = true){
+    protected function hasUnique($set = true) {
         $this->uniqueFlag = ($set === true) ? true : false;
     }
 
-    protected function hasSize($size = null){
+    protected function hasSize($size = null) {
         if ($size !== null) {
             $this->size = $size;
         }
@@ -90,31 +90,31 @@ class DataOption
     public function getTabs($number)
     {
         $schema = "";
-        for ($i=0; $i < $number; $i++) { 
+        for ($i = 0; $i < $number; $i++) { 
             $schema .= "    ";
         }
         return $schema;
     }
 
-    protected function processSpecialSchema(){
-        $specialMethod = 'process' . ucfirst($this->specialType);
+    protected function processSpecialSchema() {
+        $specialMethod = 'process'.ucfirst($this->specialType);
         return $this->$specialMethod();
     }
 
-    protected function processParent(){
+    protected function processParent() {
         $schema = "";
         $parent = array_pop($this->optionArray);
-        $schema .= "\$table->integer('" . str_singular($parent) . "_id')->unsigned()->nullable();";
-        $schema .= PHP_EOL . $this->getTabs(3);
-        $schema .= "\$table->foreign('" . str_singular($parent) . "_id')->references('id')->on('$parent')->onDelete('set null');";
+        $schema .= "\$table->integer('".str_singular($parent)."_id')->unsigned()->nullable();";
+        $schema .= PHP_EOL.$this->getTabs(3);
+        $schema .= "\$table->foreign('".str_singular($parent)."_id')->references('id')->on('$parent')->onDelete('set null');";
         return $schema;
     }
 
-    protected function processRelated(){
+    protected function processRelated() {
         return "";
     }
 
-    protected function hasSpecialSchema(){
+    protected function hasSpecialSchema() {
         if ($this->optionArray[0] == self::TYPE_PARENT) {
             array_shift($this->optionArray);
             $this->specialType = self::TYPE_PARENT;
