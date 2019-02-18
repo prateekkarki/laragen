@@ -9,22 +9,22 @@ class Seeder extends BaseGenerator implements GeneratorInterface
     public function generate()
     {
         $generatedFiles = [];
-        $modelTemplate = $this->buildTemplate('Factory', [
+        $factoryTemplate = $this->buildTemplate('Factory', [
             '{{modelName}}'      => $this->module->getModelName(),
             '{{usedModels}}'     => $this->getUsedModels(),
             '{{dataDefinition}}' => $this->getDataDefinition(),
             '{{foreignData}}'    => $this->getForeignData()
         ]);
         $fullFilePath = $this->getPath("database/factories/").$this->module->getModelName()."Factory.php";
-        file_put_contents($fullFilePath, $modelTemplate);
+        file_put_contents($fullFilePath, $factoryTemplate);
         $generatedFiles[] = $fullFilePath;
         
-        $modelTemplate = $this->buildTemplate('Seeder', [
+        $seederTemplate = $this->buildTemplate('Seeder', [
             '{{modelName}}'  => $this->module->getModelName(),
             '{{usedModels}}' => $this->getUsedModels()
         ]);
         $fullFilePath = $this->getPath("database/seeds/").$this->module->getModelName()."Seeder.php";
-        file_put_contents($fullFilePath, $modelTemplate);
+        file_put_contents($fullFilePath, $seederTemplate);
         $generatedFiles[] = $fullFilePath;
         
         return $generatedFiles;         
