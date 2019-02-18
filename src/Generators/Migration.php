@@ -22,7 +22,7 @@ class Migration extends BaseGenerator implements GeneratorInterface
         $filenamePrefix = date('Y_m_d_') . $fileCounter . "_";
         $fileName = "create_" . $this->module->getModuleName() . "_table.php";
 
-        $existingFiles = scandir(database_path("migrations"));
+        $existingFiles = scandir($this->getPath("database/migrations/"));
         
         foreach ($existingFiles as $file) {
             if (strpos($file, $fileName) !== false) {
@@ -30,7 +30,7 @@ class Migration extends BaseGenerator implements GeneratorInterface
             }
         }
 
-        $fullFilePath = database_path("migrations\\") . $filenamePrefix . $fileName;  
+        $fullFilePath = $this->getPath("database/migrations/") . $filenamePrefix . $fileName;  
         file_put_contents($fullFilePath, $migrationTemplate);
 
         return $fullFilePath;
