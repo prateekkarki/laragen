@@ -6,8 +6,11 @@ use Prateekkarki\Laragen\Models\Module;
 
 class Seeder extends BaseGenerator implements GeneratorInterface
 {
+    protected static $initializeFlag = 0;
+
     public function generate()
     {
+
         $generatedFiles = [];
         $factoryTemplate = $this->buildTemplate('Factory', [
             '{{modelName}}'      => $this->module->getModelName(),
@@ -15,17 +18,27 @@ class Seeder extends BaseGenerator implements GeneratorInterface
             '{{dataDefinition}}' => $this->getDataDefinition(),
             '{{foreignData}}'    => $this->getForeignData()
         ]);
+
         $fullFilePath = $this->getPath("database/factories/").$this->module->getModelName()."Factory.php";
         file_put_contents($fullFilePath, $factoryTemplate);
         $generatedFiles[] = $fullFilePath;
         
-        $seederTemplate = $this->buildTemplate('Seeder', [
-            '{{modelName}}'  => $this->module->getModelName(),
-            '{{usedModels}}' => $this->getUsedModels()
-        ]);
-        $fullFilePath = $this->getPath("database/seeds/").$this->module->getModelName()."Seeder.php";
-        file_put_contents($fullFilePath, $seederTemplate);
-        $generatedFiles[] = $fullFilePath;
+        $laragenSeederFile = (self::$initializeFlag++ == 0) ? $this->initializeFile($this->getPath("database/seeds/")."LaragenSeeder.php", 'Seeder') :  $this->getPath("database/seeds/")."LaragenSeeder.php";
+
+        $this->insertIntoFile(
+            $laragenSeederFile,
+            "use Illuminate\Database\Seeder;",
+            "use App\Models\\".$this->module->getModelName().";\n",
+            false
+        );
+
+        $this->insertIntoFile(
+            $laragenSeederFile,
+            str_replace("\r", '', $this->getStub('fragments/DatabaseSeederRun')),
+            "\n".$this->getTabs(2)."factory(".$this->module->getModelName()."::class, 5)->create();"
+        );
+
+        $generatedFiles[] = $laragenSeederFile;
         
         return $generatedFiles;         
     }
@@ -89,7 +102,7 @@ class Seeder extends BaseGenerator implements GeneratorInterface
                 }
 
                 if($column != last($columns)) {
-                                    $dataDefinition .= "," . PHP_EOL;
+                    $dataDefinition .= "," . PHP_EOL;
                 }
             }
         }
@@ -109,7 +122,7 @@ class Seeder extends BaseGenerator implements GeneratorInterface
                 ]);
                 
                 if($column != last($columns)) {
-                                    $foreignData .= "," . PHP_EOL;
+                    $foreignData .= "," . PHP_EOL;
                 }
             }
         }
