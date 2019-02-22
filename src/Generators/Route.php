@@ -11,8 +11,17 @@ class Route extends BaseGenerator implements GeneratorInterface
     public function generate()
     {
         $generatedFiles = [];
-        $webRouteFile = (self::$initializeFlag++ == 0) ? $this->initializeFile($this->getPath("routes/frontend/")."web.php", "Route") :  $this->getPath("routes/frontend/")."web.php";
 
+        $routeProviderFile = (self::$initializeFlag == 0) ? $this->initializeFile($this->getPath("app/Providers/")."LaragenRouteServiceProvider.php", "RouteServiceProvider") : $this->getPath("app/Providers/")."LaragenRouteServiceProvider.php";
+
+        $this->insertIntoFile(
+            $routeProviderFile,
+            str_replace("\r", '', $this->getStub('fragments/RouteMap')),
+            "\n".$this->getStub('fragments/RouteMapCode')
+        );
+
+        $webRouteFile = (self::$initializeFlag == 0) ? $this->initializeFile($this->getPath("routes/frontend/")."web.php", "Route") :  $this->getPath("routes/frontend/")."web.php";
+        
         $this->insertIntoFile(
             $webRouteFile,
             "<?php\n",
@@ -27,7 +36,7 @@ class Route extends BaseGenerator implements GeneratorInterface
 
 		$generatedFiles[] = $webRouteFile;
 		
-        $webRouteFile = (self::$initializeFlag++ == 1) ? $this->initializeFile($this->getPath("routes/backend/")."web.php", "Route") :  $this->getPath("routes/backend/")."web.php";
+        $webRouteFile = (self::$initializeFlag == 0) ? $this->initializeFile($this->getPath("routes/backend/")."web.php", "Route") :  $this->getPath("routes/backend/")."web.php";
 
         $this->insertIntoFile(
             $webRouteFile,
@@ -43,6 +52,7 @@ class Route extends BaseGenerator implements GeneratorInterface
 
         $generatedFiles[] = $webRouteFile;
         
+        self::$initializeFlag;
         return $generatedFiles;         
     }
 }
