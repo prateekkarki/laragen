@@ -29,7 +29,12 @@ class Generate extends Command
      */
     protected $filesToPublish = [
         'css' => 'public',
-        'js' => 'public'
+        'js' => 'public',
+        'fonts' => 'public',
+        'stubs/Views/layouts/backend/app.stub' => 'resources/views/backend/layouts/app.blade.php',
+        'stubs/Views/layouts/backend/login.stub' => 'resources/views/backend/auth/login.blade.php',
+        'stubs/Controllers/backend/LoginController.stub'     => 'app/Http/Controllers/Backend/Auth/LoginController.php',
+        'stubs/Controllers/backend/DashboardController.stub' => 'app/Http/Controllers/Backend/DashboardController.php'
     ];
 
     /**
