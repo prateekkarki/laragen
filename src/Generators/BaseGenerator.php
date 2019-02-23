@@ -24,7 +24,7 @@ class BaseGenerator
 
     public function getStub($type)
     {
-        return file_get_contents(__DIR__."/../resources/stubs/".$type.".stub");
+        return str_replace("\r", '', file_get_contents(__DIR__."/../resources/stubs/".$type.".stub"));
     }
 
     public function getPath($path)
@@ -43,13 +43,18 @@ class BaseGenerator
     }
 
     public function initializeFile($fullFilePath, $stub, $initializeWithText = false) {
-
         if(file_exists($fullFilePath)){
             unlink($fullFilePath);
         }
         $seederTemplate = ($initializeWithText===false) ? $this->buildTemplate($stub) : $initializeWithText;
         file_put_contents($fullFilePath, $seederTemplate);
         return $fullFilePath;
+    }
+
+    public function initializeFiles($fileMaps = []) {
+        foreach ($fileMaps as $file => $stub) {
+            $this->initializeFile($file, $stub);
+        }
     }
 
     public function buildTemplate($stub, $replacements = [])

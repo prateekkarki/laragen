@@ -12,18 +12,24 @@ class Route extends BaseGenerator implements GeneratorInterface
     {
         $generatedFiles = [];
 
-        $routeProviderFile = (self::$initializeFlag == 0) ? $this->initializeFile($this->getPath("app/Providers/")."LaragenRouteServiceProvider.php", "RouteServiceProvider") : $this->getPath("app/Providers/")."LaragenRouteServiceProvider.php";
+        $routeProviderFile = $this->getPath("app/Providers/")."LaragenRouteServiceProvider.php";
+        $webAuthRouteFile = $this->getPath("routes/backend/")."auth.php";
+        $webRouteFile = $this->getPath("routes/frontend/")."web.php";
+        $backendWebRouteFile = $this->getPath("routes/backend/")."web.php";
 
+        $this->initializeFiles([
+            $routeProviderFile => "RouteServiceProvider",
+            $webAuthRouteFile => "Routes/Backend-auth",
+            $webRouteFile => "Route",
+            $backendWebRouteFile => "Routes/Backend-web"
+        ]);
+        
         $this->insertIntoFile(
             $routeProviderFile,
-            str_replace("\r", '', $this->getStub('fragments/RouteMap')),
+            $this->getStub('fragments/RouteMap'),
             "\n".$this->getStub('fragments/RouteMapCode')
         );
 
-        $webAuthRouteFile = (self::$initializeFlag == 0) ? $this->initializeFile($this->getPath("routes/backend/")."auth.php", "Routes/Backend-auth") :  $this->getPath("routes/backend/")."auth.php";
-
-        $webRouteFile = (self::$initializeFlag == 0) ? $this->initializeFile($this->getPath("routes/frontend/")."web.php", "Route") :  $this->getPath("routes/frontend/")."web.php";
-        
         $this->insertIntoFile(
             $webRouteFile,
             "<?php\n",
@@ -38,23 +44,20 @@ class Route extends BaseGenerator implements GeneratorInterface
 
 		$generatedFiles[] = $webRouteFile;
 		
-        $webRouteFile = (self::$initializeFlag == 0) ? $this->initializeFile($this->getPath("routes/backend/")."web.php", "Routes/Backend-web") :  $this->getPath("routes/backend/")."web.php";
-
         $this->insertIntoFile(
-            $webRouteFile,
+            $backendWebRouteFile,
             "<?php\n",
 			"use App\\Http\\Controllers\\".$this->module->getModelName()."Controller;\n"
 		);
 
         $this->insertIntoFile(
-            $webRouteFile,
+            $backendWebRouteFile,
             "/" . "* Insert your routes here */",
             "\n".$this->getTabs(1)."Route::resource('".$this->module->getModuleName()."', ".$this->module->getModelName()."Controller::class);"
         );
 
-        $generatedFiles[] = $webRouteFile;
+        $generatedFiles[] = $backendWebRouteFile;
         
-        self::$initializeFlag;
         return $generatedFiles;         
     }
 }

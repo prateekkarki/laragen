@@ -34,7 +34,7 @@ class Seeder extends BaseGenerator implements GeneratorInterface
 
         $this->insertIntoFile(
             $laragenSeederFile,
-            str_replace("\r", '', $this->getStub('fragments/DatabaseSeederRun')),
+            $this->getStub('fragments/DatabaseSeederRun'),
             "\n".$this->getTabs(2)."factory(".$this->module->getModelName()."::class, 5)->create();"
         );
 
