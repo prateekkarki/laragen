@@ -2,14 +2,17 @@
 
 namespace Prateekkarki\Laragen\Generators;
 use Prateekkarki\Laragen\Models\Module;
+use Prateekkarki\Laragen\Models\FileSystem;
 
 class BaseGenerator
 {	
     protected $module;
+    protected $fileSystem;
 
     public function __construct(Module $module)
     {
         $this->setModule($module);
+        $this->fileSystem = new FileSystem();
     }
 
     public function getModule()
@@ -24,7 +27,12 @@ class BaseGenerator
 
     public function getStub($type)
     {
-        return str_replace("\r", '', file_get_contents(__DIR__."/../resources/stubs/".$type.".stub"));
+        return $this->sanitize(file_get_contents(__DIR__."/../resources/stubs/".$type.".stub"));
+    }
+
+    public function sanitize($string)
+    {
+        return str_replace("\r", '', $string);
     }
 
     public function getPath($path)
@@ -32,7 +40,7 @@ class BaseGenerator
         $dir = base_path($path);
 
         if (!is_dir($dir))
-            mkdir($dir, 0755, true);
+            $this->fileSystem->mkdir($dir, 0755);
 
         return $dir;
     }
@@ -44,10 +52,10 @@ class BaseGenerator
 
     public function initializeFile($fullFilePath, $stub, $initializeWithText = false) {
         if(file_exists($fullFilePath)){
-            unlink($fullFilePath);
+            $this->fileSystem->remove($fullFilePath);
         }
         $seederTemplate = ($initializeWithText===false) ? $this->buildTemplate($stub) : $initializeWithText;
-        file_put_contents($fullFilePath, $seederTemplate);
+        $this->fileSystem->dumpFile($fullFilePath, $seederTemplate);
         return $fullFilePath;
     }
 
@@ -70,7 +78,7 @@ class BaseGenerator
     public function insertIntoFile($file_path, $insert_marker, $text, $after = true) {
         $contents = str_replace("\r",'', file_get_contents($file_path));
         $new_contents = ($after) ? str_replace($insert_marker, $insert_marker.$text, $contents) : str_replace($insert_marker, $text.$insert_marker, $contents); 
-        return file_put_contents($file_path, $new_contents);
+        $this->fileSystem->dumpFile($file_path, $new_contents);
     }
 
 
