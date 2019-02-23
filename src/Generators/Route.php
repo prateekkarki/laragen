@@ -20,6 +20,8 @@ class Route extends BaseGenerator implements GeneratorInterface
             "\n".$this->getStub('fragments/RouteMapCode')
         );
 
+        $webAuthRouteFile = (self::$initializeFlag == 0) ? $this->initializeFile($this->getPath("routes/backend/")."auth.php", "Routes/Backend-auth") :  $this->getPath("routes/backend/")."auth.php";
+
         $webRouteFile = (self::$initializeFlag == 0) ? $this->initializeFile($this->getPath("routes/frontend/")."web.php", "Route") :  $this->getPath("routes/frontend/")."web.php";
         
         $this->insertIntoFile(
@@ -36,7 +38,7 @@ class Route extends BaseGenerator implements GeneratorInterface
 
 		$generatedFiles[] = $webRouteFile;
 		
-        $webRouteFile = (self::$initializeFlag == 0) ? $this->initializeFile($this->getPath("routes/backend/")."web.php", "Route") :  $this->getPath("routes/backend/")."web.php";
+        $webRouteFile = (self::$initializeFlag == 0) ? $this->initializeFile($this->getPath("routes/backend/")."web.php", "Routes/Backend-web") :  $this->getPath("routes/backend/")."web.php";
 
         $this->insertIntoFile(
             $webRouteFile,
