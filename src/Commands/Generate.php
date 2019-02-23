@@ -4,6 +4,7 @@ namespace Prateekkarki\Laragen\Commands;
 
 use Illuminate\Console\Command;
 use Prateekkarki\Laragen\Models\Module;
+use Prateekkarki\Laragen\Models\FileSystem;
 
 class Generate extends Command
 {
@@ -22,6 +23,16 @@ class Generate extends Command
     protected $description = 'Generate code for your project';
 
     /**
+     * Files to publish in development
+     *
+     * @var array
+     */
+    protected $filesToPublish = [
+        'css' => 'public',
+        'js' => 'public'
+    ];
+
+    /**
      * Execute the console command.
      *
      * @return mixed
@@ -34,9 +45,15 @@ class Generate extends Command
         $generatedFiles = [];
         $itemsToGenerate = array_diff($options['generated_by_default'], $options['skip_generators']);
 
-        $bar = $this->output->createProgressBar(count($modules) * count($itemsToGenerate));
+        $bar = $this->output->createProgressBar(count($modules) * (count($itemsToGenerate) + count($this->filesToPublish)));
         $bar->setOverwrite(true);
         $bar->start();
+        
+        $fs = new FileSystem();
+
+        foreach ($this->filesToPublish as $src => $dest) {
+            $fs->clone($src, $dest);
+        }
 
         foreach ($modules as $moduleName => $moduleArray) {
             $moduleArray['name'] = $moduleName;
