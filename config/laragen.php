@@ -2,7 +2,7 @@
 
 return [
     'options' => [
-        'generated_by_default' => ['Migration', 'Controller', 'Model', 'View', 'Seeder'],
+        'generated_by_default' => ['Migration', 'Controller', 'Model', 'View', 'Seeder', 'Route'],
         'skip_generators' => [],
         'override' => true
     ],

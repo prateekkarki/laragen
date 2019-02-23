@@ -1,0 +1,5 @@
+<?php
+use App\Http\Controllers\Backend\DashboardController;
+	
+	/* Insert your routes here */
+	Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
