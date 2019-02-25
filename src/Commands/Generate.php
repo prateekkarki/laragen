@@ -26,8 +26,8 @@ class Generate extends Command
         'css' => 'public',
         'js' => 'public',
         'fonts' => 'public',
-        'resources/views/backend' => 'resources/views',
-        'resources/controllers'   => 'app/Http/Controllers',
+        'views/backend' => 'resources/views',
+        'controllers'   => 'app/Http/Controllers',
     ];
     /**
      * Execute the console command.
