@@ -43,7 +43,6 @@ class Generate extends Command
         $bar = $this->output->createProgressBar(count($modules) * (count($itemsToGenerate) + count($this->filesToPublish)));
         $bar->setOverwrite(true);
         $bar->start();
-        
         $fs = new FileSystem();
         foreach ($this->filesToPublish as $src => $dest) {
             $fs->clone($src, $dest);
@@ -54,10 +53,9 @@ class Generate extends Command
             $module = new Module($moduleArray);
             
             foreach ($itemsToGenerate as $generator) {
-                $generator = "\\Prateekkarki\\Laragen\\Generators\\{$item}";
                 $itemGenerator = new $generator($module);
                 $returnedFiles = $itemGenerator->generate();
-                
+
                 if (!is_array($returnedFiles)) 
                     $generatedFiles[] = $returnedFiles;
                 else
@@ -78,7 +76,7 @@ class Generate extends Command
     protected function configToGenerators($array){
         $generators = [];
         foreach ($array as $ns => $items) {
-            foreach ($generators as $item) {
+            foreach ($items as $item) {
                 $generators[] = "\\Prateekkarki\\Laragen\\Generators\\".$ns."\\".$item;
             }
         }
