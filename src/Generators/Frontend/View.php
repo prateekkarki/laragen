@@ -1,7 +1,8 @@
 <?php
+namespace Prateekkarki\Laragen\Generators\Frontend;
 
-namespace Prateekkarki\Laragen\Generators;
-use Prateekkarki\Laragen\Models\Module;
+use Prateekkarki\Laragen\Generators\BaseGenerator;
+use Prateekkarki\Laragen\Generators\GeneratorInterface;
 
 class View extends BaseGenerator implements GeneratorInterface
 {
