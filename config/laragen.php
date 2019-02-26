@@ -12,6 +12,9 @@ return [
             'Frontend' => [
                 'Controller',
                 'View'
+            ],
+            'Backend' => [
+                'Controller'
             ]
         ],
         'skip_generators' => [],
