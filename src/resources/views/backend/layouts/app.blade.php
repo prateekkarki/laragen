@@ -15,7 +15,7 @@
     @stack('after-styles')
 </head>
 
-<body class="app @yield('body_classes')">
+<body class="app sidebar-lg-show @yield('body_classes')">
     
     @yield('layout')
 
