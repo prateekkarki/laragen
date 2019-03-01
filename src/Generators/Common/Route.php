@@ -13,14 +13,14 @@ class Route extends BaseGenerator implements GeneratorInterface
         $generatedFiles = [];
 
         $routeProviderFile = $this->getPath("app/Providers/")."LaragenRouteServiceProvider.php";
-        $webAuthRouteFile = $this->getPath("routes/backend/")."auth.php";
+        $backendAuthRouteFile = $this->getPath("routes/backend/")."auth.php";
         $webRouteFile = $this->getPath("routes/frontend/")."web.php";
         $backendWebRouteFile = $this->getPath("routes/backend/")."web.php";
 
         if(self::$initializeFlag++ == 0){
             $this->initializeFiles([
-                $webAuthRouteFile => "Routes/Backend-auth",
                 $webRouteFile => "Route",
+                $backendAuthRouteFile => "Routes/Backend-auth",
                 $backendWebRouteFile => "Routes/Backend-web"
             ]);
         }
@@ -52,7 +52,7 @@ class Route extends BaseGenerator implements GeneratorInterface
         $this->insertIntoFile(
             $backendWebRouteFile,
             "<?php\n",
-			"use App\\Http\\Controllers\\".$this->module->getModelName()."Controller;\n"
+			"use App\\Http\\Controllers\\Backend\\".$this->module->getModelName()."Controller;\n"
 		);
 
         $this->insertIntoFile(

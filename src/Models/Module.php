@@ -29,6 +29,19 @@ class Module
         return $this->data;
     }
     
+    public function getBackendColumnTitles()
+    {
+        $data = [];
+        foreach ($this->data as $column => $optionString) {
+            $optionArray = explode(':', $optionString);
+            if (in_array($optionArray[0], ['string', 'int'])&&in_array($column, ['title', 'firstname', 'lastname', 'name'])) {
+                $data[] = ucwords($column);
+            }
+        }
+        return array_merge($data, ['Last Updated', 'Actions']);
+    }
+    
+    
     public function getNativeColumns()
     {
         $data = [];

@@ -11,7 +11,7 @@ class Controller extends BaseGenerator implements GeneratorInterface
         $controllerTemplate = $this->buildTemplate('Backend/Controller', [
             '{{modelName}}'                  => $this->module->getModelName(),
             '{{moduleName}}'                 => $this->module->getModuleName(),
-            '{{modelNameLowerCase}}' => strtolower($this->module->getModelName())
+            '{{modelNameLowercase}}' => strtolower($this->module->getModelName())
         ]);
         
         $fullFilePath = $this->getPath("app/Http/Controllers/Backend/").$this->module->getModelName()."Controller".".php";

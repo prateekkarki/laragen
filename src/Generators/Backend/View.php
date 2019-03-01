@@ -40,7 +40,12 @@ class View extends BaseGenerator implements GeneratorInterface
 	}
 
 	public function getHeadings(){
-		return "";
+        $columns = $this->module->getBackendColumnTitles();
+        $headings= "";
+        foreach ($columns as $column) {
+            $headings .= "<th>".$column."</th>";
+        }
+		return $headings;
 	}
 
 	public function getModelData(){
