@@ -1,0 +1,53 @@
+<ul class="nav">
+	<li class="nav-title">
+		General
+	</li>
+	<li class="nav-item">
+		<a class="nav-link " href="{{ route('admin.dashboard') }}">
+			<i class="nav-icon icon-speedometer"></i> Dashboard
+		</a>
+	</li>
+
+	<li class="nav-title">
+		System 
+	</li>
+
+	{{-- Main Menu --}}
+	<li class="nav-item">
+		<a class="nav-link" href="{{ route('admin.posts.index') }}">
+			Posts
+		</a>
+	</li>
+
+	<li class="nav-item">
+		<a class="nav-link" href="{{ route('admin.categories.index') }}">
+			Categories
+		</a>
+	</li>
+
+	<li class="nav-item">
+		<a class="nav-link" href="{{ route('admin.tags.index') }}">
+			Tags
+		</a>
+	</li>
+			
+	<li class="divider"></li>
+
+	<li class="nav-item nav-dropdown ">
+		<a class="nav-link nav-dropdown-toggle " href="#">
+			<i class="nav-icon icon-list"></i> Log Viewer</a>
+
+		<ul class="nav-dropdown-items">
+			<li class="nav-item">
+				<a class="nav-link " href="admin/log-viewer">
+					Dashboard
+				</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link " href="admin/log-viewer/logs">
+					Logs
+				</a>
+			</li>
+		</ul>
+	</li>
+</ul>

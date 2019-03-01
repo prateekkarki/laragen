@@ -15,7 +15,8 @@ return [
             ],
             'Backend' => [
                 'Controller',
-                'Request'
+                'Request',
+                'View'
             ]
         ],
         'skip_generators' => [],
