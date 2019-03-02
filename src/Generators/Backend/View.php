@@ -35,6 +35,8 @@ class View extends BaseGenerator implements GeneratorInterface
 			""
 		);
 
+        $generatedFiles = array_merge($generatedFiles, $this->formGenerateCreate());
+
         return $generatedFiles;
 	}
 
@@ -46,4 +48,58 @@ class View extends BaseGenerator implements GeneratorInterface
         }
 		return $headings;
 	}
+
+    public function formGenerateCreate()
+    {
+        $keyToFile = [
+            'int' =>'integer',
+            'string' =>'string',
+            'bool' =>'boolean',
+            'text' =>'text',
+            'date' =>'date',
+            'datetime' =>'datetime'
+        ];
+
+        $viewTemplate = '';
+
+        foreach ($this->module->getNativeData() as $columns) {
+            foreach($columns as $column => $type){
+                $viewTemplate .= $this->buildTemplate('backend/views/formelements/'.$keyToFile[$type], [
+                    '{{columnName}}'                 => $column,
+                    '{{modelNameLowercase}}'         => strtolower($this->module->getModelName()),
+                ]);
+            }
+        }
+
+        $createTemplate = $this->buildTemplate('backend/views/create', [
+            '{{moduleName}}'                 => $this->module->getModuleName(),
+        ]);
+
+        $editTemplate = $this->buildTemplate('backend/views/edit', [
+            '{{moduleName}}'                 => $this->module->getModuleName(),
+            '{{modelNameLowercase}}'         => strtolower($this->module->getModelName())
+        ]);
+
+        $formTemplate = $this->buildTemplate('backend/views/formelements/_form', [
+            '{{createElements}}'             => $viewTemplate,
+        ]);
+        
+        $editFilePath = $this->getPath("resources/views/backend/" . $this->module->getModuleName()) . "/edit.blade.php";
+        file_put_contents($editFilePath, $editTemplate);
+        
+        
+        $createFilePath = $this->getPath("resources/views/backend/" . $this->module->getModuleName()) . "/create.blade.php";
+        file_put_contents($createFilePath, $createTemplate);
+        
+        $formFilePath = $this->getPath("resources/views/backend/" . $this->module->getModuleName()) . "/_form.blade.php";
+        file_put_contents($formFilePath, $formTemplate);
+
+
+        $generatedFiles[] =  $createFilePath;
+        $generatedFiles[] =  $formFilePath;
+        $generatedFiles[] =  $editFilePath;
+
+        return $generatedFiles;
+
+    }
 }

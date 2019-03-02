@@ -1,4 +1,4 @@
-@extends('backend.layouts.layout')
+@extends('backend.layouts.main')
 
 @section('content')
     <h1>tryout</h1>
