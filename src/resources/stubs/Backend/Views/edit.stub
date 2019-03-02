@@ -3,8 +3,9 @@
 @section('content')
     <h1>Update {{moduleName}}</h1>
 
-    <form action="{{ route('backend.{{moduleName}}.update', ${{modelNameLowercase}}) }}" method="PUT">
+    <form action="{{ route('backend.{{moduleName}}.update', ${{modelNameLowercase}}) }}" method="POST">
     	@csrf
+    	@method('PUT')
 		@include('backend.{{moduleName}}._form')
 		<button class="btn btn-primary" type="submit">
 			<i class="fa fa-save"></i> Save
