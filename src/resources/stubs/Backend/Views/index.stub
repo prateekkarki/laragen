@@ -33,11 +33,14 @@
                                 <td>{{ ${{modelNameLowercase}}->title }}</td>
                                 <td>{{ ${{modelNameLowercase}}->updated_at }}</td>
                                 <td>
+                                    <a href="{{ route('{{moduleName}}.show', ${{modelNameLowercase}}) }}" target="_blank" class="btn btn-info">
+                                        <i class="icon-eye" aria-hidden="true"></i>
+                                    </a>
                                     <a href="{{ route('backend.{{moduleName}}.edit', ${{modelNameLowercase}}) }}" class="btn btn-info">
-                                        <i class="fa fa-pencil-alt" aria-hidden="true"></i> Edit
+                                        <i class="icon-pencil" aria-hidden="true"></i>
                                     </a>
                                     <button class="btn btn-danger">
-                                        <i class="fa fa-trash" aria-hidden="true"></i> Delete
+                                        <i class="icon-trash" aria-hidden="true"></i>
                                     </button>
                                 </td>
                             </tr>
