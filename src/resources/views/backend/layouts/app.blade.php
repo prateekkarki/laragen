@@ -11,6 +11,7 @@
 
     @stack('before-styles')
     <link href="{{ asset('css/coreui.min.css') }}" rel="stylesheet" type="text/css" media="all" />
+    <link href="{{ asset('css/fa-all.min.css') }}" rel="stylesheet" type="text/css" media="all" />
     <link href="{{ asset('css/simple-line-icons.css') }}" rel="stylesheet" type="text/css" media="all" />
     @stack('after-styles')
 </head>

@@ -33,15 +33,21 @@
                                 <td>{{ ${{modelNameLowercase}}->title }}</td>
                                 <td>{{ ${{modelNameLowercase}}->updated_at }}</td>
                                 <td>
-                                    <a href="{{ route('{{moduleName}}.show', ${{modelNameLowercase}}) }}" target="_blank" class="btn btn-info">
-                                        <i class="icon-eye" aria-hidden="true"></i>
-                                    </a>
-                                    <a href="{{ route('backend.{{moduleName}}.edit', ${{modelNameLowercase}}) }}" class="btn btn-info">
-                                        <i class="icon-pencil" aria-hidden="true"></i>
-                                    </a>
-                                    <button class="btn btn-danger">
-                                        <i class="icon-trash" aria-hidden="true"></i>
-                                    </button>
+                                    <div class="btn-group" role="group" aria-label="Actions">
+                                        <a href="{{ route('{{moduleName}}.show', ${{modelNameLowercase}}) }}" target="_blank" class="btn btn-info">
+                                            <i class="fa fa-eye" aria-hidden="true"></i>
+                                        </a>
+                                        <a href="{{ route('backend.{{moduleName}}.edit', ${{modelNameLowercase}}) }}" class="btn btn-primary">
+                                            <i class="fa fa-edit" aria-hidden="true"></i>
+                                        </a>
+                                        <form action="{{ route('backend.posts.destroy', ${{modelNameLowercase}}) }}" method="post" class="btn-group">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="btn btn-danger" type="submit">
+                                                <i class="fa fa-trash" aria-hidden="true"></i>
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach

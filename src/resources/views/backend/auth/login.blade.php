@@ -21,7 +21,7 @@ flex-row align-items-center
 											<i class="icon-user"></i>
 										</span>
 									</div>
-									<input class="form-control" type="text" placeholder="Username">
+									<input class="form-control" type="text" name="email" placeholder="Email">
 								</div>
 								<div class="input-group mb-4">
 									<div class="input-group-prepend">
@@ -29,7 +29,7 @@ flex-row align-items-center
 											<i class="icon-lock"></i>
 										</span>
 									</div>
-									<input class="form-control" type="password" placeholder="Password">
+									<input class="form-control" type="password" name="password" placeholder="Password">
 								</div>
 								<div class="row">
 									<div class="col-6">

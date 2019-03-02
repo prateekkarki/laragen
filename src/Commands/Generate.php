@@ -23,9 +23,7 @@ class Generate extends Command
      * @var array
      */
     protected $filesToPublish = [
-        'css' => 'public',
-        'js' => 'public',
-        'fonts' => 'public',
+        'public' => '/',
         'views/backend' => 'resources/views',
         'Controllers'   => 'app/Http',
     ];
