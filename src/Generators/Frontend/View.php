@@ -12,7 +12,7 @@ class View extends BaseGenerator implements GeneratorInterface
 
         $generatedFiles = [];
         foreach ($viewsToBeGenerated as $view) {
-            $viewTemplate = $this->buildTemplate('Views/' . $view, [
+            $viewTemplate = $this->buildTemplate('frontend/views/' . $view, [
                 '{{modelNameSingularLowercase}}' => $this->module->getModelNameSingularLowercase(),
                 '{{modelNamePlural}}'            => $this->module->getModelNamePlural(),
                 '{{moduleName}}'                 => $this->module->getModuleName()
@@ -26,7 +26,7 @@ class View extends BaseGenerator implements GeneratorInterface
         $layoutPath = $this->getPath("resources/views/laragen/layouts/") . "app.blade.php";
         if(!file_exists($layoutPath)){
 
-            $viewTemplate = $this->buildTemplate('Views/layouts/app', []);
+            $viewTemplate = $this->buildTemplate('views/layouts/app', []);
             file_put_contents($layoutPath, $viewTemplate);
             $generatedFiles[] =  $layoutPath;
         }

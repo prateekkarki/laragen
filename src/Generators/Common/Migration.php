@@ -11,7 +11,7 @@ class Migration extends BaseGenerator implements GeneratorInterface
 
     public function generate()
     {
-        $migrationTemplate = $this->buildTemplate('Migration', [
+        $migrationTemplate = $this->buildTemplate('common/migration', [
             '{{modelName}}'         => $this->module->getModelName(),
             '{{modelNamePlural}}'   => $this->module->getModelNamePlural(),
             '{{moduleName}}'        => $this->module->getModuleName(),

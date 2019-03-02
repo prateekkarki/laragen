@@ -13,7 +13,7 @@ class View extends BaseGenerator implements GeneratorInterface
 		$generatedFiles = [];
 		
         foreach ($viewsToBeGenerated as $view) {
-            $viewTemplate = $this->buildTemplate('Backend/Views/' . $view, [
+            $viewTemplate = $this->buildTemplate('backend/views/' . $view, [
 				'{{headings}}' 			 => $this->getHeadings(),
                 '{{modelNameLowercase}}' => str_singular($this->module->getModuleName()),
                 '{{moduleName}}'         => $this->module->getModuleName()
@@ -26,7 +26,7 @@ class View extends BaseGenerator implements GeneratorInterface
 
         $mainMenuFile = $this->getPath("resources/views/backend/includes/")."main_menu.blade.php";
         $this->initializeFiles([
-            $mainMenuFile => "Backend/Views/includes/main_menu",
+            $mainMenuFile => "backend/views/includes/main_menu",
         ]);
 
         $this->insertIntoFile(
