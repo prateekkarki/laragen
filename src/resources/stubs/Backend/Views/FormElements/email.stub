@@ -1,0 +1,6 @@
+	<div class="form-group row">
+	  <label class="col-md-3 col-form-label" for="exampleInputEmail2">Email</label>
+	  <div class="col-md-9">
+	    <input class="form-control" id="exampleInputEmail2" type="email" placeholder="jane.doe@example.com">
+	  </div>
+	</div>	
