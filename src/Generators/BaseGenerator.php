@@ -27,7 +27,7 @@ class BaseGenerator
 
     public function getStub($type)
     {
-        return $this->sanitize(file_get_contents(__DIR__."/../resources/stubs/".$type.".stub"));
+        return $this->sanitize(file_get_contents(realpath(__DIR__."/../resources/stubs/")."\\".$type.".stub"));
     }
 
     public function sanitize($string)

@@ -1,6 +1,7 @@
 		Route::middleware('web')
 				->namespace($this->namespace)
 				->prefix('admin')
+				->name('backend.')
 				->group(base_path('routes/backend/web.php'));
 
 		Route::middleware('web')

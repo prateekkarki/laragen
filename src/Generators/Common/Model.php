@@ -1,8 +1,8 @@
 <?php
+namespace Prateekkarki\Laragen\Generators\Common;
 
-namespace Prateekkarki\Laragen\Generators;
-
-use Prateekkarki\Laragen\Models\Module;
+use Prateekkarki\Laragen\Generators\BaseGenerator;
+use Prateekkarki\Laragen\Generators\GeneratorInterface;
 
 class Model extends BaseGenerator implements GeneratorInterface
 {

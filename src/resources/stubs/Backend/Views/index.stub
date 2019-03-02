@@ -1,0 +1,60 @@
+@extends('backend.layouts.layout')
+
+@section('title', ' | ' . __('labels.backend.access.{{moduleName}}.management'))
+
+@section('content')
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-sm-5">
+                <h4 class="card-title mb-0">
+                    
+                </h4>
+            </div><!--col-->
+
+            <div class="col-sm-7">
+                
+            </div><!--col-->
+        </div><!--row-->
+
+        <div class="row mt-4">
+            <div class="col">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            {{headings}}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach(${{moduleName}} as $key => ${{modelNameLowercase}})
+                            <tr>
+                                <td>{{ $key+1 }}</td>
+                                <td>{{ ${{modelNameLowercase}}->title }}</td>
+                                <td>{{ ${{modelNameLowercase}}->updated_at }}</td>
+                                <td>
+                                    <a href="{{ route('backend.{{moduleName}}.edit', ${{modelNameLowercase}}) }}" class="btn btn-info">
+                                        <i class="fa fa-pencil-alt" aria-hidden="true"></i> Edit
+                                    </a>
+                                    <button class="btn btn-danger">
+                                        <i class="fa fa-trash" aria-hidden="true"></i> Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                    {!! ${{moduleName}}->links() !!}
+                </div>
+            </div><!--col-->
+        </div><!--row-->
+        <div class="row">
+            <div class="col-7">
+                <div class="float-left">
+                    {!! ${{moduleName}}->total() !!}
+                </div>
+            </div>
+        </div><!--row-->
+    </div><!--card-body-->
+</div><!--card-->
+@endsection

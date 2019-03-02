@@ -1,7 +1,5 @@
-<div class="sidebar">
+<div class="sidebar ps ps--active-y">
     <nav class="sidebar-nav">
-        
+        @include('backend.includes.main_menu')
     </nav>
-
-    <button class="sidebar-minimizer brand-minimizer" type="button"></button>
 </div><!--sidebar-->
