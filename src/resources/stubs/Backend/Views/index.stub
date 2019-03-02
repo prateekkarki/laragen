@@ -27,11 +27,24 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach(${{moduleName}} as ${{modelNameLowercase}})
-                            {{modelData}}
+                        @foreach(${{moduleName}} as $key => ${{modelNameLowercase}})
+                            <tr>
+                                <td>{{ $key+1 }}</td>
+                                <td>{{ ${{modelNameLowercase}}->title }}</td>
+                                <td>{{ ${{modelNameLowercase}}->updated_at }}</td>
+                                <td>
+                                    <a href="{{ route('backend.{{moduleName}}.edit', ${{modelNameLowercase}}) }}" class="btn btn-info">
+                                        <i class="fa fa-pencil-alt" aria-hidden="true"></i> Edit
+                                    </a>
+                                    <button class="btn btn-danger">
+                                        <i class="fa fa-trash" aria-hidden="true"></i> Delete
+                                    </button>
+                                </td>
+                            </tr>
                         @endforeach
                         </tbody>
                     </table>
+                    {!! ${{moduleName}}->links() !!}
                 </div>
             </div><!--col-->
         </div><!--row-->

@@ -31,7 +31,7 @@ class Module
     
     public function getBackendColumnTitles()
     {
-        $data = [];
+        $data = ['S.N.'];
         foreach ($this->data as $column => $optionString) {
             $optionArray = explode(':', $optionString);
             if (in_array($optionArray[0], ['string', 'int'])&&in_array($column, ['title', 'firstname', 'lastname', 'name'])) {

@@ -15,7 +15,6 @@ class View extends BaseGenerator implements GeneratorInterface
         foreach ($viewsToBeGenerated as $view) {
             $viewTemplate = $this->buildTemplate('Backend/Views/' . $view, [
 				'{{headings}}' 			 => $this->getHeadings(),
-				'{{modelData}}' 		 => $this->getModelData(),
                 '{{modelNameLowercase}}' => str_singular($this->module->getModuleName()),
                 '{{moduleName}}'         => $this->module->getModuleName()
             ]);
@@ -47,10 +46,4 @@ class View extends BaseGenerator implements GeneratorInterface
         }
 		return $headings;
 	}
-
-	public function getModelData(){
-		return "";
-	}
-
-
 }
