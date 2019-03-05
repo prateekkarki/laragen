@@ -2,6 +2,9 @@
 namespace Prateekkarki\Laragen;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Foundation\AliasLoader;
+use Intervention\Image\ImageServiceProvider;
+use Intervention\Image\Facades\Image;
 use Prateekkarki\Laragen\Commands\Generate;
 use Artisan;
 
@@ -29,6 +32,10 @@ class LaragenServiceProvider extends ServiceProvider
             __DIR__.'/../config/laragen.php',
             'laragen'
         );
+
+        // Register Intervention Provider and Facade
+		$this->app->register(ImageServiceProvider::class);
+		AliasLoader::getInstance()->alias('Image', Image::class);
 
         $this->app->bind('command.laragen:make', Generate::class);
 
