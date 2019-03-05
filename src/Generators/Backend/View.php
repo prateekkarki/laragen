@@ -5,9 +5,12 @@ use Prateekkarki\Laragen\Generators\BaseGenerator;
 use Prateekkarki\Laragen\Generators\GeneratorInterface;
 
 class View extends BaseGenerator implements GeneratorInterface
-{
+{    
+    protected static $initializeFlag = 0;
+
     public function generate()
     {
+        
 		$viewsToBeGenerated = ['index']; // To be generated dynamically
 
 		$generatedFiles = [];
@@ -25,9 +28,12 @@ class View extends BaseGenerator implements GeneratorInterface
         }
 
         $mainMenuFile = $this->getPath("resources/views/backend/includes/")."main_menu.blade.php";
-        $this->initializeFiles([
-            $mainMenuFile => "backend/views/includes/main_menu",
-        ]);
+
+        if(self::$initializeFlag++ == 0){
+            $this->initializeFiles([
+                $mainMenuFile => "backend/views/includes/main_menu",
+            ]);
+        }
 
         $this->insertIntoFile(
             $mainMenuFile,
