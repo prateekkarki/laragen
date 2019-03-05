@@ -31,10 +31,9 @@ class View extends BaseGenerator implements GeneratorInterface
 
         $this->insertIntoFile(
             $mainMenuFile,
-            "{{-- Main Menu --}}",
-			""
+            '{{-- Main Menu --}}',
+			"\n".'<li class="nav-item"><a class="nav-link" href="{{ route("backend.'.$this->module->getModuleName().'.index") }}">'.str_plural($this->module->getModelName()).'</a></li>'
 		);
-
         return $generatedFiles;
 	}
 
