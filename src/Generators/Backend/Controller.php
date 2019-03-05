@@ -8,7 +8,7 @@ class Controller extends BaseGenerator implements GeneratorInterface
 {
     public function generate()
     {
-        $controllerTemplate = $this->buildTemplate('Backend/Controller', [
+        $controllerTemplate = $this->buildTemplate('backend/Controller', [
             '{{modelName}}'                  => $this->module->getModelName(),
             '{{moduleName}}'                 => $this->module->getModuleName(),
             '{{modelNameLowercase}}' => strtolower($this->module->getModelName())

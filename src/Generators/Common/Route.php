@@ -20,8 +20,8 @@ class Route extends BaseGenerator implements GeneratorInterface
         if(self::$initializeFlag++ == 0){
             $this->initializeFiles([
                 $webRouteFile => "Route",
-                $backendAuthRouteFile => "Routes/Backend-auth",
-                $backendWebRouteFile => "Routes/Backend-web"
+                $backendAuthRouteFile => "backend/routes/auth",
+                $backendWebRouteFile => "backend/routes/web"
             ]);
         }
         

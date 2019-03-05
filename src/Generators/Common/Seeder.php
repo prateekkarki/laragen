@@ -12,7 +12,7 @@ class Seeder extends BaseGenerator implements GeneratorInterface
     {
 
         $generatedFiles = [];
-        $factoryTemplate = $this->buildTemplate('Factory', [
+        $factoryTemplate = $this->buildTemplate('common/Factories/Factory', [
             '{{modelName}}'      => $this->module->getModelName(),
             '{{usedModels}}'     => $this->getUsedModels(),
             '{{dataDefinition}}' => $this->getDataDefinition(),
@@ -23,7 +23,7 @@ class Seeder extends BaseGenerator implements GeneratorInterface
         file_put_contents($fullFilePath, $factoryTemplate);
         $generatedFiles[] = $fullFilePath;
         
-        $laragenSeederFile = (self::$initializeFlag++ == 0) ? $this->initializeFile($this->getPath("database/seeds/")."LaragenSeeder.php", 'Seeder') :  $this->getPath("database/seeds/")."LaragenSeeder.php";
+        $laragenSeederFile = (self::$initializeFlag++ == 0) ? $this->initializeFile($this->getPath("database/seeds/")."LaragenSeeder.php", 'common/Seeder') :  $this->getPath("database/seeds/")."LaragenSeeder.php";
 
         $this->insertIntoFile(
             $laragenSeederFile,
@@ -116,7 +116,7 @@ class Seeder extends BaseGenerator implements GeneratorInterface
 
         foreach ($columns as $parents) {
             foreach ($parents as $column => $parent) {
-                $foreignData .= $this->buildTemplate('Factory-parent', [
+                $foreignData .= $this->buildTemplate('common/Factories/fragments/parent', [
                     '{{parent}}'      => str_singular($parent),
                     '{{parentModel}}' => ucfirst(camel_case(str_singular($parent)))
                 ]);

@@ -8,7 +8,7 @@ class Model extends BaseGenerator implements GeneratorInterface
 {
     public function generate()
     {
-        $modelTemplate = $this->buildTemplate('Model', [
+        $modelTemplate = $this->buildTemplate('common/Models/Model', [
             '{{modelName}}'       => $this->module->getModelName(),
             '{{massAssignables}}' => $this->getMassAssignables(),
             '{{foreignMethods}}'  => $this->getForeignMethods()
@@ -30,7 +30,7 @@ class Model extends BaseGenerator implements GeneratorInterface
 
         foreach ($this->module->getForeignColumns('parent') as $parents) {
             foreach ($parents as $column => $parent) {
-                $foreignMethods .= $this->buildTemplate('Model-parent', [
+                $foreignMethods .= $this->buildTemplate('common/Models/fragments/parent', [
                     '{{parent}}'      => str_singular($parent),
                     '{{columnName}}'  => str_singular($column),
                     '{{parentModel}}' => ($parent == 'users' && class_exists('\\App\\User')) ? "\\App\\User" : ucfirst(camel_case(str_singular($parent)))

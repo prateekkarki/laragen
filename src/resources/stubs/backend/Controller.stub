@@ -6,7 +6,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\{{modelName}}Request;
+use App\Http\Requests\Backend\{{modelName}}Request;
 use App\Models\{{modelName}};
 
 /**
@@ -49,7 +49,7 @@ class {{modelName}}Controller extends Controller
      */
     public function store({{modelName}}Request $request): RedirectResponse
     {
-        ${{modelNameLowercase}} = {{modelName}}::create($request);
+        ${{modelNameLowercase}} = {{modelName}}::create($request->all());
 
         return redirect()->route('backend.{{moduleName}}.edit', ${{modelNameLowercase}})->withSuccess(__('{{moduleName}}.created'));
     }
@@ -59,7 +59,7 @@ class {{modelName}}Controller extends Controller
      */
     public function update({{modelName}}Request $request, {{modelName}} ${{modelNameLowercase}}): RedirectResponse
     {
-        ${{modelNameLowercase}}->update($request);
+        ${{modelNameLowercase}}->update($request->all());
 
         return redirect()->route('backend.{{moduleName}}.edit', ${{modelNameLowercase}})->withSuccess(__('{{moduleName}}.updated'));
     }

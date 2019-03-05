@@ -1,0 +1,17 @@
+<div class="form-group row">
+  <label class="col-md-3 col-form-label">Radios</label>
+  <div class="col-md-9 col-form-label">
+    <div class="form-check">
+      <input class="form-check-input" id="radio1" type="radio" value="radio1" name="radios">
+      <label class="form-check-label" for="radio1">Option 1</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" id="radio2" type="radio" value="radio2" name="radios">
+      <label class="form-check-label" for="radio2">Option 2</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" id="radio3" type="radio" value="radio2" name="radios">
+      <label class="form-check-label" for="radio3">Option 3</label>
+    </div>
+  </div>
+</div>

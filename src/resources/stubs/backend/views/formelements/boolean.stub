@@ -1,0 +1,9 @@
+<div class="form-group row">
+  <label class="col-md-3 col-form-label" for="select1">Select</label>
+  <div class="col-md-9">
+    <select class="form-control" id="select1" name="select1">
+      <option value="0">Please select</option>
+      <option value="1">Option #1</option>
+    </select>
+  </div>
+</div>
