@@ -8,15 +8,13 @@ class Module
 
     protected $data;
 
-    protected $images;
-
     protected $name;
 
-    public function __construct($module)
+    public function __construct($moduleName, $moduleData)
     {
-        $this->module = (object) $module;
-        $this->data   = $this->module->data;
-        $this->name   = $this->module->name;
+        $this->module = (object) $moduleData;
+        $this->data   = $moduleData;
+        $this->name   = $moduleName;
     }
 
     public function getName()
@@ -100,6 +98,6 @@ class Module
 
     public function getModelNameSingularLowercase()
     {
-        return str_singular($this->name);
+        return strtolower(str_singular($this->name));
     }
 }

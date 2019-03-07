@@ -16,7 +16,8 @@ class LaragenServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__.'/../config/laragen.php' => config_path('laragen.php')
+            __DIR__.'/../config/options.php' => config_path('laragen/options.php'),
+            __DIR__.'/../config/modules.php' => config_path('laragen/modules.php')
         ], 'config');
 
         Artisan::call('vendor:publish', [
@@ -28,11 +29,6 @@ class LaragenServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->mergeConfigFrom(
-            __DIR__.'/../config/laragen.php',
-            'laragen'
-        );
-
         // Register Intervention Provider and Facade
 		$this->app->register(ImageServiceProvider::class);
 		AliasLoader::getInstance()->alias('Image', Image::class);

@@ -19,23 +19,47 @@ class DataOption
     protected $column;
 
     /**
+     * List of all types of data.
+     *
+     * @var array
+     */
+    public static $types = [
+        'integer',
+        'string',
+        'image',
+        'file',
+        'boolean',
+        'text',
+        'date',
+        'datetime'
+    ];
+
+    public static $specialTypes = [
+        'parent',
+        'related'
+    ];
+
+    /**
      * Array of data type options
      *
      * @var array
      */
     protected $optionArray;
 
+    
     /**
      * Key to type conversion array.
      *
      * @var array
      */
     protected $keyToType = [
-        'int' =>'integer',
+        'integer' =>'integer',
         'string' =>'string',
-        'bool' =>'boolean',
+        'image' =>'string',
+        'file' =>'string',
+        'boolean' =>'boolean',
         'text' =>'text',
-        'date' =>'datetime',
+        'date' =>'date',
         'datetime' =>'datetime'
     ];
 
@@ -43,7 +67,12 @@ class DataOption
     {
         $this->column = $columnName;
         $this->size = false;
-        $this->optionArray = explode(':', $optionString);
+        $this->optionArray = explode('|', $optionString);
+        
+        $typePieces = array_shift($this->optionArray);
+        $type = explode(':', $typePieces);
+        $this->dataType = is_array($type) ? $type[0] : $type;
+        $this->typeOption = is_array($type)&&count($type)>=2 ? $type[1] : false;
     }
 
     public function getSchema()
@@ -56,7 +85,7 @@ class DataOption
                 if (is_numeric($option) && $option <= 2048) $this->hasSize((int) $option);
             }
 
-            $schema = '$table->'.$this->getType()."('{$this->column}'";
+            $schema = '$table->'.$this->getColumnType()."('{$this->column}'";
             $schema .= $this->hasSize() ? ", {$this->getSize()})" : ")";
             $schema .= $this->isUnique() ? "->unique()" : "";
             $schema .= ";";
@@ -64,8 +93,8 @@ class DataOption
         return $schema;
     }
 
-    protected function getType() {
-        return $this->keyToType[array_shift($this->optionArray)];
+    protected function getColumnType() {
+        return $this->keyToType[$this->dataType];
     }
 
     protected function getSize() {
@@ -103,7 +132,7 @@ class DataOption
 
     protected function processParent() {
         $schema = "";
-        $parent = array_pop($this->optionArray);
+        $parent = $this->typeOption;
         $schema .= "\$table->integer('".str_singular($parent)."_id')->unsigned()->nullable();";
         $schema .= PHP_EOL.$this->getTabs(3);
         $schema .= "\$table->foreign('".str_singular($parent)."_id')->references('id')->on('$parent')->onDelete('set null');";
@@ -115,15 +144,8 @@ class DataOption
     }
 
     protected function hasSpecialSchema() {
-        if ($this->optionArray[0] == self::TYPE_PARENT) {
-            array_shift($this->optionArray);
-            $this->specialType = self::TYPE_PARENT;
-            return true;
-        }
-        
-        if ($this->optionArray[0] == self::TYPE_RELATED) {
-            array_shift($this->optionArray);
-            $this->specialType = self::TYPE_PARENT;
+        if(in_array($this->dataType, self::$specialTypes)){
+            $this->specialType = $this->dataType;
             return true;
         }
         return false;
