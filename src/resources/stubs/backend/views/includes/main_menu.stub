@@ -13,24 +13,6 @@
 	</li>
 
 	{{-- Main Menu --}}
-	<li class="nav-item">
-		<a class="nav-link" href="{{ route('backend.posts.index') }}">
-			Posts
-		</a>
-	</li>
-
-	<li class="nav-item">
-		<a class="nav-link" href="{{ route('backend.categories.index') }}">
-			Categories
-		</a>
-	</li>
-
-	<li class="nav-item">
-		<a class="nav-link" href="{{ route('backend.tags.index') }}">
-			Tags
-		</a>
-	</li>
-			
 	<li class="divider"></li>
 
 	<li class="nav-item nav-dropdown ">

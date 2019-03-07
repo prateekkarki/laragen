@@ -1,0 +1,13 @@
+@extends('backend.layouts.main')
+
+@section('content')
+    <h1>Create {{moduleName}}</h1>
+
+    <form action="{{ route('backend.{{moduleName}}.store') }}" method="POST">
+    	@csrf
+		@include('backend.{{moduleName}}._form')
+		<button class="btn btn-primary" type="submit">
+			<i class="fa fa-save"></i> Save
+		</button>
+    </form>
+@endsection

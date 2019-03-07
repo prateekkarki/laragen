@@ -23,9 +23,7 @@ class Generate extends Command
      * @var array
      */
     protected $filesToPublish = [
-        'css' => 'public',
-        'js' => 'public',
-        'fonts' => 'public',
+        'public' => '/',
         'views/backend' => 'resources/views',
         'Controllers'   => 'app/Http',
     ];
@@ -36,8 +34,8 @@ class Generate extends Command
      */
     public function handle()
     {
-        $options = config('laragen')['options'];
-        $modules = config('laragen')['modules'];
+        $options = config('laragen.options');
+        $modules = config('laragen.modules');
         $generatedFiles = [];
         $itemsToGenerate = $this->configToGenerators($options['items_to_generate']);
         $bar = $this->output->createProgressBar(count($modules) * (count($itemsToGenerate) + count($this->filesToPublish)));
@@ -49,8 +47,7 @@ class Generate extends Command
         }
 
         foreach ($modules as $moduleName => $moduleArray) {
-            $moduleArray['name'] = $moduleName;
-            $module = new Module($moduleArray);
+            $module = new Module($moduleName, $moduleArray);
             
             foreach ($itemsToGenerate as $generator) {
                 $itemGenerator = new $generator($module);

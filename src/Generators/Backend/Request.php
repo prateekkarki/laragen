@@ -8,7 +8,7 @@ class Request extends BaseGenerator implements GeneratorInterface
 {
     public function generate()
     {
-        $controllerTemplate = $this->buildTemplate('Backend/Request', [
+        $controllerTemplate = $this->buildTemplate('backend/Request', [
             '{{modelName}}'     => $this->module->getModelName(),
             '{{authorization}}' => "true",
             '{{rules}}' 		=> $this->getRules()
