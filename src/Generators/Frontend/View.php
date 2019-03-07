@@ -26,7 +26,7 @@ class View extends BaseGenerator implements GeneratorInterface
         $layoutPath = $this->getPath("resources/views/laragen/layouts/") . "app.blade.php";
         if(!file_exists($layoutPath)){
 
-            $viewTemplate = $this->buildTemplate('views/layouts/app', []);
+            $viewTemplate = $this->buildTemplate('frontend/views/layouts/app', []);
             file_put_contents($layoutPath, $viewTemplate);
             $generatedFiles[] =  $layoutPath;
         }
