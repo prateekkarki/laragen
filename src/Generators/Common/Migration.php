@@ -18,7 +18,7 @@ class Migration extends BaseGenerator implements GeneratorInterface
             '{{modelTableSchema}}'  => $this->getSchema()
         ]);
         
-        $fileCounter = (int) date('His') + ++self::$counter;
+        $fileCounter = sprintf('%06d', (int) date('His') + ++self::$counter);
         $filenamePrefix = date('Y_m_d_').$fileCounter."_";
         $fileName = "create_".$this->module->getModuleName()."_table.php";
 
