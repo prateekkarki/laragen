@@ -11,13 +11,35 @@ class Migration extends BaseGenerator implements GeneratorInterface
 
     public function generate()
     {
-        $migrationTemplate = $this->buildTemplate('common/migration', [
+        $generatedFiles = [];
+        $migrationTemplate = $this->buildTemplate('common/migrations/table', [
             '{{modelName}}'         => $this->module->getModelName(),
             '{{modelNamePlural}}'   => $this->module->getModelNamePlural(),
             '{{moduleName}}'        => $this->module->getModuleName(),
             '{{modelTableSchema}}'  => $this->getSchema()
         ]);
         
+        $fullFilePath = $this->getMigrationFile();
+        file_put_contents($fullFilePath, $migrationTemplate);
+        $generatedFiles[] = $fullFilePath;
+
+        foreach ($this->module->getForeignColumns('related') as $relatedModules) {
+            foreach ($relatedModules as $related) {
+                $pivotTemplate = $this->buildTemplate('common/migrations/pivot', [
+                    '{{pivotName}}'         => $this->module->getPivotName($related),
+                    '{{pivotTableName}}'    => $this->module->getPivotTableName($related),
+                    '{{pivotTableSchema}}'  => $this->getPivotSchema($related)
+                ]);
+            }
+            $pivotFilePath = $this->getPivotFile($related);
+            file_put_contents($pivotFilePath, $pivotTemplate);
+            $generatedFiles[] = $pivotFilePath;
+        }
+
+        return $generatedFiles;
+    }
+
+    protected function getMigrationFile(){
         $fileCounter = sprintf('%06d', (int) date('His') + ++self::$counter);
         $filenamePrefix = date('Y_m_d_').$fileCounter."_";
         $fileName = "create_".$this->module->getModuleName()."_table.php";
@@ -29,11 +51,29 @@ class Migration extends BaseGenerator implements GeneratorInterface
                 $filenamePrefix = str_replace($fileName, "", $file);
             }
         }
+        return $this->getPath("database/migrations/").$filenamePrefix.$fileName;
+    }
 
-        $fullFilePath = $this->getPath("database/migrations/").$filenamePrefix.$fileName;
-        file_put_contents($fullFilePath, $migrationTemplate);
+    protected function getPivotFile($related){
+        $fileCounter = sprintf('%06d', (int) date('His') + ++self::$counter);
+        $filenamePrefix = date('Y_m_d_').$fileCounter."_";
+        $fileName = "create_".$this->module->getPivotTableName($related)."_table.php";
 
-        return $fullFilePath;
+        $existingFiles = scandir($this->getPath("database/migrations/"));
+        
+        foreach ($existingFiles as $file) {
+            if (strpos($file, $fileName) !== false) {
+                $filenamePrefix = str_replace($fileName, "", $file);
+            }
+        }
+        
+        return $this->getPath("database/migrations/").$filenamePrefix.$fileName;
+    }
+
+    protected function getPivotSchema($related){
+        $schema =  '$table->integer("'.$this->module->getModelNameSingularLowercase().'_id")->unsigned();'.PHP_EOL.$this->getTabs(3);
+        $schema .= '$table->integer("'.str_singular($related).'_id")->unsigned();';
+        return $schema;
     }
 
     protected function getSchema()

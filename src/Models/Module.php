@@ -92,6 +92,20 @@ class Module
         return $data;
     }
 
+    public function getPivotName($related)
+    {
+        $modelArray = [$this->getModelName(), ucfirst(camel_case(str_singular($related)))];
+        sort($modelArray);
+        return implode("", $modelArray);
+    }
+
+    public function getPivotTableName($related)
+    {
+        $moduleArray = [$this->getModelNameSingularLowercase(), str_singular($related)];
+        sort($moduleArray);
+        return implode("_", $moduleArray);
+    }
+
     public function getModuleName()
     {
         return $this->name;
@@ -109,6 +123,6 @@ class Module
 
     public function getModelNameSingularLowercase()
     {
-        return strtolower(str_singular($this->name));
+        return str_singular($this->name);
     }
 }
