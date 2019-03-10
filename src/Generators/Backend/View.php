@@ -55,20 +55,11 @@ class View extends BaseGenerator implements GeneratorInterface
 
     public function formGenerateCreate()
     {
-        $keyToFile = [
-            'int' =>'integer',
-            'string' =>'string',
-            'bool' =>'boolean',
-            'text' =>'text',
-            'date' =>'date',
-            'datetime' =>'datetime'
-        ];
-
         $viewTemplate = '';
 
         foreach ($this->module->getNativeData() as $columns) {
             foreach($columns as $column => $type){
-                $viewTemplate .= $this->buildTemplate('backend/views/formelements/'.$keyToFile[$type], [
+                $viewTemplate .= $this->buildTemplate('backend/views/formelements/'.$type, [
                     '{{columnName}}'                 => $column,
                     '{{modelNameLowercase}}'         => strtolower($this->module->getModelName()),
                 ]);
@@ -87,17 +78,15 @@ class View extends BaseGenerator implements GeneratorInterface
         $formTemplate = $this->buildTemplate('backend/views/formelements/_form', [
             '{{createElements}}'             => $viewTemplate,
         ]);
-        
+
         $editFilePath = $this->getPath("resources/views/backend/" . $this->module->getModuleName()) . "/edit.blade.php";
         file_put_contents($editFilePath, $editTemplate);
-        
-        
+
         $createFilePath = $this->getPath("resources/views/backend/" . $this->module->getModuleName()) . "/create.blade.php";
         file_put_contents($createFilePath, $createTemplate);
         
         $formFilePath = $this->getPath("resources/views/backend/" . $this->module->getModuleName()) . "/_form.blade.php";
         file_put_contents($formFilePath, $formTemplate);
-
 
         $generatedFiles[] =  $createFilePath;
         $generatedFiles[] =  $formFilePath;
