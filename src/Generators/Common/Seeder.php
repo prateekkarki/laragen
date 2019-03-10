@@ -84,20 +84,20 @@ class Seeder extends BaseGenerator implements GeneratorInterface
 
         $typeToDefinition = [
             'string'    => 'sentence',
-            'int'       => 'randomNumber()',
+            'integer'   => 'randomNumber()',
             'text'      => 'realText(500)',
-            'bool'      => 'numberBetween(0,1)',
+            'boolean'   => 'numberBetween(0,1)',
             'date'      => 'date',
             'datetime'  => 'dateTime',
         ];
 
         $dataDefinition = "";
-        foreach ($this->module->getNativeData() as $columns) {
+        foreach ($this->module->getWritableColumns() as $columns) {
             foreach($columns as $column => $type){
                 $specialTypes = array_keys($specialTypesToDefinition);
                 if(in_array($column,$specialTypes)){
                     $dataDefinition .= $this->getTabs(2) . "'{$column}'" . " => " . '$faker->' . $specialTypesToDefinition[$column];
-                } else{
+                } else {
                     $dataDefinition .= $this->getTabs(2) . "'{$column}'" . " => " . '$faker->' . $typeToDefinition[$type];
                 }
 

@@ -1,6 +1,6 @@
 <?php
-
 namespace Prateekkarki\Laragen\Models;
+use Prateekkarki\Laragen\Models\DataOption;
 
 class Module
 {
@@ -26,7 +26,7 @@ class Module
     {
         return $this->data;
     }
-    
+
     public function getBackendColumnTitles()
     {
         $data = ['S.N.'];
@@ -38,26 +38,37 @@ class Module
         }
         return array_merge($data, ['Last Updated', 'Actions']);
     }
-    
-    
+
     public function getNativeColumns()
     {
         $data = [];
         foreach ($this->data as $column => $optionString) {
             $optionArray = explode(':', $optionString);
-            if (in_array($optionArray[0], ['string', 'int', 'text', 'bool', 'date'])) {
+            if (in_array($optionArray[0], DataOption::$types)) {
                 $data[] = $column;
             }
         }
         return $data;
     }
-    
+
     public function getNativeData()
     {
         $data = [];
         foreach ($this->data as $column => $optionString) {
             $optionArray = explode(':', $optionString);
-            if (in_array($optionArray[0], ['string', 'int', 'text', 'bool', 'date', 'datetime'])) {
+            if (in_array($optionArray[0], DataOption::$types)) {
+                $data[] = [$column => $optionArray[0]];
+            }
+        }
+        return $data;
+    }
+
+    public function getWritableColumns()
+    {
+        $data = [];
+        foreach ($this->data as $column => $optionString) {
+            $optionArray = explode(':', $optionString);
+            if (in_array($optionArray[0], DataOption::$types)) {
                 $data[] = [$column => $optionArray[0]];
             }
         }
@@ -69,7 +80,7 @@ class Module
         if (is_array($type))
             $types = $type;
         else
-            $types = ($type == "all") ? ['parent', 'related'] : [$type];
+            $types = ($type == "all") ? DataOption::$specialTypes : [$type];
         
         $data = [];
         foreach ($this->data as $column => $optionString) {

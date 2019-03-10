@@ -10,9 +10,13 @@ class DataOption
     
     const COLUMN_UNIQUE = 'unique';
 
+    const COLUMN_REQUIRED = 'required';
+
     protected $specialType;
 
     protected $uniqueFlag;
+
+    protected $requiredFlag;
 
     protected $size;
 
@@ -26,12 +30,15 @@ class DataOption
     public static $types = [
         'integer',
         'string',
-        'image',
-        'file',
         'boolean',
         'text',
         'date',
         'datetime'
+    ];
+
+    public static $fileTypes = [   
+        'image',
+        'file'     
     ];
 
     public static $specialTypes = [
@@ -77,17 +84,21 @@ class DataOption
 
     public function getSchema()
     {
-        if ($this->hasSpecialSchema()) {
-            $schema = $this->processSpecialSchema();
+        if ($this->dataType=='parent') {
+            $schema = $this->processParent();
+        } else if($this->dataType=='related'){
+            $schema = '';
         } else {
             foreach ($this->optionArray as $option) {
-                if ($option == self::COLUMN_UNIQUE)         $this->hasUnique();
-                if (is_numeric($option) && $option <= 2048) $this->hasSize((int) $option);
+                if ($option == self::COLUMN_UNIQUE)         $this->setUnique();
+                if ($option == self::COLUMN_REQUIRED)       $this->setRequired();
+                if ($this->typeOption) $this->setSize((int) $this->typeOption);
             }
 
             $schema = '$table->'.$this->getColumnType()."('{$this->column}'";
-            $schema .= $this->hasSize() ? ", {$this->getSize()})" : ")";
+            $schema .= $this->getSize() ? ", {$this->getSize()})" : ")";
             $schema .= $this->isUnique() ? "->unique()" : "";
+            $schema .= $this->isRequired() ? "" : "->nullable()";
             $schema .= ";";
         }
         return $schema;
@@ -104,12 +115,20 @@ class DataOption
     protected function isUnique() {
         return $this->uniqueFlag;
     }
+    
+    protected function isRequired() {
+        return $this->uniqueFlag;
+    }
 
-    protected function hasUnique($set = true) {
+    protected function setUnique($set = true) {
         $this->uniqueFlag = ($set === true) ? true : false;
     }
 
-    protected function hasSize($size = null) {
+    protected function setRequired($set = true) {
+        $this->requiredFlag = ($set === true) ? true : false;
+    }
+
+    protected function setSize($size = null) {
         if ($size !== null) {
             $this->size = $size;
         }
@@ -123,11 +142,6 @@ class DataOption
             $schema .= "    ";
         }
         return $schema;
-    }
-
-    protected function processSpecialSchema() {
-        $specialMethod = 'process'.ucfirst($this->specialType);
-        return $this->$specialMethod();
     }
 
     protected function processParent() {
