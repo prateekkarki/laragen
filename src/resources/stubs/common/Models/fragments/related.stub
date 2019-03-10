@@ -1,0 +1,5 @@
+
+    public function {{columnName}}(): BelongsToMany
+    {
+        return $this->belongsToMany({{relatedModel}}::class, '{{related}}_id');
+    }

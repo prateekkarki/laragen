@@ -38,6 +38,16 @@ class Model extends BaseGenerator implements GeneratorInterface
             }
         }
 
+        foreach ($this->module->getForeignColumns('related') as $relatedModels) {
+            foreach ($relatedModels as $column => $relatedModel) {
+                $foreignMethods .= $this->buildTemplate('common/Models/fragments/related', [
+                    '{{related}}'      => str_singular($relatedModel),
+                    '{{columnName}}'  => $column,
+                    '{{relatedModel}}' => ($relatedModel == 'users' && class_exists('\\App\\User')) ? "\\App\\User" : ucfirst(camel_case(str_singular($relatedModel)))
+                ]);
+            }
+        }
+
         return $foreignMethods;
     }
 }
