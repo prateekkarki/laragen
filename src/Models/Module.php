@@ -31,7 +31,7 @@ class Module
     {
         $data = ['S.N.'];
         foreach ($this->data as $column => $optionString) {
-            $optionArray = explode(':', $optionString);
+            $optionArray = explode('|', $optionString);
             if (in_array($optionArray[0], ['string', 'int'])&&in_array($column, ['title', 'firstname', 'lastname', 'name'])) {
                 $data[] = ucwords($column);
             }
@@ -43,7 +43,7 @@ class Module
     {
         $data = [];
         foreach ($this->data as $column => $optionString) {
-            $optionArray = explode(':', $optionString);
+            $optionArray = explode('|', $optionString);
             if (in_array($optionArray[0], DataOption::$types)) {
                 $data[] = $column;
             }
@@ -55,7 +55,7 @@ class Module
     {
         $data = [];
         foreach ($this->data as $column => $optionString) {
-            $optionArray = explode(':', $optionString);
+            $optionArray = explode('|', $optionString);
             if (in_array($optionArray[0], DataOption::$types)) {
                 $data[] = [$column => $optionArray[0]];
             }
@@ -67,7 +67,7 @@ class Module
     {
         $data = [];
         foreach ($this->data as $column => $optionString) {
-            $optionArray = explode(':', $optionString);
+            $optionArray = explode('|', $optionString);
             if (in_array($optionArray[0], DataOption::$types)) {
                 $data[] = [$column => $optionArray[0]];
             }
@@ -84,7 +84,7 @@ class Module
         
         $data = [];
         foreach ($this->data as $column => $optionString) {
-            $optionArray = explode(':', $optionString);
+            $optionArray = explode('|', $optionString);
             if (in_array($optionArray[0], $types)) {
                 $data[] = [$column => $optionArray[1]];
             }
