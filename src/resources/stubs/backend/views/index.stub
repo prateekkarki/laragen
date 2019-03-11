@@ -10,12 +10,11 @@
                 <h4 class="card-title mb-0">
                     
                 </h4>
-            </div><!--col-->
-
+            </div>
             <div class="col-sm-7">
                 
-            </div><!--col-->
-        </div><!--row-->
+            </div>
+        </div>
 
         <div class="row mt-4">
             <div class="col">
@@ -55,15 +54,15 @@
                     </table>
                     {!! ${{moduleName}}->links() !!}
                 </div>
-            </div><!--col-->
-        </div><!--row-->
+            </div>
+        </div>
         <div class="row">
             <div class="col-7">
                 <div class="float-left">
                     {!! ${{moduleName}}->total() !!}
                 </div>
             </div>
-        </div><!--row-->
+        </div>
     </div><!--card-body-->
 </div><!--card-->
 @endsection
