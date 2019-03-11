@@ -39,7 +39,8 @@ class Migration extends BaseGenerator implements GeneratorInterface
         return $generatedFiles;
     }
 
-    protected function getMigrationFile(){
+    protected function getMigrationFile()
+    {
         $fileCounter = sprintf('%06d', (int) date('His') + ++self::$counter);
         $filenamePrefix = date('Y_m_d_').$fileCounter."_";
         $fileName = "create_".$this->module->getModuleName()."_table.php";
@@ -54,7 +55,8 @@ class Migration extends BaseGenerator implements GeneratorInterface
         return $this->getPath("database/migrations/").$filenamePrefix.$fileName;
     }
 
-    protected function getPivotFile($related){
+    protected function getPivotFile($related)
+    {
         $fileCounter = sprintf('%06d', (int) date('His') + ++self::$counter);
         $filenamePrefix = date('Y_m_d_').$fileCounter."_";
         $fileName = "create_".$this->module->getPivotTableName($related)."_table.php";
@@ -70,7 +72,8 @@ class Migration extends BaseGenerator implements GeneratorInterface
         return $this->getPath("database/migrations/").$filenamePrefix.$fileName;
     }
 
-    protected function getPivotSchema($related){
+    protected function getPivotSchema($related)
+    {
         $schema =  '$table->integer("'.$this->module->getModelNameSingularLowercase().'_id")->unsigned();'.PHP_EOL.$this->getTabs(3);
         $schema .= '$table->integer("'.str_singular($related).'_id")->unsigned();';
         return $schema;
