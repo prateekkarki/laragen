@@ -1,7 +1,6 @@
 <div class="form-group row">
-  <label class="col-md-3 col-form-label" for="text-input">Text Input</label>
-  <div class="col-md-9">
-    <input class="form-control" id="text-input" type="text" name="text-input" placeholder="Text">
-    <span class="help-block">This is a help text</span>
-  </div>
+    <label class="col-md-2 form-control-label" for="{{key}}">{{display}}</label>
+    <div class="col-md-10">
+        <input class="form-control" type="date" name="{{key}}" id="{{key}}" placeholder="{{display}}" value="{{ isset(${{modelNameLowercase}}) ? ${{modelNameLowercase}}->{{key}} : '' }}" {{options}}>
+    </div>
 </div>

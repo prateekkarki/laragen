@@ -1,7 +1,6 @@
 <div class="form-group row">
-  <label class="col-md-3 col-form-label" for="date-input">Date Input</label>
-  <div class="col-md-9">
-    <input class="form-control" id="date-input" type="date" name="date-input" placeholder="date">
-    <span class="help-block">Please enter a valid date</span>
-  </div>
+    <label class="col-md-2 form-control-label" for="{{key}}">{{display}}</label>
+    <div class="col-md-10">
+        <input class="form-control" type="date" name="{{key}}" id="{{key}}" placeholder="{{display}}" value="{{ isset(${{modelNameLowercase}}) ? ${{modelNameLowercase}}->{{key}} : '' }}" {{options}}>
+    </div>
 </div>
