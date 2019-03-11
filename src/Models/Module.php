@@ -137,6 +137,16 @@ class Module
         return ucfirst(str_replace('_', '', $this->name));
     }
 
+    public function getDisplayColumn()
+    {
+        foreach ($this->data as $column => $optionString) {
+            $optionArray = explode('|', $optionString);
+            if (in_array($optionArray[0], ['string', 'int'])&&in_array($column, ['title', 'firstname', 'lastname', 'name'])) {
+                return $column;
+            }
+        }
+    }
+
     public function getModelName()
     {
         return ucfirst(camel_case(str_singular($this->name)));

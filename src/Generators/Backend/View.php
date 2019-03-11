@@ -4,6 +4,7 @@ namespace Prateekkarki\Laragen\Generators\Backend;
 use Prateekkarki\Laragen\Generators\BaseGenerator;
 use Prateekkarki\Laragen\Generators\GeneratorInterface;
 use Prateekkarki\Laragen\Models\DataOption;
+use Prateekkarki\Laragen\Models\Module;
 
 class View extends BaseGenerator implements GeneratorInterface
 {    
@@ -67,6 +68,7 @@ class View extends BaseGenerator implements GeneratorInterface
                 '{{display}}'            => $columnOptions->getDisplay(),
                 '{{options}}'            => $columnOptions->getFormOptions(),
                 '{{parentModule}}'       => $columnOptions->getParentModule(),
+                '{{parentDisplay}}'      => $this->getParentDisplay($columnOptions->getParentModule()),
                 '{{modelNameLowercase}}' => $this->module->getModelNameLowercase()
             ]);
         }
@@ -81,5 +83,21 @@ class View extends BaseGenerator implements GeneratorInterface
         $generatedFiles[] =  $formFilePath;
         return $generatedFiles;
 
+    }
+
+    public function getParentDisplay($parentModule)
+    {
+        $modules = config('laragen.modules');
+        $displayColumn = "";
+        if(isset($modules[$parentModule])){
+            $module = $modules[$parentModule];
+            $module = new Module($parentModule, $module);
+            $displayColumn = $module->getDisplayColumn();
+        }
+
+        if  ($parentModule=='users'){
+            $displayColumn = 'name';
+        }
+        return $displayColumn;
     }
 }
