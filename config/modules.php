@@ -17,8 +17,8 @@
 
 return [
     'categories' => [
-        'title'             => 'string:128',
-        'slug'              => 'string:128|unique',
+        'title'             => 'string|max:128',
+        'slug'              => 'string|max:128|unique|required',
         'short_description' => 'string',
         'show_in_menu'      => 'boolean',
         'image'             => 'image',
@@ -32,9 +32,9 @@ return [
 
     'posts' => [
         'author'            => 'parent:users',
-        'title'             => 'string:128',
-        'slug'              => 'string:128|unique',
-        'short_description' => 'string:512',
+        'title'             => 'string|max:128|required',
+        'slug'              => 'string|max:128|unique',
+        'short_description' => 'string|max:512',
         'full_description'  => 'text',
         'category'          => 'parent:categories',
         'posted_at'         => 'datetime',
