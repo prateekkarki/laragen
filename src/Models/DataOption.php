@@ -134,6 +134,10 @@ class DataOption
         return $this->size;
     }
 
+    public function getParentModule() {
+        return ($this->dataType == 'parent') ? $this->typeOption : '';
+    }
+
     public function isRequired() {
         return $this->requiredFlag;
     }

@@ -74,7 +74,7 @@ class Migration extends BaseGenerator implements GeneratorInterface
 
     protected function getPivotSchema($related)
     {
-        $schema =  '$table->integer("'.$this->module->getModelNameSingularLowercase().'_id")->unsigned();'.PHP_EOL.$this->getTabs(3);
+        $schema =  '$table->integer("'.$this->module->getModelNameLowercase().'_id")->unsigned();'.PHP_EOL.$this->getTabs(3);
         $schema .= '$table->integer("'.str_singular($related).'_id")->unsigned();';
         return $schema;
     }

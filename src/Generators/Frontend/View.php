@@ -13,7 +13,7 @@ class View extends BaseGenerator implements GeneratorInterface
         $generatedFiles = [];
         foreach ($viewsToBeGenerated as $view) {
             $viewTemplate = $this->buildTemplate('frontend/views/' . $view, [
-                '{{modelNameSingularLowercase}}' => $this->module->getModelNameSingularLowercase(),
+                '{{modelNameSingularLowercase}}' => $this->module->getModelNameLowercase(),
                 '{{modelNamePlural}}'            => $this->module->getModelNamePlural(),
                 '{{moduleName}}'                 => $this->module->getModuleName()
             ]);

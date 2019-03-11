@@ -12,14 +12,16 @@ class View extends BaseGenerator implements GeneratorInterface
     public function generate()
     {
         
-		$viewsToBeGenerated = ['index']; // To be generated dynamically
+		$viewsToBeGenerated = ['index', 'create', 'edit'];
 
 		$generatedFiles = [];
 		
         foreach ($viewsToBeGenerated as $view) {
             $viewTemplate = $this->buildTemplate('backend/views/' . $view, [
-				'{{headings}}' 			 => $this->getHeadings(),
+                '{{headings}}' 			 => $this->getHeadings(),
+                '{{moduleDisplayName}}'  => $this->module->getModuleDisplayName(),
                 '{{modelNameLowercase}}' => str_singular($this->module->getModuleName()),
+                '{{modelName}}'          => $this->module->getModelName(),
                 '{{moduleName}}'         => $this->module->getModuleName()
             ]);
 
@@ -61,39 +63,22 @@ class View extends BaseGenerator implements GeneratorInterface
             $columnOptions = new DataOption($column, $options);
             $type = $columnOptions->getType();
             $viewTemplate .= $this->buildTemplate('backend/views/formelements/'.$type, [
-                '{{key}}'          => $column,
-                '{{display}}'      => $columnOptions->getDisplay(),
-                '{{options}}'      => $columnOptions->getFormOptions(),
-                '{{modelNameLowercase}}' => strtolower($this->module->getModelName())
+                '{{key}}'                => $column,
+                '{{display}}'            => $columnOptions->getDisplay(),
+                '{{options}}'            => $columnOptions->getFormOptions(),
+                '{{parentModule}}'       => $columnOptions->getParentModule(),
+                '{{modelNameLowercase}}' => $this->module->getModelNameLowercase()
             ]);
         }
-
-        $createTemplate = $this->buildTemplate('backend/views/create', [
-            '{{moduleName}}'                 => $this->module->getModuleName(),
-        ]);
-
-        $editTemplate = $this->buildTemplate('backend/views/edit', [
-            '{{moduleName}}'                 => $this->module->getModuleName(),
-            '{{modelNameLowercase}}'         => strtolower($this->module->getModelName())
-        ]);
 
         $formTemplate = $this->buildTemplate('backend/views/formelements/_form', [
             '{{createElements}}'             => $viewTemplate,
         ]);
 
-        $editFilePath = $this->getPath("resources/views/backend/" . $this->module->getModuleName()) . "/edit.blade.php";
-        file_put_contents($editFilePath, $editTemplate);
-
-        $createFilePath = $this->getPath("resources/views/backend/" . $this->module->getModuleName()) . "/create.blade.php";
-        file_put_contents($createFilePath, $createTemplate);
-        
         $formFilePath = $this->getPath("resources/views/backend/" . $this->module->getModuleName()) . "/_form.blade.php";
         file_put_contents($formFilePath, $formTemplate);
 
-        $generatedFiles[] =  $createFilePath;
         $generatedFiles[] =  $formFilePath;
-        $generatedFiles[] =  $editFilePath;
-
         return $generatedFiles;
 
     }
