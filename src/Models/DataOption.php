@@ -1,6 +1,7 @@
 <?php
 
 namespace Prateekkarki\Laragen\Models;
+use Illuminate\Support\Str;
 
 class DataOption
 {
@@ -80,6 +81,21 @@ class DataOption
         $type = explode(':', $typePieces);
         $this->dataType = is_array($type) ? $type[0] : $type;
         $this->typeOption = is_array($type)&&count($type)>=2 ? $type[1] : false;
+
+        foreach ($this->optionArray as $option) {
+            if ($option == self::COLUMN_UNIQUE) {
+                $this->setUnique();
+                continue;
+            }
+            if ($option == self::COLUMN_REQUIRED) {
+                $this->setRequired();
+                continue;
+            }
+            if(Str::contains($option, ':')){
+                $optionPieces = explode(':', $option);
+                $this->setOptions($optionPieces[0], $optionPieces[1]);
+            }
+        }
     }
 
     public function getSchema()
@@ -89,12 +105,6 @@ class DataOption
         } else if($this->dataType=='related'){
             $schema = '';
         } else {
-            foreach ($this->optionArray as $option) {
-                if ($option == self::COLUMN_UNIQUE)         $this->setUnique();
-                if ($option == self::COLUMN_REQUIRED)       $this->setRequired();
-                if ($this->typeOption) $this->setSize((int) $this->typeOption);
-            }
-
             $schema = '$table->'.$this->getColumnType()."('{$this->column}'";
             $schema .= $this->getSize() ? ", {$this->getSize()})" : ")";
             $schema .= $this->isUnique() ? "->unique()" : "";
@@ -104,20 +114,72 @@ class DataOption
         return $schema;
     }
 
-    protected function getColumnType() {
-        return $this->keyToType[$this->dataType];
+    public function getKey() {
+        return $this->column;
     }
 
-    protected function getSize() {
+    public function getDisplay() {
+        return ucfirst(str_replace('_', ' ', $this->column));
+    }
+
+    public function getType() {
+        $type = $this->dataType;
+        if($type=='string'){
+            $type = (!$this->getSize() || $this->getSize()<=128) ? $type : 'text';
+        } 
+        return $type;
+    }
+
+    public function getSize() {
         return $this->size;
+    }
+
+    public function isRequired() {
+        return $this->requiredFlag;
+    }
+
+    public function getFormOptions() {
+        $options = "";
+        $options .= $this->isRequired() ? 'required="required" ' :''; 
+        $options .= $this->getType()=='text' ? 'rows="'.$this->getTextRows().'" ' :''; 
+        return $options;
+    }
+
+
+    public function getTextRows() {
+        if(!$this->size)
+            return 4;
+        
+        return (int)$this->getsize()/120;
+    }
+
+    public function getTabs($number)
+    {
+        $schema = "";
+        for ($i = 0; $i < $number; $i++) {
+            $schema .= "    ";
+        }
+        return $schema;
+    }
+
+    protected function getColumnType() {
+        return $this->keyToType[$this->dataType];
     }
     
     protected function isUnique() {
         return $this->uniqueFlag;
     }
-    
-    protected function isRequired() {
-        return $this->uniqueFlag;
+
+    protected function setOptions($optionType, $optionParam) {
+        switch ($optionType) {
+            case 'max':
+                $this->setSize($optionParam);
+                break;
+            
+            default:
+                $this->$optionType = $optionParam;
+                break;
+        }
     }
 
     protected function setUnique($set = true) {
@@ -129,19 +191,7 @@ class DataOption
     }
 
     protected function setSize($size = null) {
-        if ($size !== null) {
-            $this->size = $size;
-        }
-        return $this->size;
-    }
-
-    public function getTabs($number)
-    {
-        $schema = "";
-        for ($i = 0; $i < $number; $i++) { 
-            $schema .= "    ";
-        }
-        return $schema;
+        $this->size = $size;
     }
 
     protected function processParent() {
@@ -151,17 +201,5 @@ class DataOption
         $schema .= PHP_EOL.$this->getTabs(3);
         $schema .= "\$table->foreign('".str_singular($parent)."_id')->references('id')->on('$parent')->onDelete('set null');";
         return $schema;
-    }
-
-    protected function processRelated() {
-        return "";
-    }
-
-    protected function hasSpecialSchema() {
-        if(in_array($this->dataType, self::$specialTypes)){
-            $this->specialType = $this->dataType;
-            return true;
-        }
-        return false;
     }
 }

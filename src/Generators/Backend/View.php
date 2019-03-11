@@ -3,6 +3,7 @@ namespace Prateekkarki\Laragen\Generators\Backend;
 
 use Prateekkarki\Laragen\Generators\BaseGenerator;
 use Prateekkarki\Laragen\Generators\GeneratorInterface;
+use Prateekkarki\Laragen\Models\DataOption;
 
 class View extends BaseGenerator implements GeneratorInterface
 {    
@@ -56,14 +57,15 @@ class View extends BaseGenerator implements GeneratorInterface
     public function formGenerateCreate()
     {
         $viewTemplate = '';
-
-        foreach ($this->module->getNativeData() as $columns) {
-            foreach($columns as $column => $type){
-                $viewTemplate .= $this->buildTemplate('backend/views/formelements/'.$type, [
-                    '{{columnName}}'                 => $column,
-                    '{{modelNameLowercase}}'         => strtolower($this->module->getModelName()),
-                ]);
-            }
+        foreach($this->module->getData() as $column => $options){
+            $columnOptions = new DataOption($column, $options);
+            $type = $columnOptions->getType();
+            $viewTemplate .= $this->buildTemplate('backend/views/formelements/'.$type, [
+                '{{key}}'          => $column,
+                '{{display}}'      => $columnOptions->getDisplay(),
+                '{{options}}'      => $columnOptions->getFormOptions(),
+                '{{modelNameLowercase}}' => strtolower($this->module->getModelName())
+            ]);
         }
 
         $createTemplate = $this->buildTemplate('backend/views/create', [
