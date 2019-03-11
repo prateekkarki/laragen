@@ -10,13 +10,12 @@
             <div class="container-fluid">
                 <div class="animated fadeIn">
                     @yield('content')
-                </div><!--animated-->
-            </div><!--container-fluid-->
-        </main><!--main-->
+                </div>
+            </div>
+        </main>
 
         @include('backend.includes.aside')
-    </div><!--app-body-->
+    </div>
 
     @include('backend.includes.footer')
-
 @endsection
