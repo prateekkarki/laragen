@@ -1,14 +1,25 @@
 @extends('backend.layouts.main')
 
 @section('content')
-    <h1>Update {{moduleName}}</h1>
-
-    <form action="{{ route('backend.{{moduleName}}.update', ${{modelNameLowercase}}) }}" method="POST">
-    	@csrf
-    	@method('PUT')
-		@include('backend.{{moduleName}}._form')
-		<button class="btn btn-primary" type="submit">
-			<i class="fa fa-save"></i> Save
-		</button>
-    </form>
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-sm-5">
+                <h4 class="card-title mb-0">
+                    {{modelName}} Management
+                    <small class="text-muted">Update {{moduleName}}</small>
+                </h4>
+            </div>
+            <div class="col-sm-7">
+                
+            </div>
+        </div>
+        
+        <form action="{{ route('backend.{{moduleName}}.update', ${{modelNameLowercase}}) }}" method="POST">
+            @csrf
+            @method('PUT')
+            @include('backend.{{moduleName}}._form')
+        </form>
+    </div>
+</div>
 @endsection
