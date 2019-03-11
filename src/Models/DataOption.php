@@ -135,7 +135,11 @@ class DataOption
     }
 
     public function getParentModule() {
-        return ($this->dataType == 'parent') ? $this->typeOption : '';
+        return (in_array($this->dataType, self::$specialTypes)) ? $this->typeOption : '';
+    }
+
+    public function getParentModel() {
+        return (in_array($this->dataType, self::$specialTypes)) ? ucfirst(camel_case(str_singular($this->typeOption))) : '';
     }
 
     public function isRequired() {

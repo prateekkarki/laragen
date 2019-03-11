@@ -84,9 +84,30 @@ class Module
         
         $data = [];
         foreach ($this->data as $column => $optionString) {
-            $optionArray = explode('|', $optionString);
-            if (in_array($optionArray[0], $types)) {
-                $data[] = [$column => $optionArray[1]];
+            $dataOption = new DataOption($column, $optionString);
+            if (in_array($dataOption->getType(), $types)) {
+                $data[] = [$column => $dataOption->getParentModule()];
+            }
+        }
+        return $data;
+    }
+
+    public function getForeignData($type = 'all')
+    {
+        if (is_array($type))
+            $types = $type;
+        else
+            $types = ($type == "all") ? DataOption::$specialTypes : [$type];
+        
+        $data = [];
+        foreach ($this->data as $column => $optionString) {
+            $dataOption = new DataOption($column, $optionString);
+            if (in_array($dataOption->getType(), $types)) {
+                $data[] = [
+                    'columnName'   => $column,
+                    'parentModule' => $dataOption->getParentModule(),
+                    'parentModel'  => $dataOption->getParentModel()
+                ];
             }
         }
         return $data;

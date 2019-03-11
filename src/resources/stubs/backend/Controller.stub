@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Backend\{{modelName}}Request;
-use App\Models\{{modelName}};
+{{usedModels}}
 
 /**
  * {{modelName}}Controller
@@ -33,7 +33,7 @@ class {{modelName}}Controller extends Controller
      */
     public function edit({{modelName}} ${{modelNameLowercase}}): View
     {
-        return view('backend.{{moduleName}}.edit', ['{{modelNameLowercase}}' => ${{modelNameLowercase}}]);
+        return view('backend.{{moduleName}}.edit', ['{{modelNameLowercase}}' => ${{modelNameLowercase}}, {{foreignData}}]);
     }
 
     /**
@@ -41,7 +41,7 @@ class {{modelName}}Controller extends Controller
      */
     public function create(Request $request): View
     {
-        return view('backend.{{moduleName}}.create');
+        return view('backend.{{moduleName}}.create', [{{foreignData}}]);
     }
 
     /**
