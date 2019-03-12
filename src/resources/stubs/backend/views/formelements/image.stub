@@ -16,14 +16,13 @@
         url: '/upload',
         uploadMultiple: false,
         maxFilesize: 10,
-        acceptedFiles: 'image/*',
+        acceptedFiles: ".png,.jpg,.gif,.bmp,.jpeg",
         maxFiles: 1,
         addRemoveLinks: true,
         init: function() {
             dzClosure = this;
             this.on("success", function(file, response) {
                 console.log(response);
-                // $('#{{key}}Container').append('<input type="hidden" name="{{key}}" value="'+ responseText +'">');
             });
             this.on("sending", function(file, xhr, formData) {
                 var csrf = "{{ csrf_token() }}";

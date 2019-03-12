@@ -12,6 +12,7 @@
     @stack('before-styles')
     <link href="{{ asset('css/coreui.min.css') }}" rel="stylesheet" type="text/css" media="all" />
     <link href="{{ asset('css/fa-all.min.css') }}" rel="stylesheet" type="text/css" media="all" />
+    <link href="{{ asset('css/dropzone.min.css') }}" rel="stylesheet" type="text/css" media="all" />
     <link href="{{ asset('css/simple-line-icons.css') }}" rel="stylesheet" type="text/css" media="all" />
     @stack('after-styles')
 </head>
@@ -23,9 +24,10 @@
     <!-- Scripts -->
     @stack('before-scripts')
     <script type="text/javascript" src="{{ asset('js/jquery-3.3.1.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('js/popper.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('js/bootstrap.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('js/coreui.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/dropzone.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/popper.min.js') }}"></script>
     @stack('after-scripts')
 </body>
 </html>
