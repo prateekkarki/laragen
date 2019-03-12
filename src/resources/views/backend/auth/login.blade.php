@@ -10,7 +10,7 @@ flex-row align-items-center
 			<div class="col-md-8">
 				<div class="card-group">
 					<div class="card p-4">
-						<form method="POST" action="{{ route('auth.login.post') }}">
+						<form method="POST" action="{{ route('login.post') }}">
 							@csrf
 							<div class="card-body">
 								<h1>Login</h1>
@@ -21,7 +21,12 @@ flex-row align-items-center
 											<i class="icon-user"></i>
 										</span>
 									</div>
-									<input class="form-control" type="text" name="email" placeholder="Email">
+									<input class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" type="text" name="email" placeholder="Email">
+	                                @if ($errors->has('email'))
+	                                    <span class="invalid-feedback" role="alert">
+	                                        <strong>{{ $errors->first('email') }}</strong>
+	                                    </span>
+	                                @endif
 								</div>
 								<div class="input-group mb-4">
 									<div class="input-group-prepend">
@@ -29,8 +34,13 @@ flex-row align-items-center
 											<i class="icon-lock"></i>
 										</span>
 									</div>
-									<input class="form-control" type="password" name="password" placeholder="Password">
-								</div>
+									<input class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" type="password" name="password" placeholder="Password">
+	                                @if ($errors->has('password'))
+	                                    <span class="invalid-feedback" role="alert">
+	                                        <strong>{{ $errors->first('password') }}</strong>
+	                                    </span>
+	                                @endif
+	                            </div>
 								<div class="row">
 									<div class="col-6">
 										<button class="btn btn-primary px-4" type="submit">Login</button>
