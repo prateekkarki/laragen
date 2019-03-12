@@ -1,9 +1,7 @@
 <div class="form-group row">
-  <label class="col-md-3 col-form-label" for="select1">Select</label>
-  <div class="col-md-9">
-    <select class="form-control" id="select1" name="select1">
-      <option value="0">Please select</option>
-      <option value="1">Option #1</option>
-    </select>
-  </div>
+    <label class="col-md-2 form-control-label" for="{{key}}">{{display}}</label>
+    <div class="col-md-10">
+        <input class="checkbox" id="{{key}}" type="checkbox" onclick="if (this.checked) $('#{{key}}-hidden').val(1); else $('#{{key}}-hidden').val(0);" {{ (isset(${{modelNameLowercase}}) && ${{modelNameLowercase}}->{{key}} == true) ? 'checked' : '' }} {{options}}>
+        <input type="hidden" name="{{key}}" id="{{key}}-hidden" value="{{ (isset(${{modelNameLowercase}}) && ${{modelNameLowercase}}->{{key}} == true) ? '1' : '0' }}">
+    </div>
 </div>

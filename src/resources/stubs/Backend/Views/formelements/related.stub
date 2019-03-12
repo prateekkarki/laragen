@@ -2,7 +2,6 @@
   	<label class="col-md-2 col-form-label" for="{{key}}">{{display}}</label>
   	<div class="col-md-10">
 		<select multiple class="form-control" id="{{key}}" name="{{key}}">
-			<option value="0">Please select</option>
 			@foreach(${{parentModule}} as ${{key}})
 				<option value="{{ ${{key}}->id }}">{{ ${{key}}->title }}</option>
 			@endforeach

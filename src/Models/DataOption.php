@@ -1,5 +1,4 @@
 <?php
-
 namespace Prateekkarki\Laragen\Models;
 use Illuminate\Support\Str;
 
@@ -158,7 +157,7 @@ class DataOption
         if(!$this->size)
             return 4;
         
-        return (int)$this->getsize()/120;
+        return floor($this->getsize()/120);
     }
 
     public function getTabs($number)
