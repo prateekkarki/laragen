@@ -15,7 +15,7 @@
             </div>
         </div>
 
-        <form action="{{ route('backend.{{moduleName}}.store') }}" method="POST">
+        <form action="{{ route('backend.{{moduleName}}.store') }}" enctype="multipart/form-data" method="POST">
             @csrf
             @include('backend.{{moduleName}}._form')
         </form>
