@@ -12,7 +12,7 @@ class Create{{pivotName}}Table extends Migration
     public function up()
     {
         Schema::create('{{pivotTableName}}', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             {{pivotTableSchema}}
         });
     }

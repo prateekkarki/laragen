@@ -36,7 +36,7 @@ class Module
                 $data[] = ucwords($column);
             }
         }
-        return array_merge($data, ['Last Updated', 'Actions']);
+        return array_merge($data, ['Last Updated', 'Status', 'Actions']);
     }
 
     public function getNativeColumns()

@@ -3,24 +3,27 @@
 @section('layout')
     @include('backend.includes.header')
 
-    <div class="app-body">
-        @include('backend.includes.sidebar')
+    @include('backend.includes.sidebar')
+    <!-- @include('backend.includes.aside') -->
 
-        <main class="main">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item">Home</li>
-                <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
-            </ol>
 
-            <div class="container-fluid">
-                <div class="animated fadeIn">
-                    @yield('content')
+    <div class="main-content">
+        <section class="section">
+            <!-- <div class="section-header">
+                <h1>Form</h1>
+                <div class="section-header-breadcrumb">
+                    <div class="breadcrumb-item active"><a href="#">Dashboard</a></div>
+                    <div class="breadcrumb-item"><a href="#">Bootstrap Components</a></div>
+                    <div class="breadcrumb-item">Form</div>
                 </div>
-            </div>
-        </main>
+            </div> -->
 
-        @include('backend.includes.aside')
+            <div class="section-body">
+                @yield('content')
+            </div>
+        </section>
     </div>
 
     @include('backend.includes.footer')
+
 @endsection

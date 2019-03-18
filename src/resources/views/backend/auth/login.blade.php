@@ -1,68 +1,74 @@
 @extends('backend.layouts.app')
 
-@section('body_classes')
-flex-row align-items-center
-@endsection
-
 @section('layout')
-	<div class="container">
-		<div class="row justify-content-center">
-			<div class="col-md-8">
-				<div class="card-group">
-					<div class="card p-4">
-						<form method="POST" action="{{ route('login.post') }}">
-							@csrf
-							<div class="card-body">
-								<h1>Login</h1>
-								<p class="text-muted">Sign In to your account</p>
-								<div class="input-group mb-3">
-									<div class="input-group-prepend">
-										<span class="input-group-text">
-											<i class="icon-user"></i>
-										</span>
-									</div>
-									<input class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" type="text" name="email" placeholder="Email">
-	                                @if ($errors->has('email'))
-	                                    <span class="invalid-feedback" role="alert">
-	                                        <strong>{{ $errors->first('email') }}</strong>
-	                                    </span>
-	                                @endif
-								</div>
-								<div class="input-group mb-4">
-									<div class="input-group-prepend">
-										<span class="input-group-text">
-											<i class="icon-lock"></i>
-										</span>
-									</div>
-									<input class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" type="password" name="password" placeholder="Password">
-	                                @if ($errors->has('password'))
-	                                    <span class="invalid-feedback" role="alert">
-	                                        <strong>{{ $errors->first('password') }}</strong>
-	                                    </span>
-	                                @endif
-	                            </div>
-								<div class="row">
-									<div class="col-6">
-										<button class="btn btn-primary px-4" type="submit">Login</button>
-									</div>
-									<div class="col-6 text-right">
-										<button class="btn btn-link px-0" type="button">Forgot password?</button>
-									</div>
-								</div>
-							</div>
-						</form>
-					</div>
-					<div class="card text-white bg-primary py-5 d-md-down-none" style="width:44%">
-						<div class="card-body text-center">
-							<div>
-								<h2>Sign up</h2>
-								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-								<button class="btn btn-primary active mt-3" type="button">Register Now!</button>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+<div class="d-flex flex-wrap align-items-stretch">
+        <div class="col-lg-4 col-md-6 col-12 order-lg-1 min-vh-100 order-2 bg-white">
+          <div class="p-4 m-3">
+            <img src="{{ asset('img/stisla-fill.svg') }}" title="Hamro Logo" alt="logo" width="80" class="shadow-light rounded-circle mb-5 mt-2">
+            <img src="{{ asset('img/stisla-fill.svg') }}" title="Client ko Logo" alt="logo" width="80" class="shadow-light rounded-circle mb-5 mt-2 mr-3"> 
+            <h4 class="text-dark font-weight-normal">Welcome to <span class="font-weight-bold">{{ config('app.name', 'Laragen Dashboard') }}</span></h4>
+            <p class="text-muted">Login with admin credentials to get started!</p>
+            <form method="POST" action="{{ route('login.post') }}" class="needs-validation" novalidate="">
+              @csrf
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input id="email" type="email" class="form-control" name="email" tabindex="1" required autofocus>
+                <div class="invalid-feedback">
+                  Please fill in your email
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="d-block">
+                  <label for="password" class="control-label">Password</label>
+                </div>
+                <input id="password" type="password" class="form-control" name="password" tabindex="2" required>
+                <div class="invalid-feedback">
+                  please fill in your password
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" name="remember" class="custom-control-input" tabindex="3" id="remember-me">
+                  <label class="custom-control-label" for="remember-me">Remember Me</label>
+                </div>
+              </div>
+
+              <div class="form-group text-right">
+                <a href="#" class="float-left mt-3">
+                  Forgot Password?
+                </a>
+                <button type="submit" class="btn btn-primary btn-lg btn-icon icon-right" tabindex="4">
+                  Login
+                </button>
+              </div>
+
+              <!-- <div class="mt-5 text-center">
+                Don't have an account? <a href="#">Create new one</a>
+              </div> -->
+            </form>
+
+            <div class="text-center mt-5 text-small">
+              Copyright &copy; {{ date('Y') }} | {{ config('app.name', 'Laragen Dashboard') }}
+              <div class="mt-2">
+                <a href="#">Privacy Policy</a>
+                <div class="bullet"></div>
+                <a href="#">Terms of Service</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-8 col-12 order-lg-2 order-1 min-vh-100 background-walk-y position-relative overlay-gradient-bottom" data-background="{{ asset('img/unsplash/login-bg.jpg') }}">
+          <div class="absolute-bottom-left index-2">
+            <div class="text-light p-5 pb-2">
+              <div class="mb-5 pb-3">
+                <h1 class="mb-2 display-4 font-weight-bold">Good Morning</h1>
+                <h5 class="font-weight-normal text-muted-transparent">Bali, Indonesia</h5>
+              </div>
+              Photo by <a class="text-light bb" target="_blank" href="https://unsplash.com/photos/a8lTjWJJgLA">Justin Kauffman</a> on <a class="text-light bb" target="_blank" href="https://unsplash.com">Unsplash</a>
+            </div>
+          </div>
+        </div>
+      </div>
 @endsection

@@ -4,7 +4,11 @@
 		<select class="form-control" id="{{key}}" name="{{key}}">
 			<option value="0">Please select</option>
 			@foreach(${{parentModule}} as ${{key}})
-				<option value="{{ ${{key}}->id }}">{{ ${{key}}->{{parentDisplay}} }}</option>
+				@if(isset(${{modelNameLowercase}}))
+					<option value="{{ ${{key}}->id }}" @if( ${{modelNameLowercase}}->{{key}}->id == ${{key}}->id ) {{'selected'}} @endif>{{ ${{key}}->{{parentDisplay}} }}</option>
+				@else
+					<option value="{{ ${{key}}->id }}">{{ ${{key}}->{{parentDisplay}} }}</option>
+				@endif
 			@endforeach
 		</select>
   	</div>
