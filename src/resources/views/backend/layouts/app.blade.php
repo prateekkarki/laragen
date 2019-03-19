@@ -13,6 +13,7 @@
     <!-- General CSS Files -->
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}" >
     <link rel="stylesheet" href="{{ asset('css/fontawesome.css') }}" >
+    <link rel="stylesheet" href="{{ asset('css/dropzone.min.css') }}" >
     
     <!-- CSS Libraries -->
     @stack('page_styles')

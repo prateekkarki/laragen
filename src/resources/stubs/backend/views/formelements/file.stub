@@ -12,8 +12,8 @@
 
 @push('after-scripts')
 <script type="text/javascript">
-    Dropzone.options.drop{{key}} = {
-        url: '/upload',
+    $("#drop{{key}}").dropzone({ 
+        url: '{{ route('backend.uploader') }}',
         uploadMultiple: false,
         maxFilesize: 10,
         acceptedFiles: ".pdf, .doc, .zip, .txt", // To be generated dynamically
@@ -23,6 +23,9 @@
             dzClosure = this;
             this.on("success", function(file, response) {
                 console.log(response);
+                if(response.filename){
+                    $("#{{key}}").val(response.filename);
+                }
             });
             this.on("sending", function(file, xhr, formData) {
                 var csrf = "{{ csrf_token() }}";
@@ -34,6 +37,6 @@
                 }
             });
         }
-    }
+    });
 </script>
 @endpush
