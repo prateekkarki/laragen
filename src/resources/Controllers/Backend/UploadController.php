@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
@@ -13,13 +12,13 @@ class UploadController extends Controller
     /**
      * @return json
      */
-    public function upload(Request $request)
+    public function upload(Request $request, $moduleName, $module)
     {
         $image = $request->file('file');
 
-        $imagename = $image->getClientOriginalName();
+        $imagename = $module . '-' . $image->getClientOriginalName();
 
-        $destinationPath = storage_path('images');
+        $destinationPath = storage_path('images/'.$moduleName);
 
         $image->move($destinationPath, $imagename);
 

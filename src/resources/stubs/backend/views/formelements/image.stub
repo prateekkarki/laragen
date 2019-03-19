@@ -14,7 +14,7 @@
 @push('after-scripts')
 <script type="text/javascript">
     $("#drop{{key}}").dropzone({ 
-        url: '{{ route('backend.uploader') }}',
+        url: '{{ route('backend.uploader',['moduleName' => '{{modelNameLowercase}}' , 'module' => ${{modelNameLowercase}}]) }}',
         uploadMultiple: false,
         maxFilesize: 10,
         acceptedFiles: ".png,.jpg,.gif,.bmp,.jpeg",
