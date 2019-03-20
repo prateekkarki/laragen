@@ -16,7 +16,7 @@ class UploadController extends Controller
     {
         $image = $request->file('file');
 
-        $imagename = $module . '-' . $image->getClientOriginalName();
+        $imagename = $module . '-' . str_slug($image->getClientOriginalName());
 
         $destinationPath = storage_path('images/'.$moduleName);
 
