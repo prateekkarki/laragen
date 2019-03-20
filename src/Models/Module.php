@@ -48,6 +48,12 @@ class Module
                 $data[] = $column;
             }
         }
+        if($this->getForeignColumns()){
+            foreach($this->getForeignColumns() as $relation => $tablename ){
+                $columnName = array_values($tablename)[0];
+                $data[] = str_singular($columnName).'_id';
+            }
+        }
         return $data;
     }
 
