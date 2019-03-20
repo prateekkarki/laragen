@@ -1,7 +1,9 @@
 <div class="form-group row">
-    <label class="col-md-2 form-control-label" for="{{key}}">{{display}}</label>
-    <div class="col-md-10">
-        <input class="checkbox" id="{{key}}" type="checkbox" onclick="if (this.checked) $('#{{key}}-hidden').val(1); else $('#{{key}}-hidden').val(0);" {{ (isset(${{modelNameLowercase}}) && ${{modelNameLowercase}}->{{key}} == true) ? 'checked' : '' }} {{options}}>
+    <div class="col-md-2 control-label">{{display}}</div>
+    <label class="col-md-1 custom-switch mt-2" for="{{key}}">
+    <input type="checkbox" name="{{key}}" class="custom-switch-input" id="{{key}}" onclick="if (this.checked) $('#{{key}}-hidden').val(1); else{$('#{{key}}-hidden').val(0); $(this).removeAttr('checked');}" {{ (isset(${{modelNameLowercase}}) && ${{modelNameLowercase}}->{{key}} == true) ? 'checked' : '' }} {{options}}>
         <input type="hidden" name="{{key}}" id="{{key}}-hidden" value="{{ (isset(${{modelNameLowercase}}) && ${{modelNameLowercase}}->{{key}} == true) ? '1' : '0' }}">
-    </div>
+    <span class="custom-switch-indicator"></span>
+    {{-- <span class="custom-switch-description">{{display}}</span> --}}
+    </label>
 </div>
