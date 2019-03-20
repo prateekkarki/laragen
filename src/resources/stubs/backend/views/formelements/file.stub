@@ -3,7 +3,7 @@
     <div class="col-md-10" id="{{key}}Container">
         <div class="dropzone dropzone-file-area" id="drop{{key}}">
             <div class="dz-default dz-message">
-                <h3 class="sbold">Drop image here to upload</h3>
+                <h3 class="sbold">Drop file here to upload</h3>
                 <span>You can also click to open file browser</span>
             </div>
         </div>
