@@ -3,6 +3,8 @@ namespace Prateekkarki\Laragen\Generators\Backend;
 
 use Prateekkarki\Laragen\Generators\BaseGenerator;
 use Prateekkarki\Laragen\Generators\GeneratorInterface;
+use Prateekkarki\Laragen\Models\DataOption;
+
 
 class Request extends BaseGenerator implements GeneratorInterface
 {
@@ -19,8 +21,35 @@ class Request extends BaseGenerator implements GeneratorInterface
         return $fullFilePath;
 	}
 	
-	protected function getRules(){
-		// Todo
-		return "";
+    protected function getRules()
+    {
+        $validation = [];
+        $moduleData =$this->module->getData();
+        $modelname = $this->module->getModelNameLowercase();
+
+        foreach($moduleData as $column => $options){
+            $columnOptions = new DataOption($column, $options);
+            $type = $columnOptions->getType();
+            $rules = $columnOptions->optionArray();
+            
+            if(empty($rules)) continue;
+
+            foreach ($rules as $r) {
+                if(str_contains($r, 'unique')){
+                    $containsUnique = true;
+                    break;
+                }
+                else{
+                    $containsUnique = false;
+                }
+            }
+            if (isset($containsUnique) && $containsUnique == true) {
+                $validation[]= "'".$column."' => ".'($this->route()->'.$modelname.") ? '".$r.",".$column.",'".'.$this->route()->'.$modelname.'->id'." : '".$r."'";
+            } else {
+                $validation[]= "'".$column."' => '".implode('|',$rules)."'";
+            }
+        }
+        $delimiter = ",\n{$columnOptions->getTabs(3)}";
+        return (implode($delimiter, $validation));
 	}
 }

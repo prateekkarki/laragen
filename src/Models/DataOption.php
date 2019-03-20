@@ -201,6 +201,10 @@ class DataOption
         $this->size = $size;
     }
 
+    public function optionArray(){
+        return $this->optionArray;
+    }
+
     protected function processParent() {
         $schema = "";
         $parent = $this->typeOption;
@@ -209,4 +213,5 @@ class DataOption
         $schema .= "\$table->foreign('".str_singular($parent)."_id')->references('id')->on('$parent')->onDelete('set null');";
         return $schema;
     }
+
 }

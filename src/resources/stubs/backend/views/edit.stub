@@ -17,6 +17,15 @@
                     {{modelName}} Management
                     <small class="text-muted">Update {{moduleName}}</small>
                 </h4>
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
             </div>
             <div class="col-sm-7">
                 
