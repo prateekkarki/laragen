@@ -21,7 +21,8 @@ class Model extends BaseGenerator implements GeneratorInterface
 
     protected function getMassAssignables()
     {
-        return "'".implode("', '", $this->module->getNativeColumns())."'";
+        $columns = array_merge($this->module->getNativeColumns(), $this->module->getFileColumns(), $this->module->getParentColumns());
+        return "'".implode("', '", $columns)."'";
     }
 
     protected function getForeignMethods()

@@ -75,6 +75,35 @@ class Module
         return $data;
     }
 
+    public function getFileColumns($type = 'all')
+    {
+        if (is_array($type))
+            $types = $type;
+        else
+            $types = ($type == "all") ? DataOption::$fileTypes : [$type];
+        
+        $data = [];
+        foreach ($this->data as $column => $optionString) {
+            $dataOption = new DataOption($column, $optionString);
+            if (in_array($dataOption->getType(), $types)) {
+                $data[] = $column;
+            }
+        }
+        return $data;
+    }
+
+    public function getParentColumns()
+    {
+        $data = [];
+        foreach ($this->data as $column => $optionString) {
+            $dataOption = new DataOption($column, $optionString);
+            if ($dataOption->getType() == DataOption::TYPE_PARENT) {
+                $data[] = $column;
+            }
+        }
+        return $data;
+    }
+
     public function getForeignColumns($type = 'all')
     {
         if (is_array($type))
