@@ -72,12 +72,13 @@ class View extends BaseGenerator implements GeneratorInterface
             $columnOptions = new DataOption($column, $options);
             $type = $columnOptions->getType();
             $viewTemplate .= $this->buildTemplate('backend/views/formelements/'.$type, [
-                '{{key}}'                => $column,
-                '{{display}}'            => $columnOptions->getDisplay(),
-                '{{options}}'            => $columnOptions->getFormOptions(),
-                '{{parentModule}}'       => $columnOptions->getParentModule(),
-                '{{parentDisplay}}'      => $this->getParentDisplay($columnOptions->getParentModule()),
-                '{{modelNameLowercase}}' => $this->module->getModelNameLowercase()
+                '{{key}}'                   => $column,
+                '{{display}}'               => $columnOptions->getDisplay(),
+                '{{options}}'               => $columnOptions->getFormOptions(),
+                '{{parentModule}}'          => $columnOptions->getParentModule(),
+                '{{parentModuleSinglular}}' => str_singular($columnOptions->getParentModule()),
+                '{{parentDisplay}}'         => $this->getParentDisplay($columnOptions->getParentModule()),
+                '{{modelNameLowercase}}'    => $this->module->getModelNameLowercase()
             ]);
         }
 

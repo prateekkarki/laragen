@@ -24,8 +24,9 @@ class Generate extends Command
      */
     protected $filesToPublish = [
         'public' => '/',
-        'views/backend' => 'resources/views',
+        'views' => 'resources/views',
         'Controllers'   => 'app/Http',
+        'Middleware'   => 'app/Http',
     ];
     /**
      * Execute the console command.

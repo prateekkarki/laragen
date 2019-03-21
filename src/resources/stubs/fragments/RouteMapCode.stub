@@ -1,4 +1,4 @@
-		Route::middleware('web')
+		Route::middleware(['web','auth'])
 				->namespace($this->namespace)
 				->prefix('admin')
 				->name('backend.')
