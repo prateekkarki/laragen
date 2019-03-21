@@ -12,6 +12,7 @@ class Controller extends BaseGenerator implements GeneratorInterface
             '{{modelName}}'          => $this->module->getModelName(),
             '{{moduleName}}'         => $this->module->getModuleName(),
             '{{modelNameLowercase}}' => $this->module->getModelNameLowercase(),
+            '{{fileUploads}}'       => $this->getFileUploads(),
             '{{foreignData}}'        => $this->getForeignData(),
             '{{usedModels}}'         => $this->getUsedModels()
         ]);
@@ -19,6 +20,18 @@ class Controller extends BaseGenerator implements GeneratorInterface
         $fullFilePath = $this->getPath("app/Http/Controllers/Backend/").$this->module->getModelName()."Controller".".php";
         file_put_contents($fullFilePath, $controllerTemplate);
         return $fullFilePath;
+    }
+
+    protected function getFileUploads(){
+        $fileUploads = "";
+        $fileFields = $this->module->getFileColumns();
+        foreach($fileFields as $fileField){
+            $fileUploads .= ($fileField==head($fileFields)) ?  '' : $this->getTabs(2);
+            $fileUploads .= 'if ($request->has("'.$fileField.'")) {'.PHP_EOL;
+            $fileUploads .= $this->getTabs(3).'$this->uploader->process($request->input("'.$fileField.'"), "category");'.PHP_EOL;
+            $fileUploads .= $this->getTabs(2).'}'.PHP_EOL;
+        }
+        return $fileUploads;
     }
 
     protected function getForeignData(){
