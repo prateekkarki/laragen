@@ -75,6 +75,8 @@ class UploadController extends Controller
         $moduleDataOption = new DataOption($field, $moduleData[$field]);
         $rules = $moduleDataOption->optionArray();
 
+        dump($rules);
+
         $file = array($field => $file);
 
         $validator = Validator::make($file , [

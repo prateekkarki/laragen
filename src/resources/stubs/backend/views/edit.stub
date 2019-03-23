@@ -16,21 +16,23 @@
         display:inline-block;
     }
     .image-badge-item {
-        padding: 7px 15px;
+        padding: 9px 12px;
         font-weight: 600;
         color: #fff;
-        cursor:pointer;
+        cursor: pointer;
         border-radius: 30px;
         font-size: 12px;
-        width: 40px;
+        width: 36px;
+        height: 36px;
         transition: .2s ease-out;
     }
     .image-badge-item:hover {
-        padding: 10px 17px;
+        padding: 14px 17px;
         font-weight: 600;
         color: #fff;
         border-radius: 33px;
-        width: 45px;
+        width: 46px;
+        height: 46px;
     }
     </style>
 @endpush
