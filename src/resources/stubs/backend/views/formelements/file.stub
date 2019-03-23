@@ -1,6 +1,6 @@
 <div class="form-group row">
     <label class="col-md-2 form-control-label" for="{{key}}">{{display}}</label>
-    <div class="col-md-10" id="{{key}}Container">
+    <div class="col-md-5" id="{{key}}Container">
         <div class="dropzone dropzone-file-area" id="drop{{key}}">
             <div class="dz-default dz-message">
                 <h3 class="sbold">Drop file here to upload</h3>
