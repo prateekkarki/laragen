@@ -31,8 +31,12 @@ class Request extends BaseGenerator implements GeneratorInterface
             $columnOptions = new DataOption($column, $options);
             $type = $columnOptions->getType();
             $rules = $columnOptions->optionArray();
+
+            // dump($type);
             
             if(empty($rules)) continue;
+            if($type=='image') continue;
+            if($type=='file') continue;
 
             foreach ($rules as $r) {
                 if(str_contains($r, 'unique')){

@@ -52,6 +52,7 @@
                 if(response.status==200 && response.filename)
                 {
                     $('#{{key}}Container').append('<input type="hidden" name="{{key}}" id="{{key}}" value="'+ response.filename +'">');
+                    $('#{{key}}Container .validation-errors').html(' ');
                 }
                 else if(response.status == 415){
                     let error = '';
