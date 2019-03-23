@@ -3,6 +3,8 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Prateekkarki\Laragen\Models\DataOption;
+use \Validator;
 
 /**
  * Class UploadController.
@@ -11,18 +13,28 @@ class UploadController extends Controller
 {
     /**
      * @return json
+     * 
      */
-    public function upload(Request $request, $moduleName, $module)
+    protected $validation_error = [];
+
+    public function upload(Request $request)
     {
-        $image = $request->file('file');
+        $file = $request->file('file');
+        $moduleName = $request->input('moduleName');
+        $field = $request->input('field');
 
-        $imagename = substr(md5($module), 0, 8).'-'.str_slug(pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME)).'.'.$image->getClientOriginalExtension();
-
-        $destinationPath = storage_path('images/'.$moduleName);
-
-        $image->move($destinationPath, $imagename);
-
-        return response()->json(['message' => 'File successfully uploaded', 'filename' => $imagename], 200);
+        $valid = $this->validateUpload($file, $moduleName, $field);
+        // dd($valid);
+        if($valid){
+            $imagename = substr(md5($request->input('module')), 0, 8).'-'.str_slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)).'.'.$file->getClientOriginalExtension();
+    
+            $destinationPath = storage_path('images/'.$moduleName);
+    
+            $file->move($destinationPath, $imagename);
+    
+            return response()->json(['message' => 'File successfully uploaded', 'filename' => $imagename, 'status' => 200], 200);
+        }
+        return response()->json(['message' => $this->validation_error, 'filename' => false, 'status' => 415], 200);
     }
 
     /**
@@ -54,5 +66,26 @@ class UploadController extends Controller
             mkdir($path, 0755, true);
 
         return $path;
+    }
+
+    protected function validateUpload($file, $moduleName, $field)
+    {
+
+        $moduleData = config('laragen.modules')[str_plural($moduleName)];
+        $moduleDataOption = new DataOption($field, $moduleData[$field]);
+        $rules = $moduleDataOption->optionArray();
+
+        $file = array($field => $file);
+
+        $validator = Validator::make($file , [
+            $field => $rules,
+        ]);
+
+        if ($validator->passes())
+        {
+            return true; 
+        }
+        $this->validation_error = $validator->errors()->all();
+        return false;
     }
 }

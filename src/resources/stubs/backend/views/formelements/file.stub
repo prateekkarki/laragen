@@ -13,7 +13,7 @@
 @push('after-scripts')
 <script type="text/javascript">
     $("#drop{{key}}").dropzone({ 
-        url: '{{ route('backend.uploader',['moduleName' => '{{modelNameLowercase}}' , 'module' => ${{modelNameLowercase}}]) }}',
+        url: '{{ route('backend.uploader') }}',
         uploadMultiple: false,
         maxFilesize: 10,
         acceptedFiles: ".pdf, .doc, .zip, .txt", // To be generated dynamically
@@ -23,6 +23,9 @@
             dzClosure = this;
             this.on("success", function(file, response) {
                 console.log(response);
+                if(response.status=='error'){
+                    console.log('Validation Fail')
+                }
                 if(response.filename){
                     $('#{{key}}Container').append('<input type="hidden" name="{{key}}" id="{{key}}" value="'+ response.filename +'">');
                 }
@@ -30,6 +33,9 @@
             this.on("sending", function(file, xhr, formData) {
                 var csrf = "{{ csrf_token() }}";
                 formData.append("_token", csrf);
+                formData.append('moduleName', '{{modelNameLowercase}}');
+                formData.append('module', {{ ${{modelNameLowercase}}->id }});
+                formData.append('field', '{{key}}');
             });
             this.on("addedfile", function(event) {
                 while (this.files.length > this.options.maxFiles) {

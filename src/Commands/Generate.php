@@ -24,7 +24,7 @@ class Generate extends Command
      */
     protected $filesToPublish = [
         'public' => '/',
-        'views' => 'resources/views',
+        'views' => 'resources',
         'Controllers'   => 'app/Http',
         'Middleware'   => 'app/Http',
     ];

@@ -321,7 +321,7 @@
   z-index: 890; }
 
 .chocolat-overlay {
-  background-color: #000; }
+  background-color: #000 !important }
 
 /* 1.7 Custom Tab */
 [data-tab-group] {
@@ -519,6 +519,12 @@ tr:first-child > td > .fc-day-grid-event {
     height: 78px;
     margin-right: 10px;
     margin-bottom: 10px; }
+  .gallery.gallery-lg .gallery-item {
+    width: 210px;
+    height: 210px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+  }
   .gallery.gallery-md .gallery-more div {
     line-height: 78px; }
   .gallery.gallery-fw .gallery-item {
