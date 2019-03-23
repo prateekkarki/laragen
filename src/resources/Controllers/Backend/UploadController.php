@@ -3,7 +3,6 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Prateekkarki\Laragen\Models\DataOption;
 use \Validator;
 
 /**
@@ -24,7 +23,7 @@ class UploadController extends Controller
         $field = $request->input('field');
 
         $valid = $this->validateUpload($file, $moduleName, $field);
-        // dd($valid);
+
         if($valid){
             $imagename = substr(md5($request->input('module')), 0, 8).'-'.str_slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)).'.'.$file->getClientOriginalExtension();
     
@@ -72,7 +71,6 @@ class UploadController extends Controller
     {
 
         $moduleData = config('laragen.modules')[str_plural($moduleName)];
-        // $moduleDataOption = new DataOption($field, $moduleData[$field]);
         $rules = $moduleData[$field];
 
         $file = array($field => $file);
