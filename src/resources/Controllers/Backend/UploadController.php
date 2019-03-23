@@ -72,10 +72,8 @@ class UploadController extends Controller
     {
 
         $moduleData = config('laragen.modules')[str_plural($moduleName)];
-        $moduleDataOption = new DataOption($field, $moduleData[$field]);
-        $rules = $moduleDataOption->optionArray();
-
-        dump($rules);
+        // $moduleDataOption = new DataOption($field, $moduleData[$field]);
+        $rules = $moduleData[$field];
 
         $file = array($field => $file);
 
