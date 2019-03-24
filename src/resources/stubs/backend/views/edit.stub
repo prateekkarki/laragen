@@ -7,34 +7,6 @@
     <link rel="stylesheet" href="{{ asset('css/bootstrap-timepicker.min.css') }}" >
     <link rel="stylesheet" href="{{ asset('css/dropzone.min.css') }}" >
     <link rel="stylesheet" href="{{ asset('css/chocolat.css') }}" >
-    <style>
-    .image-badge {
-        position: relative;
-        z-index:1;
-        bottom: -1em;
-        right: 4em;
-        display:inline-block;
-    }
-    .image-badge-item {
-        padding: 9px 12px;
-        font-weight: 600;
-        color: #fff;
-        cursor: pointer;
-        border-radius: 30px;
-        font-size: 12px;
-        width: 36px;
-        height: 36px;
-        transition: .2s ease-out;
-    }
-    .image-badge-item:hover {
-        padding: 14px 17px;
-        font-weight: 600;
-        color: #fff;
-        border-radius: 33px;
-        width: 46px;
-        height: 46px;
-    }
-    </style>
 @endpush
 
 @section('content')
@@ -76,7 +48,5 @@
     <script src="{{ asset('js/daterangepicker.js') }}"></script>
     <script src="{{ asset('js/bootstrap-timepicker.min.js') }}"></script>
     <script src="{{ asset('js/dropzone.min.js') }}"></script>
-
     <script src="{{ asset('js/jquery.chocolat.min.js') }}"></script>
-
 @endpush

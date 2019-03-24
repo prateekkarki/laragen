@@ -1,0 +1,25 @@
+.image-badge {
+	position: relative;
+	z-index:1;
+	bottom: -1em;
+	right: 4em;
+	display:inline-block;
+}
+.image-badge-item {
+	padding: 9px 12px;
+	font-weight: 600;
+	color: #fff;
+	cursor: pointer;
+	border-radius: 30px;
+	font-size: 12px;
+	width: 36px;
+	height: 36px;
+	transition: .2s ease-out;
+}
+
+.image-badge-item:hover {
+	padding: 8px 11px;
+	background-color: #fff !important;
+	color: #fc544b !important;
+	border: 2px solid #777;
+}

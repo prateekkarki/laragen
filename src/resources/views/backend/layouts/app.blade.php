@@ -37,7 +37,6 @@
 
             <!-- JS Libraries -->
             @stack('page-scripts')
-            <script src="{{ asset('js/custom.js') }}"></script>
             @stack('after-scripts')
 
         </div>
