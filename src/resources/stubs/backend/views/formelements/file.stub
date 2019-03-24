@@ -16,7 +16,7 @@
         <div class="gallery gallery-lg">
             <div class="gallery-item" data-image="{{asset('images/{{modelNameLowercase}}/'.${{modelNameLowercase}}->{{key}})}}" data-title="Image" href="{{asset('images/{{modelNameLowercase}}/'.${{modelNameLowercase}}->{{key}})}}" title="Image" style="background-image: url({{asset('images/{{modelNameLowercase}}/'.${{modelNameLowercase}}->{{key}})}});">
             </div>
-            <div class="image-badge">
+            <div class="image-badge" id="{{key}}-del">
                 <div class="image-badge-item bg-danger"><i class="fas fa-trash"></i></div>
             </div>
         </div>

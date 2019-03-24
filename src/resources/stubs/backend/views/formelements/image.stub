@@ -28,7 +28,9 @@
         <div class="gallery gallery-lg">
             <div class="gallery-item" data-image="{{asset('images/{{modelNameLowercase}}/'.${{modelNameLowercase}}->{{key}})}}" data-title="Image" href="{{asset('images/{{modelNameLowercase}}/'.${{modelNameLowercase}}->{{key}})}}" title="Image" style="background-image: url({{asset('images/{{modelNameLowercase}}/'.${{modelNameLowercase}}->{{key}})}});">
             </div>
-            <div class="image-badge">
+            <div class="image-badge" id="{{key}}-del" 
+                data-confirm="Delete image|Are you sure?" 
+                data-confirm-yes="delImage('{{ route('backend.uploader.delete') }}', '{{modelNameLowercase}}', '{{ ${{modelNameLowercase}}->id }}', '{{key}}');">
                 <div class="image-badge-item bg-danger"><i class="fas fa-trash"></i></div>
             </div>
         </div>
@@ -58,7 +60,7 @@
                     let error = '';
                     response.message.forEach(function(e) {
                         error =  '<div class="alert alert-danger">'+e+'</div>';
-                        $('#{{key}}Container .validation-errors').html(' ').append(error);
+                        $('#{{key}}Container .validation-errors').append(error);
                     });
                     this.removeFile(file); //remove file from preview in dz
                 }

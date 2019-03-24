@@ -20,6 +20,36 @@ if (window.Dropzone) {
     Dropzone.autoDiscover = false;
 }
 
+
+var delImage = function(url, moduleName, modelId, field){
+    var csrf = $('meta[name="csrf-token"]').attr('content');
+
+    var data = {
+        _token: csrf,
+        modelName: moduleName,
+        modelId: modelId,
+        field: field
+    };
+    
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: data,
+        dataType: "json",
+        success: function(result){
+            console.log(result);
+            $('#'+field+'-del').parent().remove(); 
+            iziToast.success({
+                title: 'Removed',
+                message: 'File removed from system',
+            });
+        }
+    });
+
+    $.destroyModal($('.modal'));
+    return true;
+};
+
 // Basic confirm box
 $('[data-confirm]').each(function () {
     var me = $(this),

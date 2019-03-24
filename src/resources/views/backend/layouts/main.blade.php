@@ -32,6 +32,6 @@
 
 @endsection
 
-@push('page-scripts')
+@push('after-scripts')
     <script src="{{ asset('js/custom.js') }}"></script>
 @endpush

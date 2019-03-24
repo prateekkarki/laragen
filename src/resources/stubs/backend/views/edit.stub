@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="{{ asset('css/bootstrap-timepicker.min.css') }}" >
     <link rel="stylesheet" href="{{ asset('css/dropzone.min.css') }}" >
     <link rel="stylesheet" href="{{ asset('css/chocolat.css') }}" >
+    <link rel="stylesheet" href="{{ asset('css/iziToast.min.css') }}" >
 @endpush
 
 @section('content')
@@ -49,4 +50,5 @@
     <script src="{{ asset('js/bootstrap-timepicker.min.js') }}"></script>
     <script src="{{ asset('js/dropzone.min.js') }}"></script>
     <script src="{{ asset('js/jquery.chocolat.min.js') }}"></script>
+    <script src="{{ asset('js/iziToast.min.js') }}"></script>
 @endpush
