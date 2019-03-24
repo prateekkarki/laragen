@@ -169,12 +169,12 @@ class DataOption
         return $schema;
     }
 
-    protected function getColumnType() {
-        return $this->keyToType[$this->dataType];
+    public function isUnique() {
+        return $this->uniqueFlag;
     }
     
-    protected function isUnique() {
-        return $this->uniqueFlag;
+    protected function getColumnType() {
+        return $this->keyToType[$this->dataType];
     }
 
     protected function setOptions($optionType, $optionParam) {
