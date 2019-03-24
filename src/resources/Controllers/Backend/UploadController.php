@@ -41,17 +41,17 @@ class UploadController extends Controller
         $moduleName = $request->input('modelName');
         $modelToCall = "App\\Models\\" . ucfirst($moduleName);
         $model = $modelToCall::find($request->input('modelId'));
-        $filename = $model->image;
-
+        $field = $request->input('field');
+        $filename = $model->$field;
         $filePath = public_path('images/'.$moduleName.'/'.$filename);
 
         try {
             unlink($filePath);
         } catch (\Exception $ex) {
-            return response()->json(['message' => 'File removal failed'], 200);
+            return response()->json(['message' => 'File removal failed'], 500);
         }
 
-        $model->image = null;
+        $model->$field = null;
         $model->save();
         return response()->json(['message' => 'File successfully removed'], 200);
     }

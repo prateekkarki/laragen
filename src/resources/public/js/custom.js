@@ -43,7 +43,14 @@ var delImage = function(url, moduleName, modelId, field){
                 title: 'Removed',
                 message: 'File removed from system',
             });
-        }
+        },
+        error: function(result){
+            iziToast.error({
+                title: 'Error',
+                message: result.responseJSON.message,
+            });
+        },
+
     });
 
     $.destroyModal($('.modal'));
