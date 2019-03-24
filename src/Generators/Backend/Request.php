@@ -32,23 +32,10 @@ class Request extends BaseGenerator implements GeneratorInterface
             $type = $columnOptions->getType();
             $rules = $columnOptions->optionArray();
 
-            // dump($type);
-            
-            if(empty($rules)) continue;
-            if($type=='image') continue;
-            if($type=='file') continue;
+            if(in_array($type, DataOption::$fileTypes) || empty($rules)) continue;
 
-            foreach ($rules as $r) {
-                if(str_contains($r, 'unique')){
-                    $containsUnique = true;
-                    break;
-                }
-                else{
-                    $containsUnique = false;
-                }
-            }
-            if (isset($containsUnique) && $containsUnique == true) {
-                $validation[]= "'".$column."' => ".'($this->route()->'.$modelname.") ? '".$r.",".$column.",'".'.$this->route()->'.$modelname.'->id'." : '".$r."'";
+            if ($columnOptions->isUnique()) {
+                $validation[]= "'".$column."' => ".'($this->route()->'.$modelname.") ? '".DataOption::COLUMN_UNIQUE.":".$this->module->getModulename().",".$column.",'".'.$this->route()->'.$modelname.'->id'." : '".DataOption::COLUMN_UNIQUE.":".$this->module->getModulename()."'";
             } else {
                 $validation[]= "'".$column."' => '".implode('|',$rules)."'";
             }
