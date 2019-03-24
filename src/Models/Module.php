@@ -24,6 +24,9 @@ class Module
 
     public function getData()
     {
+        $this->data['sort'] = 'integer';
+        $this->data['status'] = 'boolean';
+
         return $this->data;
     }
 

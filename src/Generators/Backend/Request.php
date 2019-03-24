@@ -25,6 +25,7 @@ class Request extends BaseGenerator implements GeneratorInterface
     {
         $validation = [];
         $moduleData =$this->module->getData();
+        // dump($moduleData);
         $modelname = $this->module->getModelNameLowercase();
 
         foreach($moduleData as $column => $options){
@@ -32,12 +33,17 @@ class Request extends BaseGenerator implements GeneratorInterface
             $type = $columnOptions->getType();
             $rules = $columnOptions->optionArray();
 
-            if(in_array($type, DataOption::$fileTypes) || empty($rules)) continue;
+            // dump($column, $columnOptions->isUnique());
+            if(in_array($type, DataOption::$fileTypes) || in_array($type, DataOption::$specialTypes)) continue;
+
+            $uniqueValidation = '\''.$column.'\' => ($this->route()->'.$modelname.') ? ';
+            $uniqueValidation .= '\''.DataOption::COLUMN_UNIQUE.':'.$this->module->getModulename().','.$column.','.'\''.'.$this->route()->category->id';
+            $uniqueValidation .= ':\''.DataOption::COLUMN_UNIQUE.':'.$this->module->getModulename().'\'';
 
             if ($columnOptions->isUnique()) {
-                $validation[]= "'".$column."' => ".'($this->route()->'.$modelname.") ? '".DataOption::COLUMN_UNIQUE.":".$this->module->getModulename().",".$column.",'".'.$this->route()->'.$modelname.'->id'." : '".DataOption::COLUMN_UNIQUE.":".$this->module->getModulename()."'";
+                $validation[]= $uniqueValidation;
             } else {
-                $validation[]= "'".$column."' => '".implode('|',$rules)."'";
+                $validation[]= empty($rules) ? "'".$column."' => '".$type."'": "'".$column."' => '".$type."|".implode('|',$rules)."'";
             }
         }
         $delimiter = ",\n{$columnOptions->getTabs(3)}";
