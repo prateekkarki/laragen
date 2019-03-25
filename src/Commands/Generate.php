@@ -27,6 +27,7 @@ class Generate extends Command
         'views' => 'resources',
         'Controllers'   => 'app/Http',
         'Middleware'   => 'app/Http',
+        'Helpers'   => 'app/Http',
     ];
     /**
      * Execute the console command.
