@@ -3,6 +3,7 @@ namespace Prateekkarki\Laragen\Generators\Backend;
 
 use Prateekkarki\Laragen\Generators\BaseGenerator;
 use Prateekkarki\Laragen\Generators\GeneratorInterface;
+use Prateekkarki\Laragen\Models\DataOption;
 
 class Controller extends BaseGenerator implements GeneratorInterface
 {
@@ -12,9 +13,10 @@ class Controller extends BaseGenerator implements GeneratorInterface
             '{{modelName}}'          => $this->module->getModelName(),
             '{{moduleName}}'         => $this->module->getModuleName(),
             '{{modelNameLowercase}}' => $this->module->getModelNameLowercase(),
-            '{{fileUploads}}'       => $this->getFileUploads(),
+            '{{fileUploads}}'        => $this->getFileUploads(),
             '{{foreignData}}'        => $this->getForeignData(),
-            '{{usedModels}}'         => $this->getUsedModels()
+            '{{usedModels}}'         => $this->getUsedModels(),
+            '{{fileExtentions}}'     => $this->getFileExtentionData()
         ]);
         
         $fullFilePath = $this->getPath("app/Http/Controllers/Backend/").$this->module->getModelName()."Controller".".php";
@@ -58,4 +60,14 @@ class Controller extends BaseGenerator implements GeneratorInterface
         }
         return $usedModels;
     }
+
+    public function getFileExtentionData()
+    {
+        $controller_ = '';
+        foreach($this->module->getFileColumns('file') as $column){
+            $controller_ = "$".$this->module->getModelNameLowercase()."['".$column."_extention'] =".' getFileExtention($'.$this->module->getModelNameLowercase()."->".$column.");";
+        }
+        return $controller_;
+    }
+    
 }

@@ -11,12 +11,15 @@
             
         </div>
     </div>
-    @if(${{modelNameLowercase}}->{{key}})
+
+    @if(isset(${{modelNameLowercase}}->{{key}}))
     <div class="col-md-3">
         <div class="gallery gallery-lg">
-            <div class="gallery-item" >
+            <div class="gallery-item" data-image="{{asset('images/'.${{modelNameLowercase}}->{{key}}_extention)}}" data-title="File" href="{{asset('images/'.${{modelNameLowercase}}->{{key}}_extention)}}" title="File" style="background-image: url({{asset('images/'.${{modelNameLowercase}}->{{key}}_extention)}});">
             </div>
-            <div class="image-badge" id="{{key}}-del">
+            <div class="image-badge" id="{{key}}-del"
+                data-confirm="Delete File|Are you sure?"
+                data-confirm-yes="delImage('{{ route('backend.uploader.delete') }}', '{{modelNameLowercase}}', '{{ ${{modelNameLowercase}}->id }}', '{{key}}');">
                 <div class="image-badge-item bg-danger"><i class="fas fa-trash"></i></div>
             </div>
         </div>
