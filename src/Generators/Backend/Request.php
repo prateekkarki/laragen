@@ -25,7 +25,6 @@ class Request extends BaseGenerator implements GeneratorInterface
     {
         $validation = [];
         $moduleData =$this->module->getData();
-        // dump($moduleData);
         $modelname = $this->module->getModelNameLowercase();
 
         foreach($moduleData as $column => $options){
@@ -33,7 +32,6 @@ class Request extends BaseGenerator implements GeneratorInterface
             $type = $columnOptions->getType();
             $rules = $columnOptions->optionArray();
 
-            // dump($column, $columnOptions->isUnique());
             if(in_array($type, DataOption::$fileTypes) || in_array($type, DataOption::$specialTypes)) continue;
 
             $uniqueValidation = '\''.$column.'\' => ($this->route()->'.$modelname.') ? ';
