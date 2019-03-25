@@ -11,7 +11,7 @@
             
         </div>
     </div>
-    @if(${{modelNameLowercase}}->{{key}})
+    @if(isset(${{modelNameLowercase}}) && ${{modelNameLowercase}}->{{key}})
     <div class="col-md-3">
         <div class="gallery gallery-lg">
             <div class="gallery-item" >

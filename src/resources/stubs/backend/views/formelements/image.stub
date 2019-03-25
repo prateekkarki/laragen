@@ -1,17 +1,5 @@
 <div class="form-group row">
     <label class="col-md-2 form-control-label" for="drop{{key}}">{{display}}</label>
-    
-    {{-- @if(${{modelNameLowercase}}->{{key}})
-    <div class="col-md-3">
-        <div class="gallery gallery-lg">
-            <div class="gallery-item" data-image="{{asset('images/{{modelNameLowercase}}/'.${{modelNameLowercase}}->{{key}})}}" data-title="Image" href="{{asset('images/{{modelNameLowercase}}/'.${{modelNameLowercase}}->{{key}})}}" title="Image" style="background-image: url({{asset('images/{{modelNameLowercase}}/'.${{modelNameLowercase}}->{{key}})}});">
-            </div>
-            <div class="image-badge">
-                <div class="image-badge-item bg-danger"><i class="fas fa-trash"></i></div>
-            </div>
-        </div>
-    </div>
-    @endif --}}
     <div class="col-md-5" id="{{key}}Container">
         <div class="dropzone dropzone-file-area" id="drop{{key}}">
             <div class="dz-default dz-message">
@@ -23,7 +11,7 @@
             
         </div>
     </div>
-    @if(${{modelNameLowercase}}->{{key}})
+    @if(isset(${{modelNameLowercase}}) && ${{modelNameLowercase}}->{{key}})
     <div class="col-md-3">
         <div class="gallery gallery-lg">
             <div class="gallery-item" data-image="{{asset('images/{{modelNameLowercase}}/'.${{modelNameLowercase}}->{{key}})}}" data-title="Image" href="{{asset('images/{{modelNameLowercase}}/'.${{modelNameLowercase}}->{{key}})}}" title="Image" style="background-image: url({{asset('images/{{modelNameLowercase}}/'.${{modelNameLowercase}}->{{key}})}});">
