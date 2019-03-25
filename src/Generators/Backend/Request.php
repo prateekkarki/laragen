@@ -37,7 +37,7 @@ class Request extends BaseGenerator implements GeneratorInterface
             if(in_array($type, DataOption::$fileTypes) || in_array($type, DataOption::$specialTypes)) continue;
 
             $uniqueValidation = '\''.$column.'\' => ($this->route()->'.$modelname.') ? ';
-            $uniqueValidation .= '\''.DataOption::COLUMN_UNIQUE.':'.$this->module->getModulename().','.$column.','.'\''.'.$this->route()->category->id';
+            $uniqueValidation .= '\''.DataOption::COLUMN_UNIQUE.':'.$this->module->getModulename().','.$column.','.'\''.'.$this->route()->'.$modelname.'->id';
             $uniqueValidation .= ':\''.DataOption::COLUMN_UNIQUE.':'.$this->module->getModulename().'\'';
 
             if ($columnOptions->isUnique()) {
