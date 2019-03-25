@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Symfony\Component\Filesystem\Filesystem;
 use \Validator;
 
 /**
@@ -25,7 +26,7 @@ class UploadController extends Controller
         $valid = $this->validateUpload($file, $moduleName, $field);
 
         if($valid){
-            $imagename = substr(md5($request->input('module')), 0, 8).'-'.str_slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)).'.'.$file->getClientOriginalExtension();
+            $imagename = str_slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)).'.'.$file->getClientOriginalExtension();
     
             $destinationPath = storage_path('images/'.$moduleName);
     
@@ -33,7 +34,8 @@ class UploadController extends Controller
     
             return response()->json(['message' => 'File successfully uploaded', 'filename' => $imagename, 'status' => 200], 200);
         }
-        return response()->json(['message' => $this->validation_error, 'filename' => false, 'status' => 415], 200);
+
+        return response()->json(['message' => $this->validation_error, 'filename' => false, 'status' => 500], 200);
     }
 
     public function delete(Request $request)
@@ -44,9 +46,10 @@ class UploadController extends Controller
         $field = $request->input('field');
         $filename = $model->$field;
         $filePath = public_path('images/'.$moduleName.'/'.$filename);
+        $fileSystem = new Filesystem;
 
         try {
-            unlink($filePath);
+            $fileSystem->remove($filePath);
         } catch (\Exception $ex) {
             return response()->json(['message' => 'File removal failed'], 500);
         }
@@ -61,9 +64,15 @@ class UploadController extends Controller
      */
     public function process($filename, $moduleName)
     {
+        $fileSystem = new Filesystem;
         $tempFile = storage_path('images/'.$moduleName.'/'.$filename);
         $fileToWrite = $this->getWritableFilename($filename, $moduleName);
-        rename($tempFile, $fileToWrite);
+        try {
+            $fileSystem->rename($tempFile, $fileToWrite);
+        } catch (\RuntimeException $ex) {
+            echo $ex->getMessage();
+            // return['error' => $ex->getMessage()];
+        }
     }
 
     protected function getWritableFilename($filename, $moduleName)

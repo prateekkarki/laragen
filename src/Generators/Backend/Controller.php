@@ -27,8 +27,15 @@ class Controller extends BaseGenerator implements GeneratorInterface
     protected function getFileUploads(){
         $fileUploads = "";
         $fileFields = $this->module->getFileColumns();
-        foreach($fileFields as $fileField){
-            $fileUploads .= ($fileField==head($fileFields)) ?  '' : $this->getTabs(2);
+        if(empty($fileFields)) return "";
+        if(count($fileFields)>1){
+            $fileUploads .= 'foreach (["'.implode('", "', $fileFields).'"] as $fileField) {'.PHP_EOL;
+            $fileUploads .= $this->getTabs(3).'if ($request->has($fileField)) {'.PHP_EOL;
+            $fileUploads .= $this->getTabs(4).'$this->uploader->process($request->input($fileField), "'.$this->module->getModelNameLowercase().'");'.PHP_EOL;
+            $fileUploads .= $this->getTabs(3).'}'.PHP_EOL;
+            $fileUploads .= $this->getTabs(2).'}'.PHP_EOL;
+        }else{
+            $fileField = $fileFields[0];
             $fileUploads .= 'if ($request->has("'.$fileField.'")) {'.PHP_EOL;
             $fileUploads .= $this->getTabs(3).'$this->uploader->process($request->input("'.$fileField.'"), "category");'.PHP_EOL;
             $fileUploads .= $this->getTabs(2).'}'.PHP_EOL;
