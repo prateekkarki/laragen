@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Symfony\Component\Filesystem\Filesystem;
-use \Validator;
+use Validator;
+use Image;
 
 /**
  * Class UploadController.
@@ -65,14 +66,23 @@ class UploadController extends Controller
     public function process($filename, $moduleName)
     {
         $fileSystem = new Filesystem;
+        $messages=['errors'=>[]];
         $tempFile = storage_path('images/'.$moduleName.'/'.$filename);
         $fileToWrite = $this->getWritableFilename($filename, $moduleName);
+
+        $tempImage = Image::make($tempFile);
+
+        $methodToUse = $tempImage->width() > $tempImage->height() ? 'widen' : 'heighten';
+
         try {
-            $fileSystem->rename($tempFile, $fileToWrite);
-        } catch (\RuntimeException $ex) {
-            echo $ex->getMessage();
-            // return['error' => $ex->getMessage()];
+            $tempImage->$methodToUse(2000, function ($constraint){
+                $constraint->upsize();
+            })->save($fileToWrite);
+            $messages['filename'] = $fileToWrite;
+        } catch (\Exception $ex) {
+            $messages['errors'][] = $ex->getMessage();
         }
+        return $messages;
     }
 
     protected function getWritableFilename($filename, $moduleName)
