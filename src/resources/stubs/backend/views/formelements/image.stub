@@ -69,7 +69,7 @@
                 var csrf = "{{ csrf_token() }}";
                 formData.append("_token", csrf);
                 formData.append('moduleName', '{{modelNameLowercase}}');
-                formData.append('module', {{ ${{modelNameLowercase}}->id }});
+                formData.append('module', {!! ${{modelNameLowercase}}->id ?? "''" !!});
                 formData.append('field', '{{key}}');
             });
             this.on("addedfile", function(event) {

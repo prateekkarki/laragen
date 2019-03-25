@@ -14,7 +14,7 @@
     @if(${{modelNameLowercase}}->{{key}})
     <div class="col-md-3">
         <div class="gallery gallery-lg">
-            <div class="gallery-item" data-image="{{asset('images/{{modelNameLowercase}}/'.${{modelNameLowercase}}->{{key}})}}" data-title="Image" href="{{asset('images/{{modelNameLowercase}}/'.${{modelNameLowercase}}->{{key}})}}" title="Image" style="background-image: url({{asset('images/{{modelNameLowercase}}/'.${{modelNameLowercase}}->{{key}})}});">
+            <div class="gallery-item" >
             </div>
             <div class="image-badge" id="{{key}}-del">
                 <div class="image-badge-item bg-danger"><i class="fas fa-trash"></i></div>
@@ -54,7 +54,7 @@
                 var csrf = "{{ csrf_token() }}";
                 formData.append("_token", csrf);
                 formData.append('moduleName', '{{modelNameLowercase}}');
-                formData.append('module', {{ ${{modelNameLowercase}}->id }});
+                formData.append('module', {!! ${{modelNameLowercase}}->id ?? "''" !!});
                 formData.append('field', '{{key}}');
             });
             this.on("addedfile", function(event) {
