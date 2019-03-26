@@ -1,7 +1,7 @@
 <?php
   /**
      * Helper Functions for Lagaren
-     * Autoloads via Composer
+     * Autoloads via LaragenServiceProvider
      */
 
 if (!function_exists('getFileExtention')) {
