@@ -27,7 +27,8 @@ class UploadController extends Controller
         $valid = $this->validateUpload($file, $moduleName, $field);
 
         if($valid){
-            $imagename = str_slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)).'.'.$file->getClientOriginalExtension();
+            
+            $imagename = $this->getWritableFilename(str_slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)).'.'.$file->getClientOriginalExtension(), $moduleName, true);;
     
             $destinationPath = storage_path('images/'.$moduleName);
     
@@ -84,16 +85,16 @@ class UploadController extends Controller
         return $messages;
     }
 
-    protected function getWritableFilename($filename, $moduleName)
+    protected function getWritableFilename($filename, $moduleName, $is_storage=false)
     {
-        $dir = $this->getPath(public_path('images/'.$moduleName));
+        $dir = $is_storage ? $this->getPath(storage_path('images/'.$moduleName)) : $this->getPath(public_path('images/'.$moduleName));
         $path = $dir.'/'.$filename;
         if (file_exists($path)) {
             $filename = pathinfo($path, PATHINFO_FILENAME);
             $filename .= rand(0,9).'.'.pathinfo($path, PATHINFO_EXTENSION);
-            return $this->getWritableFilename($filename, $moduleName); 
+            return $this->getWritableFilename($filename, $moduleName, $is_storage); 
         }else{
-            return $path;
+            return $is_storage ? $filename : $path;
         }
     }
 
