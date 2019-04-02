@@ -8,6 +8,15 @@
             <img src="{{ asset('img/stisla-fill.svg') }}" title="Client ko Logo" alt="logo" width="80" class="shadow-light rounded-circle mb-5 mt-2 mr-3"> 
             <h4 class="text-dark font-weight-normal">Welcome to <span class="font-weight-bold">{{ config('app.name', 'Laragen Dashboard') }}</span></h4>
             <p class="text-muted">Login with admin credentials to get started!</p>
+            @if ($errors->any())
+                  <div class="alert alert-danger">
+                      <ul>
+                          @foreach ($errors->all() as $error)
+                              <li>{{ $error }}</li>
+                          @endforeach
+                      </ul>
+                  </div>
+              @endif
             <form method="POST" action="{{ route('login.post') }}" class="needs-validation" novalidate="">
               @csrf
               <div class="form-group">
