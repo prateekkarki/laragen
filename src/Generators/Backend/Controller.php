@@ -29,11 +29,10 @@ class Controller extends BaseGenerator implements GeneratorInterface
         $fileFields = $this->module->getFileColumns();
         if(empty($fileFields)) return "";
         if(count($fileFields)>1){
-            $fileUploads .= 'foreach (["'.implode('", "', $fileFields).'"] as $fileField) {'.PHP_EOL;
-            $fileUploads .= $this->getTabs(3).'if ($request->has($fileField)) {'.PHP_EOL;
-            $fileUploads .= $this->getTabs(4).'$this->uploader->process($request->input($fileField), "'.$this->module->getModelNameLowercase().'");'.PHP_EOL;
-            $fileUploads .= $this->getTabs(3).'}'.PHP_EOL;
-            $fileUploads .= $this->getTabs(2).'}'.PHP_EOL;
+            $fileUploads .= $this->buildTemplate('backend/fragments/upload-process', [
+                '{{modelNameLowercase}}' => $this->module->getModelNameLowercase(),
+                '{{fileFields}}'         => implode('", "', $fileFields),
+            ]);
         }else{
             $fileField = $fileFields[0];
             $fileUploads .= 'if ($request->has("'.$fileField.'")) {'.PHP_EOL;

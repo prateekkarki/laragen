@@ -56,9 +56,13 @@ class {{modelName}}Controller extends Controller
     public function store({{modelName}}Request $request): RedirectResponse
     {
         {{fileUploads}}
-        ${{modelNameLowercase}} = {{modelName}}::create($request->all());
 
-        return redirect()->route('backend.{{moduleName}}.edit', ${{modelNameLowercase}})->withSuccess(__('{{moduleName}}.created'));
+        if (isset($errors)) {
+            return redirect()->back()->withErrors($errors);    
+        }else{
+            ${{modelNameLowercase}} = {{modelName}}::create($request->all());
+            return redirect()->route('backend.{{moduleName}}.edit', ${{modelNameLowercase}})->withSuccess(__('{{moduleName}}.created'));
+        }
     }
 
     /**
@@ -67,9 +71,13 @@ class {{modelName}}Controller extends Controller
     public function update({{modelName}}Request $request, {{modelName}} ${{modelNameLowercase}}): RedirectResponse
     {
         {{fileUploads}}
-        ${{modelNameLowercase}}->update($request->all());
 
-        return redirect()->route('backend.{{moduleName}}.edit', ${{modelNameLowercase}})->withSuccess(__('{{moduleName}}.updated'));
+        if (isset($errors)) {
+            return redirect()->back()->withErrors($errors);    
+        }else{
+            ${{modelNameLowercase}} = {{modelName}}::create($request->all());
+            return redirect()->route('backend.{{moduleName}}.edit', ${{modelNameLowercase}})->withSuccess(__('{{moduleName}}.created'));
+        }
     }
 
     /**

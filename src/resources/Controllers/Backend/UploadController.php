@@ -65,7 +65,6 @@ class UploadController extends Controller
      */
     public function process($filename, $moduleName)
     {
-        $fileSystem = new Filesystem;
         $messages=['errors'=>[]];
         $tempFile = storage_path('images/'.$moduleName.'/'.$filename);
         $fileToWrite = $this->getWritableFilename($filename, $moduleName);
@@ -78,9 +77,9 @@ class UploadController extends Controller
             $tempImage->$methodToUse(2000, function ($constraint){
                 $constraint->upsize();
             })->save($fileToWrite);
-            $messages['filename'] = $fileToWrite;
+            $messages['success']['filename'] = $fileToWrite;
         } catch (\Exception $ex) {
-            $messages['errors'][] = $ex->getMessage();
+            $messages['errors'][] = [ 'fileError' => $ex->getMessage()];
         }
         return $messages;
     }
