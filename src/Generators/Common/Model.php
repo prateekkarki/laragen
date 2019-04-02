@@ -34,11 +34,6 @@ class Model extends BaseGenerator implements GeneratorInterface
                 $fullFilePath = $this->getPath("app/Models/").$this->module->getPivotName($multiple).".php";
                 file_put_contents($fullFilePath, $multiModelTemplate);
                 $generatedFiles[] = $fullFilePath;
-                // $foreignMethods .= $this->buildTemplate('common/Models/fragments/related', [
-                //     '{{related}}'      => str_singular($multiple),
-                //     '{{columnName}}'  => str_plural($multiple),
-                //     '{{relatedModel}}' => $this->module->getPivotName($multiple)
-                // ]);
             }
         }
 
@@ -76,7 +71,7 @@ class Model extends BaseGenerator implements GeneratorInterface
         foreach ($this->module->getForeignColumns('parent') as $parents) {
             foreach ($parents as $column => $parent) {
                 $foreignMethods .= $this->buildTemplate('common/Models/fragments/parent', [
-                    '{{parent}}'      => $parent,
+                    '{{parent}}'      => str_singular($parent),
                     '{{columnName}}'  => $column,
                     '{{parentModel}}' => ($parent == 'users' && class_exists('\\App\\User')) ? "\\App\\User" : ucfirst(camel_case(str_singular($parent)))
                 ]);
@@ -86,7 +81,7 @@ class Model extends BaseGenerator implements GeneratorInterface
         foreach ($this->module->getForeignColumns('related') as $relatedModels) {
             foreach ($relatedModels as $column => $relatedModel) {
                 $foreignMethods .= $this->buildTemplate('common/Models/fragments/related', [
-                    '{{related}}'      => $relatedModel,
+                    '{{related}}'      => str_singular($relatedModel),
                     '{{columnName}}'  => $column,
                     '{{relatedModel}}' => ($relatedModel == 'users' && class_exists('\\App\\User')) ? "\\App\\User" : ucfirst(camel_case(str_singular($relatedModel)))
                 ]);
