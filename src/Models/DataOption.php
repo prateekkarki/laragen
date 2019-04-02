@@ -46,6 +46,10 @@ class DataOption
         'related'
     ];
 
+    public static $relatedMultiple = [
+      
+    ];
+
     /**
      * Array of data type options
      *
@@ -66,42 +70,57 @@ class DataOption
         'file' =>'string',
         'boolean' =>'boolean',
         'text' =>'text',
-        'date' =>'date',
-        'datetime' =>'datetime'
+        'datetime' =>'datetime',
+        'date' =>'date'
     ];
 
     public function __construct($columnName, $optionString)
     {
         $this->column = $columnName;
         $this->size = false;
-        $this->optionArray = explode('|', $optionString);
-        
-        $typePieces = array_shift($this->optionArray);
-        $type = explode(':', $typePieces);
-        $this->dataType = is_array($type) ? $type[0] : $type;
-        $this->typeOption = is_array($type)&&count($type)>=2 ? $type[1] : false;
+        // dump($optionString);
+        if(is_array($optionString) ){
+            $this->dataType = 'multiple';
+            $this->multipleOptions = [];
+            foreach($optionString as $col => $multString){
+                $this->multipleOptions[] = new Self($col, $multString);
+            }
+            // dd($this->multipleOptions[0]);
+            $column = $this->multipleOptions[0]->column;
+            // dd($column);
+            // $option = ;
 
-        foreach ($this->optionArray as $option) {
-            if ($option == self::COLUMN_UNIQUE) {
-                $this->setUnique();
-                continue;
+        }else{
+            $this->optionArray = explode('|', $optionString);
+            $typePieces = array_shift($this->optionArray);
+            $type = explode(':', $typePieces);
+            $this->dataType = is_array($type) ? $type[0] : $type;
+            $this->typeOption = is_array($type)&&count($type)>=2 ? $type[1] : false;
+
+            foreach ($this->optionArray as $option) {
+                if ($option == self::COLUMN_UNIQUE) {
+                    $this->setUnique();
+                    continue;
+                }
+                if ($option == self::COLUMN_REQUIRED) {
+                    $this->setRequired();
+                    continue;
+                }
+                if(Str::contains($option, ':')){
+                    $optionPieces = explode(':', $option);
+                    $this->setOptions($optionPieces[0], $optionPieces[1]);
+                }
             }
-            if ($option == self::COLUMN_REQUIRED) {
-                $this->setRequired();
-                continue;
-            }
-            if(Str::contains($option, ':')){
-                $optionPieces = explode(':', $option);
-                $this->setOptions($optionPieces[0], $optionPieces[1]);
-            }
-        }
+        }    
+        
+        
     }
 
     public function getSchema()
     {
         if ($this->dataType=='parent') {
             $schema = $this->processParent();
-        } else if($this->dataType=='related'){
+        } else if($this->dataType=='related'||$this->dataType=='multiple'){
             $schema = '';
         } else {
             $schema = '$table->'.$this->getColumnType()."('{$this->column}'";
@@ -126,6 +145,7 @@ class DataOption
         if($type=='string'){
             $type = (!$this->getSize() || $this->getSize()<=128) ? $type : 'text';
         } 
+        
         return $type;
     }
 

@@ -36,6 +36,20 @@ class Migration extends BaseGenerator implements GeneratorInterface
             $generatedFiles[] = $pivotFilePath;
         }
 
+        foreach ($this->module->getMultipleColumns() as $multipleModules) {
+            foreach ($multipleModules as $multiple => $multipleData) {
+                $pivotTemplate = $this->buildTemplate('common/migrations/pivot', [
+                    '{{pivotName}}'         => str_plural($this->module->getPivotName($multiple)),
+                    '{{pivotTableName}}'    => str_plural($this->module->getPivotTableName($multiple)),
+                    '{{pivotTableSchema}}'  => $this->getMultipleSchema($multipleData)
+                ]);
+                
+                $pivotFilePath = $this->getPivotFile($multiple);
+                file_put_contents($pivotFilePath, $pivotTemplate);
+                $generatedFiles[] = $pivotFilePath;
+            }
+        }
+
         return $generatedFiles;
     }
 
@@ -59,7 +73,7 @@ class Migration extends BaseGenerator implements GeneratorInterface
     {
         $fileCounter = sprintf('%06d', (int) date('His') + ++self::$counter);
         $filenamePrefix = date('Y_m_d_').$fileCounter."_";
-        $fileName = "create_".$this->module->getPivotTableName($related)."_table.php";
+        $fileName = "create_".str_plural($this->module->getPivotTableName($related))."_table.php";
 
         $existingFiles = scandir($this->getPath("database/migrations/"));
         
@@ -72,10 +86,27 @@ class Migration extends BaseGenerator implements GeneratorInterface
         return $this->getPath("database/migrations/").$filenamePrefix.$fileName;
     }
 
+    protected function getMultipleSchema($multipleData)
+    {
+        $schema =  '$table->bigInteger("'.$this->module->getModelNameLowercase().'_id")->unsigned()->nullable();'.PHP_EOL.$this->getTabs(3);
+        $schema .= "\$table->foreign('".$this->module->getModelNameLowercase()."_id')->references('id')->on('".$this->module->getModulename()."')->onDelete('set null');";
+
+        foreach($multipleData as $column => $optionString){
+            $option = new DataOption($column, $optionString);
+            $schema .= $option->getSchema();
+            $schema .=  ''.PHP_EOL.$this->getTabs(3);
+        }
+        return $schema;
+    }
+
     protected function getPivotSchema($related)
     {
-        $schema =  '$table->integer("'.$this->module->getModelNameLowercase().'_id")->unsigned();'.PHP_EOL.$this->getTabs(3);
-        $schema .= '$table->integer("'.str_singular($related).'_id")->unsigned();';
+        $schema =  '$table->bigInteger("'.$this->module->getModelNameLowercase().'_id")->unsigned()->nullable();'.PHP_EOL.$this->getTabs(3);
+        $schema .= "\$table->foreign('".$this->module->getModelNameLowercase()."_id')->references('id')->on('".$this->module->getModulename()."')->onDelete('set null');";
+
+        $schema .= '$table->bigInteger("'.str_singular($related).'_id")->unsigned()->nullable();';
+        $schema .= "\$table->foreign('".str_singular($related)."_id')->references('id')->on('".$related."')->onDelete('set null');";
+
         return $schema;
     }
 

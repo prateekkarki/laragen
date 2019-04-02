@@ -13,13 +13,25 @@ class Module
     public function __construct($moduleName, $moduleData)
     {
         $this->module = (object) $moduleData;
-        $this->data   = $moduleData;
-        $this->name   = $moduleName;
+        $this->data = array_filter($moduleData, function($elem){
+            return (is_array($elem)) ? false : true;
+        });
+        $this->multipleData = [];
+        $this->multipleData[] = array_filter($moduleData, function($elem){
+            return (is_array($elem)) ? true : false;
+        });
+
+        $this->name = $moduleName;
     }
 
     public function getName()
     {
         return $this->name;
+    }
+
+    public function getMultipleColumns()
+    {
+        return $this->multipleData;
     }
 
     public function getData()
@@ -46,6 +58,7 @@ class Module
     {
         $data = [];
         foreach ($this->data as $column => $optionString) {
+            if (is_array($optionString)) continue;
             $optionArray = explode('|', $optionString);
             if (in_array($optionArray[0], DataOption::$types)) {
                 $data[] = $column;
