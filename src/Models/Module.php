@@ -126,6 +126,18 @@ class Module
         return $data;
     }
 
+    public function getGalleries()
+    {
+        $data = [];
+        foreach ($this->data as $column => $optionString) {
+            $dataOption = new DataOption($column, $optionString);
+            if ($dataOption->getType() == 'gallery') {
+                $data[] = $column;
+            }
+        }
+        return $data;
+    }
+
     public function getForeignColumns($type = 'all')
     {
         if (is_array($type))

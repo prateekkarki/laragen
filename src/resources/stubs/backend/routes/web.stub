@@ -4,5 +4,6 @@ use App\Http\Controllers\Backend\UploadController;
 	
 	/* Insert your routes here */
 	Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+	Route::post('galleryupload', [UploadController::class, 'uploadGallery'])->name('gallery.uploader');
 	Route::post('fileuploads', [UploadController::class, 'upload'])->name('uploader');
 	Route::post('fileuploads/delete', [UploadController::class, 'delete'])->name('uploader.delete');

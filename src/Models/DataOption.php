@@ -120,7 +120,7 @@ class DataOption
     {
         if ($this->dataType=='parent') {
             $schema = $this->processParent();
-        } else if($this->dataType=='related'||$this->dataType=='multiple'){
+        } else if( in_array($this->dataType, ['gallery', 'related', 'multiple']) ){
             $schema = '';
         } else {
             $schema = '$table->'.$this->getColumnType()."('{$this->column}'";

@@ -40,6 +40,28 @@ class UploadController extends Controller
         return response()->json(['message' => $this->validation_error, 'filename' => false, 'status' => 500], 200);
     }
 
+    public function uploadGallery(Request $request)
+    {
+        $file = $request->file('file');
+        $moduleName = $request->input('moduleName');
+        $field = $request->input('field');
+
+        $valid = $this->validateUpload($file, $moduleName, $field);
+
+        if($valid){
+            
+            $imagename = $this->getWritableFilename(str_slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)).'.'.$file->getClientOriginalExtension(), $moduleName, true);;
+    
+            $destinationPath = storage_path('images/'.$moduleName);
+    
+            $file->move($destinationPath, $imagename);
+    
+            return response()->json(['message' => 'File successfully uploaded', 'filename' => $imagename, 'status' => 200], 200);
+        }
+
+        return response()->json(['message' => $this->validation_error, 'filename' => false, 'status' => 500], 200);
+    }
+
     public function delete(Request $request)
     {
         $moduleName = $request->input('modelName');
