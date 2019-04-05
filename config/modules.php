@@ -21,8 +21,8 @@ return [
         'slug'              => 'string|max:128|unique|required',
         'short_description' => 'string',
         'show_in_menu'      => 'boolean',
+        'banners'           => 'gallery',
         'image'             => 'image|mimes:jpeg',
-        'banner'            => 'image|mimes:jpeg,png,gif',
         'brochure'          => 'file|mimes:pdf|max:500000'
     ],
 
