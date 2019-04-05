@@ -32,6 +32,13 @@ class Request extends BaseGenerator implements GeneratorInterface
             $type = $columnOptions->getType();
             $rules = $columnOptions->optionArray();
 
+            $valid_types = ['text' => 'string',
+                            'datetime'=> 'date_format:Y-m-d H:i:s',
+            ];
+            if(array_key_exists($type, $valid_types)){
+                $type = $valid_types[$type];
+            }
+
             if(in_array($type, DataOption::$fileTypes) || in_array($type, DataOption::$specialTypes)) continue;
 
             $uniqueValidation = '\''.$column.'\' => ($this->route()->'.$modelname.') ? ';
