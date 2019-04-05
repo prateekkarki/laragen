@@ -23,6 +23,17 @@ class Migration extends BaseGenerator implements GeneratorInterface
         file_put_contents($fullFilePath, $migrationTemplate);
         $generatedFiles[] = $fullFilePath;
 
+        foreach ($this->module->getGalleries() as $gallery) {
+            $pivotTemplate = $this->buildTemplate('common/migrations/pivot', [
+                '{{pivotName}}'         => $this->module->getPivotName($gallery),
+                '{{pivotTableName}}'    => $this->module->getPivotTableName($gallery),
+                '{{pivotTableSchema}}'  => $this->getGallerySchema($gallery)
+            ]);
+            $pivotFilePath = $this->getPivotFile($gallery);
+            file_put_contents($pivotFilePath, $pivotTemplate);
+            $generatedFiles[] = $pivotFilePath;
+        }
+
         foreach ($this->module->getForeignColumns('related') as $relatedModules) {
             foreach ($relatedModules as $related) {
                 $pivotTemplate = $this->buildTemplate('common/migrations/pivot', [
@@ -106,6 +117,17 @@ class Migration extends BaseGenerator implements GeneratorInterface
 
         $schema .= '$table->bigInteger("'.str_singular($related).'_id")->unsigned()->nullable();';
         $schema .= "\$table->foreign('".str_singular($related)."_id')->references('id')->on('".$related."')->onDelete('set null');";
+
+        return $schema;
+    }
+
+    protected function getGallerySchema($gallery)
+    {
+        $schema =  '$table->bigInteger("'.$this->module->getModelNameLowercase().'_id")->unsigned()->nullable();'.PHP_EOL.$this->getTabs(3);
+        $schema .= "\$table->foreign('".$this->module->getModelNameLowercase()."_id')->references('id')->on('".$this->module->getModulename()."')->onDelete('set null');";
+
+        $schema .= '$table->bigInteger("'.str_singular($gallery).'_id")->unsigned()->nullable();';
+        $schema .= '$table->string("filename", 128);';
 
         return $schema;
     }
