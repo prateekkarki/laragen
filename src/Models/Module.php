@@ -185,7 +185,7 @@ class Module
 
     public function getPivotTableName($related)
     {
-        $moduleArray = [$this->getModelNameLowercase(), str_singular($related)];
+        $moduleArray = [str_singular($this->getModelNameLowercase()), str_singular($related)];
         sort($moduleArray);
         return implode("_", $moduleArray);
     }

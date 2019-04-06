@@ -84,7 +84,7 @@ class Migration extends BaseGenerator implements GeneratorInterface
     {
         $fileCounter = sprintf('%06d', (int) date('His') + ++self::$counter);
         $filenamePrefix = date('Y_m_d_').$fileCounter."_";
-        $fileName = "create_".str_plural($this->module->getPivotTableName($related))."_table.php";
+        $fileName = "create_".str_singular($this->module->getPivotTableName($related))."_table.php";
 
         $existingFiles = scandir($this->getPath("database/migrations/"));
         
