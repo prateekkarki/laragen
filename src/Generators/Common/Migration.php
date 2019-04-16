@@ -50,7 +50,7 @@ class Migration extends BaseGenerator implements GeneratorInterface
         foreach ($this->module->getMultipleColumns() as $multipleModules) {
             foreach ($multipleModules as $multiple => $multipleData) {
                 $pivotTemplate = $this->buildTemplate('common/migrations/pivot', [
-                    '{{pivotName}}'         => str_plural($this->module->getPivotName($multiple)),
+                    '{{pivotName}}'         => str_singular($this->module->getPivotName($multiple)),
                     '{{pivotTableName}}'    => str_plural($this->module->getPivotTableName($multiple)),
                     '{{pivotTableSchema}}'  => $this->getMultipleSchema($multipleData)
                 ]);
@@ -125,10 +125,8 @@ class Migration extends BaseGenerator implements GeneratorInterface
     {
         $schema =  '$table->bigInteger("'.$this->module->getModelNameLowercase().'_id")->unsigned()->nullable();'.PHP_EOL.$this->getTabs(3);
         $schema .= "\$table->foreign('".$this->module->getModelNameLowercase()."_id')->references('id')->on('".$this->module->getModulename()."')->onDelete('set null');";
-
-        $schema .= '$table->bigInteger("'.str_singular($gallery).'_id")->unsigned()->nullable();';
         $schema .= '$table->string("filename", 128);';
-
+        $schema .= '$table->timestamps();';
         return $schema;
     }
 
