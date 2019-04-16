@@ -20,6 +20,22 @@ if (window.Dropzone) {
     Dropzone.autoDiscover = false;
 }
 
+// Sticky
+$(document).ready(function(){
+    var div_top = $('.section-header').offset().top;
+
+    $(window).scroll(function() {
+        var window_top = $(window).scrollTop() - 0;
+        if (window_top > div_top) {
+            if (!$('.section-header').is('.sticky')) {
+                $('.section-header').addClass('sticky');
+            }
+        } else {
+            $('.section-header').removeClass('sticky');
+        }
+    });
+});
+
 
 var delImage = function(url, moduleName, modelId, field){
     var csrf = $('meta[name="csrf-token"]').attr('content');
