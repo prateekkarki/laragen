@@ -23,9 +23,17 @@ if (window.Dropzone) {
 // Sticky
 $(document).ready(function(){
     var div_top = $('.section-header').offset().top;
-
+    var sidebarWidth = $(window).width() <= 1024 ? 0 : $(".main-sidebar").width();
+    var stickyWidth = $(window).width() - sidebarWidth - 70;
+    $('.section-header').width(stickyWidth);
+    $(window).on('resize', function(){
+        stickyWidth = $(window).width() - sidebarWidth - 70;
+        $('.section-header').width(stickyWidth);
+    });
+  
     $(window).scroll(function() {
-        var window_top = $(window).scrollTop() - 0;
+        var window_top = $(window).scrollTop() - 100;
+        $('.section-header').width(stickyWidth);
         if (window_top > div_top) {
             if (!$('.section-header').is('.sticky')) {
                 $('.section-header').addClass('sticky');
