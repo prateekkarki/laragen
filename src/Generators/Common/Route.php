@@ -17,7 +17,7 @@ class Route extends BaseGenerator implements GeneratorInterface
         $webRouteFile = $this->getPath("routes/frontend/")."web.php";
         $backendWebRouteFile = $this->getPath("routes/backend/")."web.php";
 
-        if(self::$initializeFlag++ == 0){
+        if (self::$initializeFlag++ == 0) {
             $this->initializeFiles([
                 $webRouteFile => "Route",
                 $backendAuthRouteFile => "backend/routes/auth",
@@ -38,26 +38,26 @@ class Route extends BaseGenerator implements GeneratorInterface
         $this->insertIntoFile(
             $webRouteFile,
             "<?php\n",
-			"use App\\Http\\Controllers\\".$this->module->getModelName()."Controller;\n"
-		);
+            "use App\\Http\\Controllers\\".$this->module->getModelName()."Controller;\n"
+        );
 
         $this->insertIntoFile(
             $webRouteFile,
-            "/" . "* Insert your routes here */",
+            "/"."* Insert your routes here */",
             "\n".$this->getTabs(1)."Route::resource('".$this->module->getModuleName()."', ".$this->module->getModelName()."Controller::class);"
         );
 
-		$generatedFiles[] = $webRouteFile;
+        $generatedFiles[] = $webRouteFile;
 		
         $this->insertIntoFile(
             $backendWebRouteFile,
             "<?php\n",
-			"use App\\Http\\Controllers\\Backend\\".$this->module->getModelName()."Controller;\n"
-		);
+            "use App\\Http\\Controllers\\Backend\\".$this->module->getModelName()."Controller;\n"
+        );
 
         $this->insertIntoFile(
             $backendWebRouteFile,
-            "/" . "* Insert your routes here */",
+            "/"."* Insert your routes here */",
             "\n".$this->getTabs(1)."Route::resource('".$this->module->getModuleName()."', ".$this->module->getModelName()."Controller::class);"
         );
         

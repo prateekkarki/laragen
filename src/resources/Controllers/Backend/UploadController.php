@@ -26,8 +26,8 @@ class UploadController extends Controller
 
         $valid = $this->validateUpload($file, $moduleName, $field);
 
-        if($valid){
-            $imagename = $this->getWritableFilename(str_slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)).'.'.$file->getClientOriginalExtension(), $moduleName, true);;
+        if ($valid) {
+            $imagename = $this->getWritableFilename(str_slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)).'.'.$file->getClientOriginalExtension(), $moduleName, true); ;
     
             $destinationPath = storage_path('images/'.$moduleName);
     
@@ -46,7 +46,7 @@ class UploadController extends Controller
         $files = [];
 
         foreach ($request->file('file') as $file) {
-            $imagename = $this->getWritableFilename(str_slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)).'.'.$file->getClientOriginalExtension(), $moduleName, true);;
+            $imagename = $this->getWritableFilename(str_slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)).'.'.$file->getClientOriginalExtension(), $moduleName, true); ;
             $destinationPath = storage_path('images/'.$moduleName);
             try {
                 $file->move($destinationPath, $imagename);
@@ -56,7 +56,7 @@ class UploadController extends Controller
             }
         }
 
-        if(!isset($error)){
+        if (!isset($error)) {
             return response()->json(['message' => 'File successfully uploaded', 'filenames' => $files, 'status' => 200], 200);
         }
 
@@ -66,7 +66,7 @@ class UploadController extends Controller
     public function delete(Request $request)
     {
         $moduleName = $request->input('modelName');
-        $modelToCall = "App\\Models\\" . ucfirst($moduleName);
+        $modelToCall = "App\\Models\\".ucfirst($moduleName);
         $model = $modelToCall::find($request->input('modelId'));
         $field = $request->input('field');
         $filename = $model->$field;
@@ -89,7 +89,7 @@ class UploadController extends Controller
      */
     public function process($filename, $moduleName)
     {
-        $messages=['errors'=>[]];
+        $messages = ['errors'=>[]];
         $tempFile = storage_path('images/'.$moduleName.'/'.$filename);
         $fileToWrite = $this->getWritableFilename($filename, $moduleName);
 
@@ -98,25 +98,25 @@ class UploadController extends Controller
         $methodToUse = $tempImage->width() > $tempImage->height() ? 'widen' : 'heighten';
 
         try {
-            $tempImage->$methodToUse(2000, function ($constraint){
+            $tempImage->$methodToUse(2000, function($constraint) {
                 $constraint->upsize();
             })->save($fileToWrite);
             $messages['success']['filename'] = $fileToWrite;
         } catch (\Exception $ex) {
-            $messages['errors'][] = [ 'fileError' => $ex->getMessage()];
+            $messages['errors'][] = ['fileError' => $ex->getMessage()];
         }
         return $messages;
     }
 
-    protected function getWritableFilename($filename, $moduleName, $is_storage=false)
+    protected function getWritableFilename($filename, $moduleName, $is_storage = false)
     {
         $dir = $is_storage ? $this->getPath(storage_path('images/'.$moduleName)) : $this->getPath(public_path('images/'.$moduleName));
         $path = $dir.'/'.$filename;
         if (file_exists($path)) {
             $filename = pathinfo($path, PATHINFO_FILENAME);
-            $filename .= rand(0,9).'.'.pathinfo($path, PATHINFO_EXTENSION);
+            $filename .= rand(0, 9).'.'.pathinfo($path, PATHINFO_EXTENSION);
             return $this->getWritableFilename($filename, $moduleName, $is_storage); 
-        }else{
+        } else {
             return $is_storage ? $filename : $path;
         }
     }
@@ -137,7 +137,7 @@ class UploadController extends Controller
 
         $file = array($field => $file);
 
-        $validator = Validator::make($file , [
+        $validator = Validator::make($file, [
             $field => $rules,
         ]);
 

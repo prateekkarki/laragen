@@ -1,5 +1,5 @@
 <?php
-  /**
+    /**
      * Helper Functions for Lagaren
      * Autoloads via LaragenServiceProvider
      */

@@ -79,10 +79,10 @@ class DataOption
         $this->column = $columnName;
         $this->size = false;
         // dump($optionString);
-        if(is_array($optionString) ){
+        if (is_array($optionString)) {
             $this->dataType = 'multiple';
             $this->multipleOptions = [];
-            foreach($optionString as $col => $multString){
+            foreach ($optionString as $col => $multString) {
                 $this->multipleOptions[] = new Self($col, $multString);
             }
             // dd($this->multipleOptions[0]);
@@ -90,12 +90,12 @@ class DataOption
             // dd($column);
             // $option = ;
 
-        }else{
+        } else {
             $this->optionArray = explode('|', $optionString);
             $typePieces = array_shift($this->optionArray);
             $type = explode(':', $typePieces);
             $this->dataType = is_array($type) ? $type[0] : $type;
-            $this->typeOption = is_array($type)&&count($type)>=2 ? $type[1] : false;
+            $this->typeOption = is_array($type) && count($type) >= 2 ? $type[1] : false;
 
             foreach ($this->optionArray as $option) {
                 if ($option == self::COLUMN_UNIQUE) {
@@ -106,7 +106,7 @@ class DataOption
                     $this->setRequired();
                     continue;
                 }
-                if(Str::contains($option, ':')){
+                if (Str::contains($option, ':')) {
                     $optionPieces = explode(':', $option);
                     $this->setOptions($optionPieces[0], $optionPieces[1]);
                 }
@@ -118,9 +118,9 @@ class DataOption
 
     public function getSchema()
     {
-        if ($this->dataType=='parent') {
+        if ($this->dataType == 'parent') {
             $schema = $this->processParent();
-        } else if( in_array($this->dataType, ['gallery', 'related', 'multiple']) ){
+        } else if (in_array($this->dataType, ['gallery', 'related', 'multiple'])) {
             $schema = '';
         } else {
             $schema = '$table->'.$this->getColumnType()."('{$this->column}'";
@@ -142,8 +142,8 @@ class DataOption
 
     public function getType() {
         $type = $this->dataType;
-        if($type=='string'){
-            $type = (!$this->getSize() || $this->getSize()<=128) ? $type : 'text';
+        if ($type == 'string') {
+            $type = (!$this->getSize() || $this->getSize() <= 128) ? $type : 'text';
         } 
         
         return $type;
@@ -167,17 +167,17 @@ class DataOption
 
     public function getFormOptions() {
         $options = "";
-        $options .= $this->isRequired() ? 'required="required" ' :''; 
-        $options .= $this->getType()=='text' ? 'rows="'.$this->getTextRows().'" ' :''; 
+        $options .= $this->isRequired() ? 'required="required" ' : ''; 
+        $options .= $this->getType() == 'text' ? 'rows="'.$this->getTextRows().'" ' : ''; 
         return $options;
     }
 
 
     public function getTextRows() {
-        if(!$this->size)
+        if (!$this->size)
             return 4;
         
-        return floor($this->getsize()/120);
+        return floor($this->getsize() / 120);
     }
 
     public function getTabs($number)
@@ -221,7 +221,7 @@ class DataOption
         $this->size = $size;
     }
 
-    public function optionArray(){
+    public function optionArray() {
         return $this->optionArray;
     }
 

@@ -99,20 +99,20 @@ class Migration extends BaseGenerator implements GeneratorInterface
 
     protected function getMultipleSchema($multipleData)
     {
-        $schema =  '$table->bigInteger("'.$this->module->getModelNameLowercase().'_id")->unsigned()->nullable();'.PHP_EOL.$this->getTabs(3);
+        $schema = '$table->bigInteger("'.$this->module->getModelNameLowercase().'_id")->unsigned()->nullable();'.PHP_EOL.$this->getTabs(3);
         $schema .= "\$table->foreign('".$this->module->getModelNameLowercase()."_id')->references('id')->on('".$this->module->getModulename()."')->onDelete('set null');";
 
-        foreach($multipleData as $column => $optionString){
+        foreach ($multipleData as $column => $optionString) {
             $option = new DataOption($column, $optionString);
             $schema .= $option->getSchema();
-            $schema .=  ''.PHP_EOL.$this->getTabs(3);
+            $schema .= ''.PHP_EOL.$this->getTabs(3);
         }
         return $schema;
     }
 
     protected function getPivotSchema($related)
     {
-        $schema =  '$table->bigInteger("'.$this->module->getModelNameLowercase().'_id")->unsigned()->nullable();'.PHP_EOL.$this->getTabs(3);
+        $schema = '$table->bigInteger("'.$this->module->getModelNameLowercase().'_id")->unsigned()->nullable();'.PHP_EOL.$this->getTabs(3);
         $schema .= "\$table->foreign('".$this->module->getModelNameLowercase()."_id')->references('id')->on('".$this->module->getModulename()."')->onDelete('set null');";
 
         $schema .= '$table->bigInteger("'.str_singular($related).'_id")->unsigned()->nullable();';
@@ -123,7 +123,7 @@ class Migration extends BaseGenerator implements GeneratorInterface
 
     protected function getGallerySchema($gallery)
     {
-        $schema =  '$table->bigInteger("'.$this->module->getModelNameLowercase().'_id")->unsigned()->nullable();'.PHP_EOL.$this->getTabs(3);
+        $schema = '$table->bigInteger("'.$this->module->getModelNameLowercase().'_id")->unsigned()->nullable();'.PHP_EOL.$this->getTabs(3);
         $schema .= "\$table->foreign('".$this->module->getModelNameLowercase()."_id')->references('id')->on('".$this->module->getModulename()."')->onDelete('set null');";
         $schema .= '$table->string("filename", 128);';
         $schema .= '$table->timestamps();';

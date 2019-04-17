@@ -23,7 +23,7 @@ class Seeder extends BaseGenerator implements GeneratorInterface
         file_put_contents($fullFilePath, $factoryTemplate);
         $generatedFiles[] = $fullFilePath;
         
-        $laragenSeederFile = (self::$initializeFlag++ == 0) ? $this->initializeFile($this->getPath("database/seeds/")."LaragenSeeder.php", 'common/Seeder') :  $this->getPath("database/seeds/")."LaragenSeeder.php";
+        $laragenSeederFile = (self::$initializeFlag++ == 0) ? $this->initializeFile($this->getPath("database/seeds/")."LaragenSeeder.php", 'common/Seeder') : $this->getPath("database/seeds/")."LaragenSeeder.php";
 
         $this->insertIntoFile(
             $laragenSeederFile,
@@ -93,23 +93,23 @@ class Seeder extends BaseGenerator implements GeneratorInterface
 
         $dataDefinition = "";
         foreach ($this->module->getWritableColumns() as $columns) {
-            foreach($columns as $column => $type){
+            foreach ($columns as $column => $type) {
                 $specialTypes = array_keys($specialTypesToDefinition);
-                if(in_array($column,$specialTypes)){
-                    $dataDefinition .= $this->getTabs(2) . "'{$column}'" . " => " . '$faker->' . $specialTypesToDefinition[$column];
+                if (in_array($column, $specialTypes)) {
+                    $dataDefinition .= $this->getTabs(2)."'{$column}'"." => ".'$faker->'.$specialTypesToDefinition[$column];
                 } else {
-                    $dataDefinition .= $this->getTabs(2) . "'{$column}'" . " => " . '$faker->' . $typeToDefinition[$type];
+                    $dataDefinition .= $this->getTabs(2)."'{$column}'"." => ".'$faker->'.$typeToDefinition[$type];
                 }
 
-                if($column != last($columns)) {
-                    $dataDefinition .= "," . PHP_EOL;
+                if ($column != last($columns)) {
+                    $dataDefinition .= ",".PHP_EOL;
                 }
             }
         }
         return $dataDefinition;
     }
 
-    protected function getForeignData(){
+    protected function getForeignData() {
         $columns = $this->module->getForeignColumns('parent');
 
         $foreignData = "";
@@ -121,8 +121,8 @@ class Seeder extends BaseGenerator implements GeneratorInterface
                     '{{parentModel}}' => ucfirst(camel_case(str_singular($parent)))
                 ]);
                 
-                if($column != last($columns)) {
-                    $foreignData .= "," . PHP_EOL;
+                if ($column != last($columns)) {
+                    $foreignData .= ",".PHP_EOL;
                 }
             }
         }

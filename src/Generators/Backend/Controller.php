@@ -24,16 +24,16 @@ class Controller extends BaseGenerator implements GeneratorInterface
         return $fullFilePath;
     }
 
-    protected function getFileUploads(){
+    protected function getFileUploads() {
         $fileUploads = "";
         $fileFields = $this->module->getFileColumns();
-        if(empty($fileFields)) return "";
-        if(count($fileFields)>1){
+        if (empty($fileFields)) return "";
+        if (count($fileFields) > 1) {
             $fileUploads .= $this->buildTemplate('backend/fragments/upload-process', [
                 '{{modelNameLowercase}}' => $this->module->getModelNameLowercase(),
                 '{{fileFields}}'         => implode('", "', $fileFields),
             ]);
-        }else{
+        } else {
             $fileField = $fileFields[0];
             $fileUploads .= 'if ($request->has("'.$fileField.'")) {'.PHP_EOL;
             $fileUploads .= $this->getTabs(3).'$this->uploader->process($request->input("'.$fileField.'"), "category");'.PHP_EOL;
@@ -42,12 +42,12 @@ class Controller extends BaseGenerator implements GeneratorInterface
         return $fileUploads;
     }
 
-    protected function getForeignData(){
+    protected function getForeignData() {
         $foreignData = "";
         $parents = $this->module->getForeignData();
-        foreach($parents as $parent){
+        foreach ($parents as $parent) {
             $foreignData .= "'".$parent['parentModule']."' => ".$parent['parentModel']."::all()";
-            $foreignData .= ($parent==last($parents)) ? '' : ', ';
+            $foreignData .= ($parent == last($parents)) ? '' : ', ';
         }
         return $foreignData;
     }
@@ -70,7 +70,7 @@ class Controller extends BaseGenerator implements GeneratorInterface
     public function getFileExtentionData()
     {
         $controller_ = '';
-        foreach($this->module->getFileColumns('file') as $column){
+        foreach ($this->module->getFileColumns('file') as $column) {
             $controller_ = "$".$this->module->getModelNameLowercase()."['".$column."_extention'] =".' getFileExtention($'.$this->module->getModelNameLowercase()."->".$column.");";
         }
         return $controller_;
