@@ -3,6 +3,8 @@ namespace Prateekkarki\Laragen\Generators\Backend;
 
 use Prateekkarki\Laragen\Generators\BaseGenerator;
 use Prateekkarki\Laragen\Generators\GeneratorInterface;
+use Prateekkarki\Laragen\Models\DataOption;
+use Prateekkarki\Laragen\Models\Module;
 
 class View extends BaseGenerator implements GeneratorInterface
 {    
@@ -11,14 +13,16 @@ class View extends BaseGenerator implements GeneratorInterface
     public function generate()
     {
         
-		$viewsToBeGenerated = ['index']; // To be generated dynamically
+		$viewsToBeGenerated = ['index', 'create', 'edit'];
 
 		$generatedFiles = [];
 		
         foreach ($viewsToBeGenerated as $view) {
             $viewTemplate = $this->buildTemplate('backend/views/' . $view, [
-				'{{headings}}' 			 => $this->getHeadings(),
+                '{{headings}}' 			 => $this->getHeadings(),
+                '{{moduleDisplayName}}'  => $this->module->getModuleDisplayName(),
                 '{{modelNameLowercase}}' => str_singular($this->module->getModuleName()),
+                '{{modelName}}'          => $this->module->getModelName(),
                 '{{moduleName}}'         => $this->module->getModuleName()
             ]);
 
@@ -35,10 +39,18 @@ class View extends BaseGenerator implements GeneratorInterface
             ]);
         }
 
+        
+
         $this->insertIntoFile(
             $mainMenuFile,
             '{{-- Main Menu --}}',
-			"\n".'<li class="nav-item"><a class="nav-link" href="{{ route("backend.'.$this->module->getModuleName().'.index") }}">'.str_plural($this->module->getModelName()).'</a></li>'
+			"\n".'<li class="nav-item dropdown">
+                    <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span> '.str_plural($this->module->getModelName()).' </span></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="nav-link" href="{{ route("backend.'.$this->module->getModuleName().'.create") }}"> Add new '.str_plural($this->module->getModelName()).'</a></li>
+                        <li><a class="nav-link" href="{{ route("backend.'.$this->module->getModuleName().'.index") }}">All '.str_plural($this->module->getModelName()).'</a></li>
+                    </ul>
+                </li>'
 		);
         $generatedFiles = array_merge($generatedFiles, $this->formGenerateCreate());
         return $generatedFiles;
@@ -55,55 +67,46 @@ class View extends BaseGenerator implements GeneratorInterface
 
     public function formGenerateCreate()
     {
-        $keyToFile = [
-            'int' =>'integer',
-            'string' =>'string',
-            'bool' =>'boolean',
-            'text' =>'text',
-            'date' =>'date',
-            'datetime' =>'datetime'
-        ];
-
         $viewTemplate = '';
-
-        foreach ($this->module->getNativeData() as $columns) {
-            foreach($columns as $column => $type){
-                $viewTemplate .= $this->buildTemplate('backend/views/formelements/'.$keyToFile[$type], [
-                    '{{columnName}}'                 => $column,
-                    '{{modelNameLowercase}}'         => strtolower($this->module->getModelName()),
-                ]);
-            }
+        foreach($this->module->getData() as $column => $options){
+            $columnOptions = new DataOption($column, $options);
+            $type = $columnOptions->getType();
+            $viewTemplate .= $this->buildTemplate('backend/views/formelements/'.$type, [
+                '{{key}}'                   => $column,
+                '{{display}}'               => $columnOptions->getDisplay(),
+                '{{options}}'               => $columnOptions->getFormOptions(),
+                '{{parentModule}}'          => $columnOptions->getParentModule(),
+                '{{parentModuleSinglular}}' => str_singular($columnOptions->getParentModule()),
+                '{{parentDisplay}}'         => $this->getParentDisplay($columnOptions->getParentModule()),
+                '{{modelNameLowercase}}'    => $this->module->getModelNameLowercase()
+            ]);
         }
-
-        $createTemplate = $this->buildTemplate('backend/views/create', [
-            '{{moduleName}}'                 => $this->module->getModuleName(),
-        ]);
-
-        $editTemplate = $this->buildTemplate('backend/views/edit', [
-            '{{moduleName}}'                 => $this->module->getModuleName(),
-            '{{modelNameLowercase}}'         => strtolower($this->module->getModelName())
-        ]);
 
         $formTemplate = $this->buildTemplate('backend/views/formelements/_form', [
             '{{createElements}}'             => $viewTemplate,
         ]);
-        
-        $editFilePath = $this->getPath("resources/views/backend/" . $this->module->getModuleName()) . "/edit.blade.php";
-        file_put_contents($editFilePath, $editTemplate);
-        
-        
-        $createFilePath = $this->getPath("resources/views/backend/" . $this->module->getModuleName()) . "/create.blade.php";
-        file_put_contents($createFilePath, $createTemplate);
-        
+
         $formFilePath = $this->getPath("resources/views/backend/" . $this->module->getModuleName()) . "/_form.blade.php";
         file_put_contents($formFilePath, $formTemplate);
 
-
-        $generatedFiles[] =  $createFilePath;
         $generatedFiles[] =  $formFilePath;
-        $generatedFiles[] =  $editFilePath;
-
         return $generatedFiles;
 
+    }
+
+    public function getParentDisplay($parentModule)
+    {
+        $modules = config('laragen.modules');
+        $displayColumn = "";
+        if(isset($modules[$parentModule])){
+            $module = $modules[$parentModule];
+            $module = new Module($parentModule, $module);
+            $displayColumn = $module->getDisplayColumn();
+        }
+
+        if  ($parentModule=='users'){
+            $displayColumn = 'name';
+        }
+        return $displayColumn;
     }
 }

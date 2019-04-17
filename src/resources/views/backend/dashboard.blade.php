@@ -1,5 +1,9 @@
 @extends('backend.layouts.main')
 
+@section('page-header')
+    <h1>Dashboard</h1>
+@endsection
+
 @section('content')
-    <h1>tryout</h1>
+    <div>Dashboard Items</div>
 @endsection

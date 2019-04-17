@@ -1,0 +1,5 @@
+
+    public function {{related}}(): hasMany
+    {
+        return $this->hasMany(\App\Models\{{relatedModel}}::class, 'id');
+    }

@@ -1,0 +1,67 @@
+<div class="form-group row">
+    <label class="col-md-2 form-control-label" for="drop{{key}}">{{display}}</label>
+    <div class="col-md-5" id="{{key}}Container">
+        <div class="dropzone dropzone-file-area" id="drop{{key}}">
+            <div class="dz-default dz-message">
+                <h3 class="sbold">Drop image here to upload</h3>
+                <span>You can also click to open file browser</span>
+            </div>
+        </div>
+        <div class="validation-errors">
+            
+        </div>
+    </div>
+    @if(isset(${{modelNameLowercase}}) && ${{modelNameLowercase}}->{{key}})
+    <div class="col-md-3">
+        <div class="gallery gallery-lg">
+            <div class="gallery-item" data-image="{{asset('images/{{modelNameLowercase}}/'.${{modelNameLowercase}}->{{key}})}}" data-title="Image" href="{{asset('images/{{modelNameLowercase}}/'.${{modelNameLowercase}}->{{key}})}}" title="Image" style="background-image: url({{asset('images/{{modelNameLowercase}}/'.${{modelNameLowercase}}->{{key}})}});">
+            </div>
+            <div class="image-badge" id="{{key}}-del" 
+                data-confirm="Delete image|Are you sure?" 
+                data-confirm-yes="delImage('{{ route('backend.uploader.delete') }}', '{{modelNameLowercase}}', '{{ ${{modelNameLowercase}}->id }}', '{{key}}');">
+                <div class="image-badge-item bg-danger"><i class="fas fa-trash"></i></div>
+            </div>
+        </div>
+    </div>
+    @endif
+</div>
+
+@push('after-scripts')
+<script type="text/javascript">
+    $("#drop{{key}}").dropzone({ 
+        url: '{{ route('backend.gallery.uploader') }}',
+        uploadMultiple: true,
+        parallelUploads:10,
+        maxFilesize: 10,
+        acceptedFiles: ".png,.jpg,.gif,.bmp,.jpeg",
+        maxFiles: 20,
+        addRemoveLinks: true,
+        init: function() {
+            dzClosure = this;
+            this.on("successmultiple", function(file, response) {
+                if(response.status==200 && response.filenames)
+                {
+                    response.filenames.forEach(function(item){
+                        $('#{{key}}Container').append('<input type="hidden" name="{{key}}[]" value="'+ item +'">');
+                    });
+                }
+                else if(response.status == 415 || response.status == 500){
+                    let error = '';
+                    response.message.forEach(function(e) {
+                        error =  '<div class="alert alert-danger">'+e+'</div>';
+                        $('#{{key}}Container .validation-errors').append(error);
+                    });
+                    this.removeFile(file); //remove file from preview in dz
+                }
+            });
+            this.on("sendingmultiple", function(file, xhr, formData) {
+                var csrf = "{{ csrf_token() }}";
+                formData.append("_token", csrf);
+                formData.append('moduleName', '{{modelNameLowercase}}');
+                formData.append('module', {!! ${{modelNameLowercase}}->id ?? "''" !!});
+                formData.append('field', '{{key}}');
+            });
+        }
+    });
+</script>
+@endpush

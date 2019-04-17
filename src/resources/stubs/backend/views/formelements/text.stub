@@ -1,6 +1,6 @@
 <div class="form-group row">
-  <label class="col-md-3 col-form-label" for="textarea-input">Textarea</label>
-  <div class="col-md-9">
-    <textarea class="form-control" id="textarea-input" name="textarea-input" rows="9" placeholder="Content.."></textarea>
-  </div>
+    <label class="col-md-2 form-control-label" for="{{key}}">{{display}}</label>
+    <div class="col-md-10">
+        <textarea class="form-control summernote" id="{{key}}" name="{{key}}" {{options}}>{{ isset(${{modelNameLowercase}}) ? ${{modelNameLowercase}}->{{key}} : '' }}</textarea>
+    </div>
 </div>

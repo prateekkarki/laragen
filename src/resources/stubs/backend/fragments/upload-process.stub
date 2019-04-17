@@ -1,0 +1,10 @@
+foreach (["{{fileFields}}"] as $fileField) {
+			if ($request->has($fileField)) {
+				$messages = $this->uploader->process($request->input($fileField), "{{modelNameLowercase}}");
+				if (isset($messages['success'])) {
+					$request->merge($fileField, $messages['success']['filename']);
+				}else{
+					$errors = $messages['errors'];
+				}
+			}
+		}

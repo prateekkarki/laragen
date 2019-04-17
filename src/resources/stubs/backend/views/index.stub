@@ -2,68 +2,94 @@
 
 @section('title', ' | ' . __('labels.backend.access.{{moduleName}}.management'))
 
+@push('page_styles')
+  <link rel="stylesheet" href="{{ asset('css/datatables.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/dataTables.bootstrap4.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/select.bootstrap4.min.css') }}">
+@endpush
+
+@section('page-header')
+    <h1>{{modelName}} Management</h1>
+@endsection
+
 @section('content')
-<div class="card">
-    <div class="card-body">
-        <div class="row">
-            <div class="col-sm-5">
-                <h4 class="card-title mb-0">
-                    
-                </h4>
-            </div><!--col-->
-
-            <div class="col-sm-7">
-                
-            </div><!--col-->
-        </div><!--row-->
-
-        <div class="row mt-4">
-            <div class="col">
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h4>All {{moduleName}} </h4>
+            </div>
+            <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table">
+                    <table class="table table-striped" id="table-2">
                         <thead>
-                        <tr>
-                            {{headings}}
-                        </tr>
+                            <tr>
+                                <th class="text-center">
+                                    <div class="custom-checkbox custom-control">
+                                        <input type="checkbox" data-checkboxes="mygroup" data-checkbox-role="dad" class="custom-control-input"
+                                            id="checkbox-all">
+                                        <label for="checkbox-all" class="custom-control-label">Select All</label>
+                                    </div>
+                                </th>
+                                {{headings}}
+                            </tr>
                         </thead>
                         <tbody>
                         @foreach(${{moduleName}} as $key => ${{modelNameLowercase}})
                             <tr>
-                                <td>{{ $key+1 }}</td>
-                                <td>{{ ${{modelNameLowercase}}->title }}</td>
-                                <td>{{ ${{modelNameLowercase}}->updated_at }}</td>
                                 <td>
-                                    <div class="btn-group" role="group" aria-label="Actions">
-                                        <a href="{{ route('{{moduleName}}.show', ${{modelNameLowercase}}) }}" target="_blank" class="btn btn-info">
-                                            <i class="fa fa-eye" aria-hidden="true"></i>
-                                        </a>
-                                        <a href="{{ route('backend.{{moduleName}}.edit', ${{modelNameLowercase}}) }}" class="btn btn-primary">
-                                            <i class="fa fa-edit" aria-hidden="true"></i>
-                                        </a>
-                                        <form action="{{ route('backend.posts.destroy', ${{modelNameLowercase}}) }}" method="post" class="btn-group">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button class="btn btn-danger" type="submit">
-                                                <i class="fa fa-trash" aria-hidden="true"></i>
-                                            </button>
-                                        </form>
+                                    <div class="custom-checkbox custom-control">
+                                        <input type="checkbox" data-checkboxes="mygroup" class="custom-control-input"
+                                            id="checkbox-{{$key+1}}">
+                                        <label for="checkbox-{{$key+1}}" class="custom-control-label">{{ $key+1 }}</label>
                                     </div>
                                 </td>
+                                <td>{{ ${{modelNameLowercase}}->title }}</td>
+                                
+                                <td>
+                                    <img alt="image" src="{{ asset('img/avatar/avatar-5.png') }}" class="rounded-circle"
+                                        width="35" data-toggle="tooltip" title="Wildan Ahdian">
+                                </td>
+                                <td>{{ ${{modelNameLowercase}}->updated_at }}</td>
+                                <td>
+                                    <div class="badge badge-success">Completed</div>
+                                </td>
+                                <td>
+                                    <a href="{{ route('{{moduleName}}.show', ${{modelNameLowercase}}) }}" target="_blank" class="btn btn-info">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                    </a>
+                                    <a href="{{ route('backend.{{moduleName}}.edit', ${{modelNameLowercase}}) }}" class="btn btn-primary">
+                                        <i class="fa fa-edit" aria-hidden="true"></i>
+                                    </a>
+                                    <form action="{{ route('backend.posts.destroy', ${{modelNameLowercase}}) }}" method="post" class="btn-group">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-danger" type="submit">
+                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                        </button>
+                                    </form>
+                                </td>
                             </tr>
+
                         @endforeach
                         </tbody>
                     </table>
                     {!! ${{moduleName}}->links() !!}
                 </div>
-            </div><!--col-->
-        </div><!--row-->
-        <div class="row">
-            <div class="col-7">
-                <div class="float-left">
-                    {!! ${{moduleName}}->total() !!}
-                </div>
             </div>
-        </div><!--row-->
-    </div><!--card-body-->
-</div><!--card-->
+        </div>
+    </div>
+</div>
+
 @endsection
+
+@push('page_scripts')
+    <!-- JS Libraies -->
+    <script src="{{ asset('js/datatables.min.js') }}"></script>
+    <script src="{{ asset('js/dataTables.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('js/dataTables.select.min.js') }}"></script>
+    <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
+
+    <!-- Page Specific JS File -->
+    <script src="{{ asset('js/modules-datatables.js') }}"></script>
+@endpush
