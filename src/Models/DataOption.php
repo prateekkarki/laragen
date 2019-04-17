@@ -78,17 +78,12 @@ class DataOption
     {
         $this->column = $columnName;
         $this->size = false;
-        // dump($optionString);
         if (is_array($optionString)) {
             $this->dataType = 'multiple';
             $this->multipleOptions = [];
             foreach ($optionString as $col => $multString) {
                 $this->multipleOptions[] = new Self($col, $multString);
             }
-            // dd($this->multipleOptions[0]);
-            $column = $this->multipleOptions[0]->column;
-            // dd($column);
-            // $option = ;
 
         } else {
             $this->optionArray = explode('|', $optionString);
@@ -111,9 +106,7 @@ class DataOption
                     $this->setOptions($optionPieces[0], $optionPieces[1]);
                 }
             }
-        }    
-        
-        
+        }
     }
 
     public function getSchema()

@@ -102,9 +102,9 @@ class Module
     public function getFileColumns($type = 'all')
     {
         if (is_array($type)) {
-                    $types = $type;
+            $types = $type;
         } else {
-                    $types = ($type == "all") ? DataOption::$fileTypes : [$type];
+            $types = ($type == "all") ? DataOption::$fileTypes : [$type];
         }
         
         $data = [];
@@ -144,9 +144,9 @@ class Module
     public function getForeignColumns($type = 'all')
     {
         if (is_array($type)) {
-                    $types = $type;
+            $types = $type;
         } else {
-                    $types = ($type == "all") ? DataOption::$specialTypes : [$type];
+            $types = ($type == "all") ? DataOption::$specialTypes : [$type];
         }
         
         $data = [];
@@ -162,9 +162,9 @@ class Module
     public function getForeignData($type = 'all')
     {
         if (is_array($type)) {
-                    $types = $type;
+            $types = $type;
         } else {
-                    $types = ($type == "all") ? DataOption::$specialTypes : [$type];
+            $types = ($type == "all") ? DataOption::$specialTypes : [$type];
         }
         
         $data = [];
