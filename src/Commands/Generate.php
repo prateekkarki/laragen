@@ -72,7 +72,7 @@ class Generate extends Command
         }
     }
 
-    protected function configToGenerators($array){
+    protected function configToGenerators($array) {
         $generators = [];
         foreach ($array as $ns => $items) {
             foreach ($items as $item) {

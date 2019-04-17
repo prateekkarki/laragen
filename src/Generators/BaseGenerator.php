@@ -39,8 +39,9 @@ class BaseGenerator
     {
         $dir = base_path($path);
 
-        if (!is_dir($dir))
-            $this->fileSystem->mkdir($dir, 0755);
+        if (!is_dir($dir)) {
+                    $this->fileSystem->mkdir($dir, 0755);
+        }
 
         return $dir;
     }
@@ -51,10 +52,10 @@ class BaseGenerator
     }
 
     public function initializeFile($fullFilePath, $stub, $initializeWithText = false) {
-        if(file_exists($fullFilePath)){
+        if (file_exists($fullFilePath)) {
             $this->fileSystem->remove($fullFilePath);
         }
-        $seederTemplate = ($initializeWithText===false) ? $this->buildTemplate($stub) : $initializeWithText;
+        $seederTemplate = ($initializeWithText === false) ? $this->buildTemplate($stub) : $initializeWithText;
         $this->fileSystem->dumpFile($fullFilePath, $seederTemplate);
         return $fullFilePath;
     }
@@ -76,7 +77,7 @@ class BaseGenerator
     }
 
     public function insertIntoFile($file_path, $insert_marker, $text, $after = true) {
-        $contents = str_replace("\r",'', file_get_contents($file_path));
+        $contents = str_replace("\r", '', file_get_contents($file_path));
         $new_contents = ($after) ? str_replace($insert_marker, $insert_marker.$text, $contents) : str_replace($insert_marker, $text.$insert_marker, $contents); 
         $this->fileSystem->dumpFile($file_path, $new_contents);
     }

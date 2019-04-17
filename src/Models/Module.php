@@ -13,11 +13,11 @@ class Module
     public function __construct($moduleName, $moduleData)
     {
         $this->module = (object) $moduleData;
-        $this->data = array_filter($moduleData, function($elem){
+        $this->data = array_filter($moduleData, function($elem) {
             return (is_array($elem)) ? false : true;
         });
         $this->multipleData = [];
-        $this->multipleData[] = array_filter($moduleData, function($elem){
+        $this->multipleData[] = array_filter($moduleData, function($elem) {
             return (is_array($elem)) ? true : false;
         });
 
@@ -47,7 +47,7 @@ class Module
         $data = ['S.N.'];
         foreach ($this->data as $column => $optionString) {
             $optionArray = explode('|', $optionString);
-            if (in_array($optionArray[0], ['string', 'int'])&&in_array($column, ['title', 'firstname', 'lastname', 'name'])) {
+            if (in_array($optionArray[0], ['string', 'int']) && in_array($column, ['title', 'firstname', 'lastname', 'name'])) {
                 $data[] = ucwords($column);
             }
         }
@@ -58,14 +58,16 @@ class Module
     {
         $data = [];
         foreach ($this->data as $column => $optionString) {
-            if (is_array($optionString)) continue;
+            if (is_array($optionString)) {
+                continue;
+            }
             $optionArray = explode('|', $optionString);
             if (in_array($optionArray[0], DataOption::$types)) {
                 $data[] = $column;
             }
         }
-        if($this->getForeignColumns()){
-            foreach($this->getForeignColumns() as $relation => $tablename ){
+        if ($this->getForeignColumns()) {
+            foreach ($this->getForeignColumns() as $relation => $tablename) {
                 $columnName = array_values($tablename)[0];
                 $data[] = str_singular($columnName).'_id';
             }
@@ -99,10 +101,11 @@ class Module
 
     public function getFileColumns($type = 'all')
     {
-        if (is_array($type))
-            $types = $type;
-        else
-            $types = ($type == "all") ? DataOption::$fileTypes : [$type];
+        if (is_array($type)) {
+                    $types = $type;
+        } else {
+                    $types = ($type == "all") ? DataOption::$fileTypes : [$type];
+        }
         
         $data = [];
         foreach ($this->data as $column => $optionString) {
@@ -140,10 +143,11 @@ class Module
 
     public function getForeignColumns($type = 'all')
     {
-        if (is_array($type))
-            $types = $type;
-        else
-            $types = ($type == "all") ? DataOption::$specialTypes : [$type];
+        if (is_array($type)) {
+                    $types = $type;
+        } else {
+                    $types = ($type == "all") ? DataOption::$specialTypes : [$type];
+        }
         
         $data = [];
         foreach ($this->data as $column => $optionString) {
@@ -157,10 +161,11 @@ class Module
 
     public function getForeignData($type = 'all')
     {
-        if (is_array($type))
-            $types = $type;
-        else
-            $types = ($type == "all") ? DataOption::$specialTypes : [$type];
+        if (is_array($type)) {
+                    $types = $type;
+        } else {
+                    $types = ($type == "all") ? DataOption::$specialTypes : [$type];
+        }
         
         $data = [];
         foreach ($this->data as $column => $optionString) {
@@ -204,7 +209,7 @@ class Module
     {
         foreach ($this->data as $column => $optionString) {
             $optionArray = explode('|', $optionString);
-            if (in_array($optionArray[0], ['string', 'int'])&&in_array($column, ['title', 'firstname', 'lastname', 'name'])) {
+            if (in_array($optionArray[0], ['string', 'int']) && in_array($column, ['title', 'firstname', 'lastname', 'name'])) {
                 return $column;
             }
         }

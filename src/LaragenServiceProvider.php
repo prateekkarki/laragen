@@ -36,10 +36,10 @@ class LaragenServiceProvider extends ServiceProvider
     public function register()
     {
         // Register Intervention Provider and Facade
-		$this->app->register(ImageServiceProvider::class);
+        $this->app->register(ImageServiceProvider::class);
         AliasLoader::getInstance()->alias('Image', Image::class);
         
-		$this->app->register("\App\Providers\LaragenRouteServiceProvider");
+        $this->app->register("\App\Providers\LaragenRouteServiceProvider");
 
         $this->app->bind('command.laragen:make', Generate::class);
 

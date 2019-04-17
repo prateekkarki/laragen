@@ -18,7 +18,7 @@ class View extends BaseGenerator implements GeneratorInterface
 		$generatedFiles = [];
 		
         foreach ($viewsToBeGenerated as $view) {
-            $viewTemplate = $this->buildTemplate('backend/views/' . $view, [
+            $viewTemplate = $this->buildTemplate('backend/views/'.$view, [
                 '{{headings}}' 			 => $this->getHeadings(),
                 '{{moduleDisplayName}}'  => $this->module->getModuleDisplayName(),
                 '{{modelNameLowercase}}' => str_singular($this->module->getModuleName()),
@@ -26,14 +26,14 @@ class View extends BaseGenerator implements GeneratorInterface
                 '{{moduleName}}'         => $this->module->getModuleName()
             ]);
 
-            $fullFilePath = $this->getPath("resources/views/backend/" . $this->module->getModuleName()) . "/{$view}.blade.php";
+            $fullFilePath = $this->getPath("resources/views/backend/".$this->module->getModuleName())."/{$view}.blade.php";
             file_put_contents($fullFilePath, $viewTemplate);
-            $generatedFiles[] =  $fullFilePath;
+            $generatedFiles[] = $fullFilePath;
         }
 
         $mainMenuFile = $this->getPath("resources/views/backend/includes/")."main_menu.blade.php";
 
-        if(self::$initializeFlag++ == 0){
+        if (self::$initializeFlag++ == 0) {
             $this->initializeFiles([
                 $mainMenuFile => "backend/views/includes/main_menu",
             ]);
@@ -56,9 +56,9 @@ class View extends BaseGenerator implements GeneratorInterface
         return $generatedFiles;
 	}
 
-	public function getHeadings(){
+	public function getHeadings() {
         $columns = $this->module->getBackendColumnTitles();
-        $headings= "";
+        $headings = "";
         foreach ($columns as $column) {
             $headings .= "<th>".$column."</th>";
         }
@@ -68,7 +68,7 @@ class View extends BaseGenerator implements GeneratorInterface
     public function formGenerateCreate()
     {
         $viewTemplate = '';
-        foreach($this->module->getData() as $column => $options){
+        foreach ($this->module->getData() as $column => $options) {
             $columnOptions = new DataOption($column, $options);
             $type = $columnOptions->getType();
             $viewTemplate .= $this->buildTemplate('backend/views/formelements/'.$type, [
@@ -86,10 +86,10 @@ class View extends BaseGenerator implements GeneratorInterface
             '{{createElements}}'             => $viewTemplate,
         ]);
 
-        $formFilePath = $this->getPath("resources/views/backend/" . $this->module->getModuleName()) . "/_form.blade.php";
+        $formFilePath = $this->getPath("resources/views/backend/".$this->module->getModuleName())."/_form.blade.php";
         file_put_contents($formFilePath, $formTemplate);
 
-        $generatedFiles[] =  $formFilePath;
+        $generatedFiles[] = $formFilePath;
         return $generatedFiles;
 
     }
@@ -98,13 +98,13 @@ class View extends BaseGenerator implements GeneratorInterface
     {
         $modules = config('laragen.modules');
         $displayColumn = "";
-        if(isset($modules[$parentModule])){
+        if (isset($modules[$parentModule])) {
             $module = $modules[$parentModule];
             $module = new Module($parentModule, $module);
             $displayColumn = $module->getDisplayColumn();
         }
 
-        if  ($parentModule=='users'){
+        if ($parentModule == 'users') {
             $displayColumn = 'name';
         }
         return $displayColumn;
