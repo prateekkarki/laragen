@@ -31,15 +31,19 @@ class Request extends BaseGenerator implements GeneratorInterface
             $columnOptions = new DataOption($column, $options);
             $type = $columnOptions->getType();
             $rules = $columnOptions->optionArray();
+            // dump( $column, $options, $rules);
 
-            $valid_types = ['text' => 'string',
-                            'datetime'=> 'date_format:Y-m-d H:i:s',
+            $valid_types = [
+                'text' => 'string',
+                'datetime' => 'date_format:Y-m-d H:i:s',
             ];
+
             if(array_key_exists($type, $valid_types)){
                 $type = $valid_types[$type];
             }
 
-            if(in_array($type, DataOption::$fileTypes) || in_array($type, DataOption::$specialTypes)) continue;
+            if(in_array($type, DataOption::$fileTypes) || ($type == DataOption::TYPE_RELATED)) continue;
+            if($type == DataOption::TYPE_PARENT) var_dump($rules);
 
             $uniqueValidation = '\''.$column.'\' => ($this->route()->'.$modelname.') ? ';
             $uniqueValidation .= '\''.DataOption::COLUMN_UNIQUE.':'.$this->module->getModulename().','.$column.','.'\''.'.$this->route()->'.$modelname.'->id';
@@ -48,7 +52,9 @@ class Request extends BaseGenerator implements GeneratorInterface
             if ($columnOptions->isUnique()) {
                 $validation[]= $uniqueValidation;
             } else {
-                $validation[]= empty($rules) ? "'".$column."' => '".$type."'": "'".$column."' => '".$type."|".implode('|',$rules)."'";
+                $validationLine = ($type == DataOption::TYPE_PARENT) ? "'" . $column . "' => 'integer" : "'" . $column . "' => '" . $type;
+                $validationLine .= empty($rules) ? "'" : "|" . implode('|', $rules) . "'";
+                $validation[]= $validationLine;
             }
         }
         $delimiter = ",\n{$columnOptions->getTabs(3)}";

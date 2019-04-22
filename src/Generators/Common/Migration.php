@@ -12,6 +12,7 @@ class Migration extends BaseGenerator implements GeneratorInterface
     public function generate()
     {
         $generatedFiles = [];
+
         $migrationTemplate = $this->buildTemplate('common/migrations/table', [
             '{{modelName}}'         => $this->module->getModelName(),
             '{{modelNamePlural}}'   => $this->module->getModelNamePlural(),
@@ -70,14 +71,7 @@ class Migration extends BaseGenerator implements GeneratorInterface
         $filenamePrefix = date('Y_m_d_').$fileCounter."_";
         $fileName = "create_".$this->module->getModuleName()."_table.php";
 
-        $existingFiles = scandir($this->getPath("database/migrations/"));
-        
-        foreach ($existingFiles as $file) {
-            if (strpos($file, $fileName) !== false) {
-                $filenamePrefix = str_replace($fileName, "", $file);
-            }
-        }
-        return $this->getPath("database/migrations/").$filenamePrefix.$fileName;
+        return $this->getPath("database/migrations/laragen/").$filenamePrefix.$fileName;
     }
 
     protected function getPivotFile($related)
@@ -86,15 +80,7 @@ class Migration extends BaseGenerator implements GeneratorInterface
         $filenamePrefix = date('Y_m_d_').$fileCounter."_";
         $fileName = "create_".str_singular($this->module->getPivotTableName($related))."_table.php";
 
-        $existingFiles = scandir($this->getPath("database/migrations/"));
-        
-        foreach ($existingFiles as $file) {
-            if (strpos($file, $fileName) !== false) {
-                $filenamePrefix = str_replace($fileName, "", $file);
-            }
-        }
-        
-        return $this->getPath("database/migrations/").$filenamePrefix.$fileName;
+        return $this->getPath("database/migrations/laragen/").$filenamePrefix.$fileName;
     }
 
     protected function getMultipleSchema($multipleData)

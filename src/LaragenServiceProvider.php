@@ -6,6 +6,9 @@ use Illuminate\Foundation\AliasLoader;
 use Intervention\Image\ImageServiceProvider;
 use Intervention\Image\Facades\Image;
 use Prateekkarki\Laragen\Commands\Generate;
+use Prateekkarki\Laragen\Commands\Seeder;
+use Prateekkarki\Laragen\Commands\Migrate;
+use Prateekkarki\Laragen\Commands\Execute;
 use Artisan;
 
 class LaragenServiceProvider extends ServiceProvider
@@ -43,9 +46,15 @@ class LaragenServiceProvider extends ServiceProvider
         $this->app->register("\App\Providers\LaragenRouteServiceProvider");
 
         $this->app->bind('command.laragen:make', Generate::class);
+        $this->app->bind('command.laragen:seed', Seeder::class);
+        $this->app->bind('command.laragen:migrate', Migrate:: class);
+        $this->app->bind('command.laragen:exec', Execute::class);
 
         $this->commands([
             'command.laragen:make',
+            'command.laragen:seed',
+            'command.laragen:migrate',
+            'command.laragen:exec',
         ]);
 
     }

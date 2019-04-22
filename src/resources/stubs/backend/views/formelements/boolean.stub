@@ -4,6 +4,5 @@
     <input type="checkbox" name="{{key}}" class="custom-switch-input" id="{{key}}" onclick="if (this.checked) $('#{{key}}-hidden').val(1); else{$('#{{key}}-hidden').val(0); $(this).removeAttr('checked');}" {{ (isset(${{modelNameLowercase}}) && ${{modelNameLowercase}}->{{key}} == true) ? 'checked' : '' }} {{options}}>
         <input type="hidden" name="{{key}}" id="{{key}}-hidden" value="{{ (isset(${{modelNameLowercase}}) && ${{modelNameLowercase}}->{{key}} == true) ? '1' : '0' }}">
     <span class="custom-switch-indicator"></span>
-    {{-- <span class="custom-switch-description">{{display}}</span> --}}
     </label>
 </div>

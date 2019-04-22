@@ -5,6 +5,7 @@ use Prateekkarki\Laragen\Generators\BaseGenerator;
 use Prateekkarki\Laragen\Generators\GeneratorInterface;
 use Prateekkarki\Laragen\Models\DataOption;
 use Prateekkarki\Laragen\Models\Module;
+use Illuminate\Support\Str;
 
 class View extends BaseGenerator implements GeneratorInterface
 {    
@@ -21,7 +22,7 @@ class View extends BaseGenerator implements GeneratorInterface
             $viewTemplate = $this->buildTemplate('backend/views/'.$view, [
                 '{{headings}}' 			 => $this->getHeadings(),
                 '{{moduleDisplayName}}'  => $this->module->getModuleDisplayName(),
-                '{{modelNameLowercase}}' => str_singular($this->module->getModuleName()),
+                '{{modelNameLowercase}}' => Str::singular($this->module->getModuleName()),
                 '{{modelName}}'          => $this->module->getModelName(),
                 '{{moduleName}}'         => $this->module->getModuleName()
             ]);
@@ -76,14 +77,17 @@ class View extends BaseGenerator implements GeneratorInterface
                 '{{display}}'               => $columnOptions->getDisplay(),
                 '{{options}}'               => $columnOptions->getFormOptions(),
                 '{{parentModule}}'          => $columnOptions->getParentModule(),
-                '{{parentModuleSinglular}}' => str_singular($columnOptions->getParentModule()),
+                '{{parentModuleSinglular}}' => Str::singular($columnOptions->getParentModule()),
                 '{{parentDisplay}}'         => $this->getParentDisplay($columnOptions->getParentModule()),
-                '{{modelNameLowercase}}'    => $this->module->getModelNameLowercase()
+                '{{modelNameLowercase}}'    => $this->module->getModelNameLowercase(),
+                '{{modulename}}'            => $this->module->getModuleName(),
             ]);
         }
 
-        $formTemplate = $this->buildTemplate('backend/views/formelements/_form', [
-            '{{createElements}}'             => $viewTemplate,
+        $formTemplate = $this->buildTemplate('backend/views/formelements/_form',[
+            '{{modulename}}'            => $this->module-> getModuleName(),
+            '{{modelNameLowercase}}'    => $this->module-> getModelNameLowercase(),
+            '{{createElements}}'        => $viewTemplate,
         ]);
 
         $formFilePath = $this->getPath("resources/views/backend/".$this->module->getModuleName())."/_form.blade.php";
