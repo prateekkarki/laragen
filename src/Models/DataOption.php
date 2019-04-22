@@ -1,5 +1,9 @@
 <?php
 namespace Prateekkarki\Laragen\Models;
+use Prateekkarki\Laragen\Models\Types\StringType;
+use Prateekkarki\Laragen\Models\Types\MultipleType;
+use Prateekkarki\Laragen\Models\Types\GalleryType;
+use Prateekkarki\Laragen\Models\Types\RelatedType;
 use Illuminate\Support\Str;
 
 class DataOption
@@ -74,12 +78,33 @@ class DataOption
         'date' =>'date'
     ];
 
+    /**
+     * Key to laragen type conversion array.
+     *
+     * @var array
+     */
+    protected $keyToLaragenType = [
+        'string' => StringType::class,
+        'multiple' => MultipleType::class,
+        'image' =>StringType::class,
+        'file' =>StringType::class,
+        'boolean' =>StringType::class,
+        'gallery' =>GalleryType::class,
+        'parent' =>StringType::class,
+        'related' =>RelatedType::class,
+        'integer' =>StringType::class,
+        'text' =>StringType::class,
+        'datetime' =>StringType::class,
+        'date' =>StringType::class
+    ];
+
     public function __construct($columnName, $optionString)
     {
         $this->column = $columnName;
         $this->size = false;
         if (is_array($optionString)) {
             $this->dataType = 'multiple';
+            $this->laragenType = new $this->keyToLaragenType[$this->dataType]($columnName, $optionString);
             $this->multipleOptions = [];
             foreach ($optionString as $col => $multString) {
                 $this->multipleOptions[] = new Self($col, $multString);
@@ -90,6 +115,7 @@ class DataOption
             $typePieces = array_shift($this->optionArray);
             $type = explode(':', $typePieces);
             $this->dataType = is_array($type) ? $type[0] : $type;
+            $this->laragenType = new $this->keyToLaragenType[$this->dataType]($columnName, $optionString);
             $this->typeOption = is_array($type) && count($type) >= 2 ? $type[1] : false;
 
             foreach ($this->optionArray as $option) {

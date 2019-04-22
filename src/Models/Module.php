@@ -13,6 +13,7 @@ class Module
     public function __construct($moduleName, $moduleData)
     {
         $this->module = (object) $moduleData;
+        $this->laragenData = $moduleData;
         $this->data = array_filter($moduleData, function($elem) {
             return (is_array($elem)) ? false : true;
         });
@@ -21,12 +22,33 @@ class Module
             return (is_array($elem)) ? true : false;
         });
 
+        foreach($this->laragenData as $column => $typeOptions){
+            $data = new DataOption($column, $typeOptions);
+            if($data->laragenType->isRelational()){
+                $this->relativeTypes[] = $data->laragenType;
+            }
+        }
+
         $this->name = $moduleName;
     }
 
     public function getName()
     {
         return $this->name;
+    }
+
+
+    public function hasRelations()
+    {
+        $hasRelations = false;
+        foreach($this->laragenData as $column => $typeOptions){
+            $data = new DataOption($column, $typeOptions);
+            if($data->laragenType->isRelational()){
+                $hasRelations = true;
+                break;
+            }
+        }
+        return $hasRelations;
     }
 
     public function getMultipleColumns()
