@@ -47,7 +47,7 @@ class Request extends BaseGenerator implements GeneratorInterface
             $uniqueValidation .= '\''.DataOption::COLUMN_UNIQUE.':'.$this->module->getModulename().','.$column.','.'\''.'.$this->route()->'.$modelname.'->id';
             $uniqueValidation .= ':\''.DataOption::COLUMN_UNIQUE.':'.$this->module->getModulename().'\'';
 
-            if ($columnOptions->isUnique()) {
+            if ($columnOptions->laragenType->isUnique()) {
                 $validation[]= $uniqueValidation;
             } else {
                 $validationLine = ($type == DataOption::TYPE_PARENT) ? "'" . $column . "' => 'integer" : "'" . $column . "' => '" . $type;
