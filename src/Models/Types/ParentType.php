@@ -5,11 +5,10 @@ class ParentType extends LaragenType
 {
     public function getSchema()
     {
-		$schema = "";
+        $schema = "";
         $parent = $this->typeOption;
-        $schema .= "\$table->bigInteger('".str_singular($parent)."_id')->unsigned()->nullable();";
-        $schema .= PHP_EOL.$this->getTabs(3);
-        $schema .= "\$table->foreign('".str_singular($parent)."_id')->references('id')->on('$parent')->onDelete('set null');";
+        $schema .= "\$table->bigInteger('".str_singular($parent)."_id')->unsigned()->nullable();".PHP_EOL.$this->getTabs(3);
+        $schema .= "\$table->foreign('".str_singular($parent)."_id')->references('id')->on('$parent')->onDelete('set null');".PHP_EOL;
         return $schema;
 	}
 }

@@ -26,8 +26,4 @@ class MultipleType extends LaragenType
         return $schema;
     }
 
-    public function getMigrationFile()
-    {
-        return "";
-    }
 }
