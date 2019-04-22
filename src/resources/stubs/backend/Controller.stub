@@ -72,6 +72,8 @@ class {{modelName}}Controller extends Controller
     {
         {{fileUploads}}
 
+        {{relatedUpdates}}
+
         if (isset($errors)) {
             return redirect()->back()->withErrors($errors);    
         }else{

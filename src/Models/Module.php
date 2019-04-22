@@ -145,6 +145,24 @@ class Module
         return $data;
     }
 
+    public function getRelatedTypes($type = 'all')
+    {
+        if (is_array($type)) {
+            $types = $type;
+        } else {
+            $types = ($type == "all") ? DataOption::$relatedMultiple : [$type];
+        }
+        
+        $data = [];
+        foreach ($this->data as $column => $optionString) {
+            $dataOption = new DataOption($column, $optionString);
+            if (in_array($dataOption->getType(), $types)) {
+                $data[] = $column;
+            }
+        }
+        return $data;
+    }
+
     public function getFileColumns($type = 'all')
     {
         if (is_array($type)) {

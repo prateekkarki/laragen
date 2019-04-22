@@ -60,7 +60,9 @@ class DataOption
     ];
 
     public static $relatedMultiple = [
-      
+        'gallery',
+        'multiple',
+        'related'
     ];
 
     /**
