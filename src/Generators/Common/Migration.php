@@ -26,14 +26,13 @@ class Migration extends BaseGenerator implements GeneratorInterface
 
         if($this->module->hasRelations()){
             foreach($this->module->relativeTypes as $related){
-                $migrationTemplate = $this->buildTemplate('common/migrations/table', [
-                    '{{modelName}}'         => $this->module->getModelName(),
-                    '{{modelNamePlural}}'   => $this->module->getModelNamePlural(),
-                    '{{moduleName}}'        => $this->module->getModuleName(),
-                    '{{modelTableSchema}}'  => $related->getSchema($this->module->getModelNameLowerCase(), $this->module->getModuleName())
+                $migrationTemplate = $this->buildTemplate('common/migrations/pivot', [
+                    '{{pivotName}}'         => $related->getPivotName($this->module->getModelName()),
+                    '{{pivotTableName}}'   => $related->getPivotTableName($this->module->getModelNameLowerCase()),
+                    '{{pivotTableSchema}}'  => $related->getTableSchema($this->module->getModelNameLowerCase(), $this->module->getModuleName())
                 ]);
                 
-                // $fullFilePath = $related->getMigrationFile();
+                $fullFilePath = $this->getPath("database/migrations/laragen/") . $related->getPivotFile($this->module->getModelNameLowerCase(), ++self::$counter);
                 file_put_contents($fullFilePath, $migrationTemplate);
                 $generatedFiles[] = $fullFilePath;
             }
@@ -62,15 +61,11 @@ class Migration extends BaseGenerator implements GeneratorInterface
     protected function getSchema()
     {
         $schema = "";
-        $keyArray = array_keys($this->module->getData());
-        $lastColumn = array_pop($keyArray);
+        foreach ($this->module->getColumns(true) as $type) {
 
-        foreach ($this->module->getData() as $column => $optionString) {
-            $option = new DataOption($column, $optionString);
-
-            $schema .= $option->getSchema();
-
-            if ($column != $lastColumn) {
+            $schema .= $type->getSchema();
+            
+            if ($type->getColumn() != $this->module->getLastColumn()) {
                 $schema .= PHP_EOL.$this->getTabs(3);
             }
         }

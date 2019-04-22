@@ -64,6 +64,30 @@ class Module
         return $this->data;
     }
 
+    public function getLastColumn()
+    {
+        $keyArray = array_keys($this->getColumns(true, true));
+        $lastColumn = array_pop($keyArray);
+        return $lastColumn;
+    }
+
+    public function getColumns($onlyNonRelational = false, $columnsOnly = false)
+    {
+        $columns = [];
+        foreach($this->getData() as $column => $optionString){
+            $data = new DataOption($column, $optionString);
+            if($onlyNonRelational && $data->laragenType->isRelational()){
+                continue;
+            }
+            if($columnsOnly){
+                $columns[] = $column; 
+            }else{
+                $columns[$column] = $data->laragenType;
+            }
+        }
+        return $columns;
+    }
+
     public function getBackendColumnTitles()
     {
         $data = ['S.N.'];
@@ -210,12 +234,6 @@ class Module
         return implode("", $modelArray);
     }
 
-    public function getPivotTableName($related)
-    {
-        $moduleArray = [str_singular($this->getModelNameLowercase()), str_singular($related)];
-        sort($moduleArray);
-        return implode("_", $moduleArray);
-    }
 
     public function getModuleName()
     {

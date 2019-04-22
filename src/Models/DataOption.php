@@ -126,21 +126,6 @@ class DataOption
             $this->dataType = is_array($type) ? $type[0] : $type;
             $this->laragenType = new $this->keyToLaragenType[$this->dataType]($columnName, $optionString);
             $this->typeOption = is_array($type) && count($type) >= 2 ? $type[1] : false;
-
-            foreach ($this->optionArray as $option) {
-                if ($option == self::COLUMN_UNIQUE) {
-                    $this->setUnique();
-                    continue;
-                }
-                if ($option == self::COLUMN_REQUIRED) {
-                    $this->setRequired();
-                    continue;
-                }
-                if (Str::contains($option, ':')) {
-                    $optionPieces = explode(':', $option);
-                    $this->setOptions($optionPieces[0], $optionPieces[1]);
-                }
-            }
         }
     }
 
