@@ -13,14 +13,14 @@ class MultipleType extends LaragenType
         $this->multipleData = $optionString;
 	}
 
-    public function getSchema($modelName, $moduleName)
+    public function getTableSchema($modelName, $moduleName)
     {
         $schema = '$table->bigInteger("'.$modelName.'_id")->unsigned()->nullable();'.PHP_EOL.$this->getTabs(3);
         $schema .= "\$table->foreign('".$modelName."_id')->references('id')->on('".$moduleName."')->onDelete('set null');";
 
         foreach ($this->multipleData as $column => $optionString) {
             $option = new DataOption($column, $optionString);
-            $schema .= $option->getSchema();
+            $schema .= $option->laragenType->getSchema();
             $schema .= ''.PHP_EOL.$this->getTabs(3);
         }
         return $schema;

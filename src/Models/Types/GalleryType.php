@@ -10,7 +10,7 @@ class GalleryType extends LaragenType
         return "";
     }
 
-    public function getSchema($modelName, $moduleName)
+    public function getTableSchema($modelName, $moduleName)
     {
         $schema = '$table->bigInteger("'.$modelName.'_id")->unsigned()->nullable();'.PHP_EOL.$this->getTabs(3);
         $schema .= "\$table->foreign('".$modelName."_id')->references('id')->on('".$moduleName."')->onDelete('set null');";
