@@ -31,7 +31,6 @@ class Request extends BaseGenerator implements GeneratorInterface
             $columnOptions = new DataOption($column, $options);
             $type = $columnOptions->getType();
             $rules = $columnOptions->optionArray();
-            // dump( $column, $options, $rules);
 
             $valid_types = [
                 'text' => 'string',
@@ -43,7 +42,6 @@ class Request extends BaseGenerator implements GeneratorInterface
             }
 
             if(in_array($type, DataOption::$fileTypes) || ($type == DataOption::TYPE_RELATED)) continue;
-            if($type == DataOption::TYPE_PARENT) var_dump($rules);
 
             $uniqueValidation = '\''.$column.'\' => ($this->route()->'.$modelname.') ? ';
             $uniqueValidation .= '\''.DataOption::COLUMN_UNIQUE.':'.$this->module->getModulename().','.$column.','.'\''.'.$this->route()->'.$modelname.'->id';
