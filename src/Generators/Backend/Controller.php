@@ -14,6 +14,7 @@ class Controller extends BaseGenerator implements GeneratorInterface
             '{{moduleName}}'         => $this->module->getModuleName(),
             '{{modelNameLowercase}}' => $this->module->getModelNameLowercase(),
             '{{fileUploads}}'        => $this->getFileUploads(),
+            '{{relatedUpdates}}'     => $this->getRelatedUpdates(),
             '{{foreignData}}'        => $this->getForeignData(),
             '{{usedModels}}'         => $this->getUsedModels(),
             '{{fileExtentions}}'     => $this->getFileExtentionData()
@@ -22,6 +23,24 @@ class Controller extends BaseGenerator implements GeneratorInterface
         $fullFilePath = $this->getPath("app/Http/Controllers/Backend/").$this->module->getModelName()."Controller".".php";
         file_put_contents($fullFilePath, $controllerTemplate);
         return $fullFilePath;
+    }
+
+    protected function getRelatedUpdates() {
+        $relatedUpdates = "";
+        $relatedTypes = $this->module->getRelatedTypes();
+        if (empty($relatedTypes)) return "";
+        if (count($relatedTypes) > 1) {
+            $relatedUpdates .= $this->buildTemplate('backend/fragments/related-process', [
+                '{{modelNameLowercase}}' => $this->module->getModelNameLowercase(),
+                '{{relatedTypes}}'         => implode('", "', $relatedTypes),
+            ]);
+        } else {
+            $fileField = $relatedTypes[0];
+            $relatedUpdates .= 'if ($request->has("'.$fileField.'")) {'.PHP_EOL;
+            $relatedUpdates .= $this->getTabs(3).'$post->'.$fileField.'()->sync($request->input("'.$fileField.'"));'.PHP_EOL;
+            $relatedUpdates .= $this->getTabs(2).'}'.PHP_EOL;
+        }
+        return $relatedUpdates;
     }
 
     protected function getFileUploads() {

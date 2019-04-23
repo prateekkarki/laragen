@@ -40,7 +40,7 @@ class BaseGenerator
         $dir = base_path($path);
 
         if (!is_dir($dir)) {
-                    $this->fileSystem->mkdir($dir, 0755);
+            $this->fileSystem->mkdir($dir, 0755);
         }
 
         return $dir;

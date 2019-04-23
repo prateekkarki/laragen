@@ -24,44 +24,19 @@ class Migration extends BaseGenerator implements GeneratorInterface
         file_put_contents($fullFilePath, $migrationTemplate);
         $generatedFiles[] = $fullFilePath;
 
-        foreach ($this->module->getGalleries() as $gallery) {
-            $pivotTemplate = $this->buildTemplate('common/migrations/pivot', [
-                '{{pivotName}}'         => $this->module->getPivotName($gallery),
-                '{{pivotTableName}}'    => $this->module->getPivotTableName($gallery),
-                '{{pivotTableSchema}}'  => $this->getGallerySchema($gallery)
-            ]);
-            $pivotFilePath = $this->getPivotFile($gallery);
-            file_put_contents($pivotFilePath, $pivotTemplate);
-            $generatedFiles[] = $pivotFilePath;
-        }
-
-        foreach ($this->module->getForeignColumns('related') as $relatedModules) {
-            foreach ($relatedModules as $related) {
-                $pivotTemplate = $this->buildTemplate('common/migrations/pivot', [
-                    '{{pivotName}}'         => $this->module->getPivotName($related),
-                    '{{pivotTableName}}'    => $this->module->getPivotTableName($related),
-                    '{{pivotTableSchema}}'  => $this->getPivotSchema($related)
-                ]);
-            }
-            $pivotFilePath = $this->getPivotFile($related);
-            file_put_contents($pivotFilePath, $pivotTemplate);
-            $generatedFiles[] = $pivotFilePath;
-        }
-
-        foreach ($this->module->getMultipleColumns() as $multipleModules) {
-            foreach ($multipleModules as $multiple => $multipleData) {
-                $pivotTemplate = $this->buildTemplate('common/migrations/pivot', [
-                    '{{pivotName}}'         => str_singular($this->module->getPivotName($multiple)),
-                    '{{pivotTableName}}'    => str_plural($this->module->getPivotTableName($multiple)),
-                    '{{pivotTableSchema}}'  => $this->getMultipleSchema($multipleData)
+        if($this->module->hasRelations()){
+            foreach($this->module->relativeTypes as $related){
+                $migrationTemplate = $this->buildTemplate('common/migrations/pivot', [
+                    '{{pivotName}}'         => $related->getPivotName($this->module->getModelName()),
+                    '{{pivotTableName}}'   => $related->getPivotTableName($this->module->getModelNameLowerCase()),
+                    '{{pivotTableSchema}}'  => $related->getTableSchema($this->module->getModelNameLowerCase(), $this->module->getModuleName())
                 ]);
                 
-                $pivotFilePath = $this->getPivotFile($multiple);
-                file_put_contents($pivotFilePath, $pivotTemplate);
-                $generatedFiles[] = $pivotFilePath;
+                $fullFilePath = $this->getPath("database/migrations/laragen/") . $related->getPivotFile($this->module->getModelNameLowerCase(), ++self::$counter);
+                file_put_contents($fullFilePath, $migrationTemplate);
+                $generatedFiles[] = $fullFilePath;
             }
         }
-
         return $generatedFiles;
     }
 
@@ -83,51 +58,14 @@ class Migration extends BaseGenerator implements GeneratorInterface
         return $this->getPath("database/migrations/laragen/").$filenamePrefix.$fileName;
     }
 
-    protected function getMultipleSchema($multipleData)
-    {
-        $schema = '$table->bigInteger("'.$this->module->getModelNameLowercase().'_id")->unsigned()->nullable();'.PHP_EOL.$this->getTabs(3);
-        $schema .= "\$table->foreign('".$this->module->getModelNameLowercase()."_id')->references('id')->on('".$this->module->getModulename()."')->onDelete('set null');";
-
-        foreach ($multipleData as $column => $optionString) {
-            $option = new DataOption($column, $optionString);
-            $schema .= $option->getSchema();
-            $schema .= ''.PHP_EOL.$this->getTabs(3);
-        }
-        return $schema;
-    }
-
-    protected function getPivotSchema($related)
-    {
-        $schema = '$table->bigInteger("'.$this->module->getModelNameLowercase().'_id")->unsigned()->nullable();'.PHP_EOL.$this->getTabs(3);
-        $schema .= "\$table->foreign('".$this->module->getModelNameLowercase()."_id')->references('id')->on('".$this->module->getModulename()."')->onDelete('set null');";
-
-        $schema .= '$table->bigInteger("'.str_singular($related).'_id")->unsigned()->nullable();';
-        $schema .= "\$table->foreign('".str_singular($related)."_id')->references('id')->on('".$related."')->onDelete('set null');";
-
-        return $schema;
-    }
-
-    protected function getGallerySchema($gallery)
-    {
-        $schema = '$table->bigInteger("'.$this->module->getModelNameLowercase().'_id")->unsigned()->nullable();'.PHP_EOL.$this->getTabs(3);
-        $schema .= "\$table->foreign('".$this->module->getModelNameLowercase()."_id')->references('id')->on('".$this->module->getModulename()."')->onDelete('set null');";
-        $schema .= '$table->string("filename", 128);';
-        $schema .= '$table->timestamps();';
-        return $schema;
-    }
-
     protected function getSchema()
     {
         $schema = "";
-        $keyArray = array_keys($this->module->getData());
-        $lastColumn = array_pop($keyArray);
+        foreach ($this->module->getColumns(true) as $type) {
 
-        foreach ($this->module->getData() as $column => $optionString) {
-            $option = new DataOption($column, $optionString);
-
-            $schema .= $option->getSchema();
-
-            if ($column != $lastColumn) {
+            $schema .= $type->getSchema();
+            
+            if ($type->getColumn() != $this->module->getLastColumn()) {
                 $schema .= PHP_EOL.$this->getTabs(3);
             }
         }

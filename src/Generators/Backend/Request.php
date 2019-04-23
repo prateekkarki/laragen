@@ -29,9 +29,8 @@ class Request extends BaseGenerator implements GeneratorInterface
 
         foreach($moduleData as $column => $options){
             $columnOptions = new DataOption($column, $options);
-            $type = $columnOptions->getType();
-            $rules = $columnOptions->optionArray();
-            // dump( $column, $options, $rules);
+            $type = $columnOptions->laragenType->getDataType();
+            $rules = $columnOptions->laragenType->optionArray();
 
             $valid_types = [
                 'text' => 'string',
@@ -43,13 +42,12 @@ class Request extends BaseGenerator implements GeneratorInterface
             }
 
             if(in_array($type, DataOption::$fileTypes) || ($type == DataOption::TYPE_RELATED)) continue;
-            if($type == DataOption::TYPE_PARENT) var_dump($rules);
 
             $uniqueValidation = '\''.$column.'\' => ($this->route()->'.$modelname.') ? ';
             $uniqueValidation .= '\''.DataOption::COLUMN_UNIQUE.':'.$this->module->getModulename().','.$column.','.'\''.'.$this->route()->'.$modelname.'->id';
             $uniqueValidation .= ':\''.DataOption::COLUMN_UNIQUE.':'.$this->module->getModulename().'\'';
 
-            if ($columnOptions->isUnique()) {
+            if ($columnOptions->laragenType->isUnique()) {
                 $validation[]= $uniqueValidation;
             } else {
                 $validationLine = ($type == DataOption::TYPE_PARENT) ? "'" . $column . "' => 'integer" : "'" . $column . "' => '" . $type;

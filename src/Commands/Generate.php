@@ -40,7 +40,7 @@ class Generate extends Command
         $modules = config('laragen.modules');
         $generatedFiles = [];
 
-        $existingMigrationFiles = scandir(database_path('migrations/laragen/'));
+        $existingMigrationFiles = is_dir(database_path('migrations/laragen/')) ? scandir(database_path('migrations/laragen/')) : [];
 
         foreach ($existingMigrationFiles as $file) {
             $file = database_path("migrations/laragen") . "/" . $file;

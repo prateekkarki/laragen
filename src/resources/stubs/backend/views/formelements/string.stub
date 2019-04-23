@@ -4,4 +4,3 @@
         <input class="form-control" type="text" name="{{key}}" id="{{key}}" placeholder="{{display}}" value="{{ !empty(old('{{key}}')) ? old('{{key}}') :  (isset(${{modelNameLowercase}}) ? ${{modelNameLowercase}}->{{key}} : '') }}" {{options}}>
     </div>
 </div>
-

@@ -13,11 +13,11 @@ class View extends BaseGenerator implements GeneratorInterface
 
     public function generate()
     {
-        
-		$viewsToBeGenerated = ['index', 'create', 'edit'];
+
+        $viewsToBeGenerated = ['index', 'create', 'edit'];
 
 		$generatedFiles = [];
-		
+
         foreach ($viewsToBeGenerated as $view) {
             $viewTemplate = $this->buildTemplate('backend/views/'.$view, [
                 '{{headings}}' 			 => $this->getHeadings(),
@@ -75,10 +75,10 @@ class View extends BaseGenerator implements GeneratorInterface
             $viewTemplate .= $this->buildTemplate('backend/views/formelements/'.$type, [
                 '{{key}}'                   => $column,
                 '{{display}}'               => $columnOptions->getDisplay(),
-                '{{options}}'               => $columnOptions->getFormOptions(),
-                '{{parentModule}}'          => $columnOptions->getParentModule(),
-                '{{parentModuleSinglular}}' => Str::singular($columnOptions->getParentModule()),
-                '{{parentDisplay}}'         => $this->getParentDisplay($columnOptions->getParentModule()),
+                '{{options}}'               => $columnOptions->laragenType->getFormOptions(),
+                '{{parentModule}}'          => $columnOptions->laragenType->getParentModule(),
+                '{{parentModuleSinglular}}' => Str::singular($columnOptions->laragenType->getParentModule()),
+                '{{parentDisplay}}'         => $this->getParentDisplay($columnOptions->laragenType->getParentModule()),
                 '{{modelNameLowercase}}'    => $this->module->getModelNameLowercase(),
                 '{{modulename}}'            => $this->module->getModuleName(),
             ]);
