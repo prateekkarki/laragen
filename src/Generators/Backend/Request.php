@@ -29,8 +29,8 @@ class Request extends BaseGenerator implements GeneratorInterface
 
         foreach($moduleData as $column => $options){
             $columnOptions = new DataOption($column, $options);
-            $type = $columnOptions->getType();
-            $rules = $columnOptions->optionArray();
+            $type = $columnOptions->laragenType->getDataType();
+            $rules = $columnOptions->laragenType->optionArray();
 
             $valid_types = [
                 'text' => 'string',

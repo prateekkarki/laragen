@@ -40,7 +40,20 @@ class LaragenType
                 $this->setOptions($optionPieces[0], $optionPieces[1]);
             }
         }
-	}
+    }
+    
+    function __call($method, $params) {
+        $var = lcfirst(substr($method, 3));
+        
+        if (strncasecmp($method, "get", 3) === 0) {
+            return property_exists($this, $var) ? $this->$var : "";
+        }
+
+        if (strncasecmp($method, "set", 3) === 0 && isset($params[0])) {
+            $this->$var = $params[0];
+        }
+
+   }   
 	
     public function isRelational()
     {
@@ -57,7 +70,19 @@ class LaragenType
 
         return $schema;
 	}
+
+    public function getFormOptions() {
+        $options = "";
+        $options .= $this->isRequired() ? 'required="required" ' : '';
+        return $options;
+    }
 	
+    public function getTextRows() {
+        if (!$this->size)
+            return 4;
+        
+        return floor($this->getsize() / 120);
+    }
     public function isUnique() {
         return $this->uniqueFlag;
     }

@@ -217,7 +217,7 @@ class Module
         foreach ($this->data as $column => $optionString) {
             $dataOption = new DataOption($column, $optionString);
             if (in_array($dataOption->getType(), $types)) {
-                $data[] = [$column => $dataOption->getParentModule()];
+                $data[] = [$column => $dataOption->laragenType->getParentModule()];
             }
         }
         return $data;
@@ -237,8 +237,8 @@ class Module
             if (in_array($dataOption->getType(), $types)) {
                 $data[] = [
                     'columnName'   => $column,
-                    'parentModule' => $dataOption->getParentModule(),
-                    'parentModel'  => $dataOption->getParentModel()
+                    'parentModule' => $dataOption->laragenType->getParentModule(),
+                    'parentModel'  => $dataOption->laragenType->getParentModel()
                 ];
             }
         }

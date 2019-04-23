@@ -13,26 +13,18 @@ use Prateekkarki\Laragen\Models\Types\IntegerType;
 use Prateekkarki\Laragen\Models\Types\TextType;
 use Prateekkarki\Laragen\Models\Types\DateTimeType;
 use Prateekkarki\Laragen\Models\Types\DateType;
-use Illuminate\Support\Str;
 
 class DataOption
 {
     const TYPE_PARENT = 'parent';
-
     const TYPE_RELATED = 'related';
-    
     const COLUMN_UNIQUE = 'unique';
-
     const COLUMN_REQUIRED = 'required';
 
     protected $specialType;
-
     protected $uniqueFlag;
-
     protected $requiredFlag;
-
     protected $size;
-
     protected $column;
 
     /**
@@ -131,22 +123,6 @@ class DataOption
         }
     }
 
-    public function getSchema()
-    {
-        if ($this->dataType == 'parent') {
-            $schema = $this->processParent();
-        } else if (in_array($this->dataType, ['gallery', 'related', 'multiple'])) {
-            $schema = '';
-        } else {
-            $schema = '$table->'.$this->getColumnType()."('{$this->column}'";
-            $schema .= $this->getSize() ? ", {$this->getSize()})" : ")";
-            $schema .= $this->isUnique() ? "->unique()" : "";
-            $schema .= $this->isRequired() ? "" : "->nullable()";
-            $schema .= ";";
-        }
-        return $schema;
-    }
-
     public function getKey() {
         return $this->column;
     }
@@ -168,31 +144,8 @@ class DataOption
         return $this->size;
     }
 
-    public function getParentModule() {
-        return (in_array($this->dataType, self::$specialTypes)) ? $this->typeOption : '';
-    }
-
-    public function getParentModel() {
-        return (in_array($this->dataType, self::$specialTypes)) ? ucfirst(camel_case(str_singular($this->typeOption))) : '';
-    }
-
     public function isRequired() {
         return $this->requiredFlag;
-    }
-
-    public function getFormOptions() {
-        $options = "";
-        $options .= $this->isRequired() ? 'required="required" ' : ''; 
-        $options .= $this->getType() == 'text' ? 'rows="'.$this->getTextRows().'" ' : ''; 
-        return $options;
-    }
-
-
-    public function getTextRows() {
-        if (!$this->size)
-            return 4;
-        
-        return floor($this->getsize() / 120);
     }
 
     public function getTabs($number)
@@ -235,18 +188,4 @@ class DataOption
     protected function setSize($size = null) {
         $this->size = $size;
     }
-
-    public function optionArray() {
-        return $this->optionArray;
-    }
-
-    protected function processParent() {
-        $schema = "";
-        $parent = $this->typeOption;
-        $schema .= "\$table->bigInteger('".str_singular($parent)."_id')->unsigned()->nullable();";
-        $schema .= PHP_EOL.$this->getTabs(3);
-        $schema .= "\$table->foreign('".str_singular($parent)."_id')->references('id')->on('$parent')->onDelete('set null');";
-        return $schema;
-    }
-
 }
