@@ -13,11 +13,11 @@ class View extends BaseGenerator implements GeneratorInterface
 
     public function generate()
     {
-        
-		$viewsToBeGenerated = ['index', 'create', 'edit'];
+
+        $viewsToBeGenerated = ['index', 'create', 'edit'];
 
 		$generatedFiles = [];
-		
+
         foreach ($viewsToBeGenerated as $view) {
             $viewTemplate = $this->buildTemplate('backend/views/'.$view, [
                 '{{headings}}' 			 => $this->getHeadings(),

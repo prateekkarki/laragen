@@ -1,10 +1,11 @@
 <?php
 namespace Prateekkarki\Laragen\Models\Types;
-use Prateekkarki\Laragen\Models\DataOption;
 use Illuminate\Support\Str;
 
 class ParentType extends LaragenType
 {
+    protected $dataType = 'integer';
+    
     public function getSchema()
     {
         $schema = "";
@@ -15,11 +16,10 @@ class ParentType extends LaragenType
     }
     
     public function getParentModule() {
-        return (in_array($this->dataType, DataOption::$specialTypes)) ? $this->typeOption : '';
+        return $this->typeOption;
     }
 
     public function getParentModel() {
-        return (in_array($this->dataType, DataOption::$specialTypes)) ? ucfirst(camel_case(Str::singular($this->typeOption))) : '';
+        return ucfirst(camel_case(Str::singular($this->typeOption)));
     }
-
 }

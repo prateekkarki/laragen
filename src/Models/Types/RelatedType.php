@@ -15,5 +15,12 @@ class RelatedType extends LaragenType
         $schema .= "\$table->foreign('". Str::singular($this->columnName) ."_id')->references('id')->on('".$this->columnName."')->onDelete('set null');".PHP_EOL;
         return $schema;
     }
+    
+    public function getParentModule() {
+        return $this->typeOption;
+    }
 
+    public function getParentModel() {
+        return ucfirst(camel_case(Str::singular($this->typeOption)));
+    }
 }
