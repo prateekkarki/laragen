@@ -9,6 +9,7 @@ use Prateekkarki\Laragen\Commands\Generate;
 use Prateekkarki\Laragen\Commands\Seeder;
 use Prateekkarki\Laragen\Commands\Migrate;
 use Prateekkarki\Laragen\Commands\Execute;
+use Prateekkarki\Laragen\Commands\Initialize;
 use Artisan;
 
 class LaragenServiceProvider extends ServiceProvider
@@ -26,11 +27,12 @@ class LaragenServiceProvider extends ServiceProvider
         Artisan::call('vendor:publish', [
             '--provider' => 'Prateekkarki\Laragen\LaragenServiceProvider'
         ]);
-
+        
         $file = app_path('Http/Helpers/laragen_helpers.php');
         if (file_exists($file)) {
             require_once($file);
         }
+
     }
     /**
      * Run after all boot method completed
@@ -40,21 +42,21 @@ class LaragenServiceProvider extends ServiceProvider
         // Register Intervention Provider and Facade
         $this->app->register(ImageServiceProvider::class);
         AliasLoader::getInstance()->alias('Image', Image::class);
-
-        copy(__DIR__ . '/../src/resources/stubs/RouteServiceProvider.stub', app_path('Providers/LaragenRouteServiceProvider.php'));
-
+        
         $this->app->register("\App\Providers\LaragenRouteServiceProvider");
 
         $this->app->bind('command.laragen:make', Generate::class);
         $this->app->bind('command.laragen:seed', Seeder::class);
         $this->app->bind('command.laragen:migrate', Migrate:: class);
         $this->app->bind('command.laragen:exec', Execute::class);
+        $this->app->bind('command.laragen:init', Initialize::class);
 
         $this->commands([
             'command.laragen:make',
             'command.laragen:seed',
             'command.laragen:migrate',
             'command.laragen:exec',
+            'command.laragen:init',
         ]);
 
     }
@@ -67,4 +69,5 @@ class LaragenServiceProvider extends ServiceProvider
     {
         return ['laragen'];
     }
+    
 }
