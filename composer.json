@@ -28,7 +28,7 @@
         }
     },
     "scripts": {
-        "post-install-cmd": [
+        "post-create-project-cmd": [
             "php artisan laragen:init"
         ]
     },
