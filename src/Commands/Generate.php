@@ -3,6 +3,8 @@ namespace Prateekkarki\Laragen\Commands;
 use Illuminate\Console\Command;
 use Prateekkarki\Laragen\Models\Module;
 use Prateekkarki\Laragen\Models\FileSystem;
+use Illuminate\Support\Composer;
+
 class Generate extends Command
 {
     /**
@@ -24,16 +26,30 @@ class Generate extends Command
      */
     protected $filesToPublish = [
         'public' => '/',
+        'app' => '/',
         'views' => 'resources',
-        'Controllers'   => 'app/Http',
-        'Middleware'   => 'app/Http',
-        'Helpers'   => 'app/Http',
     ];
+
+
+    /**
+     * Create a new command instance.
+     *
+     * @param Composer $composer
+     * @return void
+     */
+    public function __construct(Composer $composer)
+    {
+        parent::__construct();
+
+        $this->composer = $composer;
+    }
+
     /**
      * Execute the console command.
      *
      * @return mixed
      */
+    
     public function handle()
     {
         $options = config('laragen.options');
@@ -75,10 +91,14 @@ class Generate extends Command
         $bar->finish();
         
         $this->line("\n");
-        
+
         foreach ($generatedFiles as $file) {
-            $this->info("Generated file: ".str_replace(base_path()."\\", "", $file));
+            $this->info("Generated file: " . str_replace(base_path() . "\\", "", $file));
         }
+
+        $this->info("Generating autoload...");
+        $this->composer->dumpOptimized();
+        $this->info("Cheers!!!");
     }
 
     protected function configToGenerators($array) {
@@ -90,4 +110,6 @@ class Generate extends Command
         }
         return $generators;
     }
+
+
 }

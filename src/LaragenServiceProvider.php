@@ -42,23 +42,24 @@ class LaragenServiceProvider extends ServiceProvider
         // Register Intervention Provider and Facade
         $this->app->register(ImageServiceProvider::class);
         AliasLoader::getInstance()->alias('Image', Image::class);
-        
-        // $this->app->register("\App\Providers\LaragenRouteServiceProvider");
 
         $this->app->bind('command.laragen:make', Generate::class);
         $this->app->bind('command.laragen:seed', Seeder::class);
         $this->app->bind('command.laragen:migrate', Migrate:: class);
         $this->app->bind('command.laragen:exec', Execute::class);
         $this->app->bind('command.laragen:init', Initialize::class);
-
+        
         $this->commands([
             'command.laragen:make',
             'command.laragen:seed',
             'command.laragen:migrate',
             'command.laragen:exec',
             'command.laragen:init',
-        ]);
+            ]);
 
+        $routeFile = app_path('Providers\LaragenRouteServiceProvider.php');
+        if (file_exists($routeFile))
+            $this->app->register("\App\Providers\LaragenRouteServiceProvider");
     }
     /**
      * To register laragen as first level command. E.g. laragen:generate
