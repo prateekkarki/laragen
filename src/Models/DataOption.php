@@ -112,7 +112,6 @@ class DataOption
             foreach ($optionString as $col => $multString) {
                 $this->multipleOptions[] = new Self($col, $multString);
             }
-
         } else {
             $this->optionArray = explode('|', $optionString);
             $typePieces = array_shift($this->optionArray);
@@ -146,15 +145,6 @@ class DataOption
 
     public function isRequired() {
         return $this->requiredFlag;
-    }
-
-    public function getTabs($number)
-    {
-        $schema = "";
-        for ($i = 0; $i < $number; $i++) {
-            $schema .= "    ";
-        }
-        return $schema;
     }
 
     public function isUnique() {
