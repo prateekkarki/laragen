@@ -28,8 +28,15 @@
         }
     },
     "scripts": {
-        "pre-autoload-dump": [
+        "pre-laragen-init": [
             "Prateekkarki\\Laragen\\Initialize::initSetup"
+        ],
+        "pre-install-cmd": "Prateekkarki\\Laragen\\Initialize::preInstall",
+        "post-install-cmd": [
+            "Prateekkarki\\Laragen\\Initialize::postInstall"
+        ],
+        "post-package-install": [
+            "Prateekkarki\\Laragen\\Initialize::postPackageInstall"
         ]
     },
     "extra": {
