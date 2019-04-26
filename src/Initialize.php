@@ -2,11 +2,14 @@
 
 namespace Prateekkarki\Laragen;
 
+use Composer\Script\Event;
+
 class Initialize
 {
-    public static function initSetup()
+    public static function initSetup(Event $event)
     {
-        
+        echo "init...........";
+        $composer = $event->getComposer();
         copy(__DIR__ . '/../src/resources/stubs/RouteServiceProvider.stub', __DIR__ . '/../../../../app/Providers/LaragenRouteServiceProvider.php');
         if (!is_dir('routes/backend')) {
             @mkdir(__DIR__ . '/../../../../routes/backend', 0777, true);
