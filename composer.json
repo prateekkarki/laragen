@@ -29,7 +29,7 @@
     },
     "scripts": {
         "post-package-install": [
-            "php artisan laragen:init"
+            "Prateekkarki\\Laragen\\Initialize::initSetup"
         ]
     },
     "extra": {
