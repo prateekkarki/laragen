@@ -43,7 +43,7 @@ class LaragenServiceProvider extends ServiceProvider
         $this->app->register(ImageServiceProvider::class);
         AliasLoader::getInstance()->alias('Image', Image::class);
         
-        // $this->app->register("\App\Providers\LaragenRouteServiceProvider");
+        $this->app->register("\App\Providers\LaragenRouteServiceProvider");
 
         $this->app->bind('command.laragen:make', Generate::class);
         $this->app->bind('command.laragen:seed', Seeder::class);

@@ -28,7 +28,7 @@
         }
     },
     "scripts": {
-        "post-package-install": [
+        "post-laragen-initialize": [
             "Prateekkarki\\Laragen\\Initialize::initSetup"
         ]
     },
