@@ -25,9 +25,10 @@ class Generate extends Command
      * @var array
      */
     protected $filesToPublish = [
-        'public' => '/',
-        'app' => '/',
-        'views' => 'resources',
+        'public',
+        'app',
+        'database',
+        'resources',
     ];
 
 
@@ -69,8 +70,8 @@ class Generate extends Command
         $bar->setOverwrite(true);
         $bar->start();
         $fs = new FileSystem();
-        foreach ($this->filesToPublish as $src => $dest) {
-            $fs->clone($src, $dest);
+        foreach ($this->filesToPublish as $src ) {
+            $fs->clone($src, '\\');
         }
 
         foreach ($modules as $moduleName => $moduleArray) {

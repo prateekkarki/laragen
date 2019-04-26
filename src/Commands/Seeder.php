@@ -25,6 +25,8 @@ class Seeder extends Command
      */
     public function handle()
     {
+        Artisan::call('db:seed');
+
         Artisan::call('db:seed', [
             '--class' => 'LaragenSeeder'
         ]);
