@@ -16,28 +16,97 @@
 //      related: requires name of a module, creates many to many relation with current module
 
 return [
-    'categories' => [
+
+    'departments' => [
         'title'             => 'string|max:128',
         'slug'              => 'string|max:128|unique|required',
-        'short_description' => 'string',
-        'show_in_menu'      => 'boolean',
-        'banners'           => 'gallery',
-        'image'             => 'image|mimes:jpeg',
-        'brochure'          => 'file|mimes:pdf|max:500000'
+        'image'             => 'image',
+        'short_description' => 'string'
     ],
 
-    'tags' => [
-        'title'             => 'string:128'
+    // 'categories' => [
+    //     'title'             => 'string|max:128',
+    //     'slug'              => 'string|max:128|unique|required',
+    //     'short_description' => 'string',
+    //     'show_in_menu'      => 'boolean',
+    //     'image'             => 'image|mimes:jpeg',
+    //     'banner'            => 'image|mimes:jpeg,png,gif',
+    //     'brochure'          => 'file|mimes:pdf|max:333',
+    //     'images'            =>  [
+    //         'caption' =>'string|max:123',
+    //         'file'    =>'image'  
+    //     ],
+    //     'reviews'          => [
+    //         'name'      => 'string|max:128',
+    //         'reviews'   => 'text|max:5000',
+    //         'rating'    => 'date',
+    //         'show_in_home'      => 'boolean',
+    //     ]
+    // ],
+
+    'designations' => [
+        'title'             => 'string|max:128'
     ],
 
-    'posts' => [
-        'author'            => 'parent:users',
-        'title'             => 'string|max:128|required',
-        'slug'              => 'string|max:128|unique',
+    'leave_types' => [
+        'title'             => 'string|max:128'
+    ],
+
+    'skills' => [
+        'title'             => 'string|max:128'
+    ],
+
+    'genders' => [
+        'title'             => 'string|max:128'
+    ],
+
+    'leaves' => [
+        'title' => 'string|max:128',
+        'start_date' => 'date',
+        'end_date' => 'date',
+        'reason' => 'string|max:128',
+        'leave_type' => 'parent:leave_types|required',
+        'title' => 'string|max:128'
+    ],
+    'clients' => [
+        'title'             => 'string|max:128',
+        'image'             => 'image',
         'short_description' => 'string|max:512',
-        'full_description'  => 'text',
-        'category'          => 'parent:categories',
-        'posted_at'         => 'datetime',
-        'tags'              => 'related:tags'
+        'address'           => 'string|max:250',
+        'phone'             => 'string|max:128',
+        'mobile'            => 'string|max:128',
+        'email'             => 'string|max:128',
+
     ],
+
+    'projects'  => [
+        'title'         => 'string|max:128',
+        'description'   => 'string|max:512',
+        'client'        => 'parent:clients',
+        'gallery'        => 'gallery',
+    ],
+
+    'employees' => [
+        'name'              => 'string|max:128',
+        'gender'            => 'parent:genders',
+        'phone'             => 'string|max:256',
+        'mobile'            => 'string|max:256',
+        'email'             => 'string|max:256',
+        'permanent_address' => 'string|max:512',
+        'temporary_address' => 'string|max:512',
+        'description'       => 'string|max:512',
+        'position'          => 'parent:designations',
+        'department'        => 'parent:departments',
+        'date_joined'       => 'date',
+        'date_of_birth'     => 'date',
+        'salary'            => 'integer',
+        'profile_image'     => 'image',
+        'leaves'            => 'related:leaves',
+        'is_active'         => 'boolean',
+        'skills'            => 'related:skills',
+        'password'          => 'string|max:512',
+        'remember_token'    => 'string|max:128',
+        'projects'          => 'related:projects'
+    ],
+
 ];

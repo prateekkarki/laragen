@@ -28,40 +28,6 @@
 
 @push('after-scripts')
 <script type="text/javascript">
-    $("#drop{{key}}").dropzone({ 
-        url: '{{ route('backend.gallery.uploader') }}',
-        uploadMultiple: true,
-        parallelUploads:10,
-        maxFilesize: 10,
-        acceptedFiles: ".png,.jpg,.gif,.bmp,.jpeg",
-        maxFiles: 20,
-        addRemoveLinks: true,
-        init: function() {
-            dzClosure = this;
-            this.on("successmultiple", function(file, response) {
-                if(response.status==200 && response.filenames)
-                {
-                    response.filenames.forEach(function(item){
-                        $('#{{key}}Container').append('<input type="hidden" name="{{key}}[]" value="'+ item +'">');
-                    });
-                }
-                else if(response.status == 415 || response.status == 500){
-                    let error = '';
-                    response.message.forEach(function(e) {
-                        error =  '<div class="alert alert-danger">'+e+'</div>';
-                        $('#{{key}}Container .validation-errors').append(error);
-                    });
-                    this.removeFile(file); //remove file from preview in dz
-                }
-            });
-            this.on("sendingmultiple", function(file, xhr, formData) {
-                var csrf = "{{ csrf_token() }}";
-                formData.append("_token", csrf);
-                formData.append('moduleName', '{{modelNameLowercase}}');
-                formData.append('module', {!! ${{modelNameLowercase}}->id ?? "''" !!});
-                formData.append('field', '{{key}}');
-            });
-        }
-    });
+dropzoneupload('{{ route('backend.{{key}}.uploader') }}', '{{key}}', '{!! ${{modelNameLowercase}}->id ?? "''" !!}','{{modelNameLowercase}}', ".png,.jpg,.gif,.bmp,.jpeg", true)
 </script>
 @endpush
