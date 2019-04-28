@@ -29,6 +29,6 @@
 
 @push('after-scripts')
 <script type="text/javascript">
-dropzoneupload('{{ route('backend.{{key}}.uploader') }}', '{{key}}', '{!! ${{modelNameLowercase}}->id ?? "''" !!}','{{modelNameLowercase}}', ".pdf, .doc, .zip, .txt", false)
+dropzoneupload('{{ route('backend.uploader') }}', '{{key}}', '{!! ${{modelNameLowercase}}->id ?? "''" !!}','{{modelNameLowercase}}', ".pdf, .doc, .zip, .txt", false)
 </script>
 @endpush

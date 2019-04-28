@@ -28,6 +28,6 @@
 
 @push('after-scripts')
 <script type="text/javascript">
-dropzoneupload('{{ route('backend.{{key}}.uploader') }}', '{{key}}', '{!! ${{modelNameLowercase}}->id ?? "''" !!}','{{modelNameLowercase}}', ".png,.jpg,.gif,.bmp,.jpeg", false)
+dropzoneupload('{{ route('backend.uploader') }}', '{{key}}', '{!! ${{modelNameLowercase}}->id ?? "''" !!}','{{modelNameLowercase}}', ".png,.jpg,.gif,.bmp,.jpeg", false)
 </script>
 @endpush

@@ -19,8 +19,11 @@ if (window.Chart) {
 if (window.Dropzone) {
     Dropzone.autoDiscover = false;
 }
-function dropzoneupload(url, field, modelid, modelname, filetypes, multiple = true) {
+function dropzoneupload(url, field, modelid, modelname, filetypes, multiple = true, data =[]) {
     var uploadedDocumentMap = {};
+    var successMethod = multiple ? 'successmultiple' : 'success';
+    var sendingMethod = multiple ? 'sendingmultiple' : 'sending';
+    
     $('#drop' + field).dropzone({
         url: url,
         uploadMultiple: multiple,
@@ -30,7 +33,16 @@ function dropzoneupload(url, field, modelid, modelname, filetypes, multiple = tr
         maxFiles: multiple ? 20 : 1,
         addRemoveLinks: true,
         init: function () {
-            this.on("successmultiple", function (file, response) {
+
+            $.each(data, function (key, value) { //loop through it
+
+                var mockFile = { name: value.name, size: value.size }; // here we get the file name and size as response 
+                this.options.addedfile.call(this, mockFile);
+                this.options.thumbnail.call(this, mockFile, "uploadsfolder/" + value.name);//uploadsfolder is the folder where you have all those uploaded files
+
+            });
+
+            this.on(successMethod, function (file, response) {
                 if (response.status == 200 && response.filenames) {
                     var i = 0;
                     response.filenames.forEach(function (item) {
@@ -48,7 +60,7 @@ function dropzoneupload(url, field, modelid, modelname, filetypes, multiple = tr
                     this.removeFile(file); //remove file from preview in dz
                 }
             });
-            this.on("sendingmultiple", function (file, xhr, formData) {
+            this.on(sendingMethod, function (file, xhr, formData) {
                 var csrf = $('meta[name="csrf-token"]').attr('content');
                 formData.append("_token", csrf);
                 formData.append('moduleName', modelname);
@@ -61,6 +73,11 @@ function dropzoneupload(url, field, modelid, modelname, filetypes, multiple = tr
                 name = uploadedDocumentMap[file.name]
                 $('#' + field + 'Container').find('input[name="' + field + '[]"][value="' + name + '"]').remove();
                 delete uploadedDocumentMap[file.name];
+            });
+            this.on("addedfile", function (event) {
+                while (this.files.length > this.options.maxFiles) {
+                    this.removeFile(this.files[0]);
+                }
             });
         }
     });

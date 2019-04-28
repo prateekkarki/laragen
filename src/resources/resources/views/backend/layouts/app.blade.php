@@ -17,6 +17,9 @@
     <link rel="stylesheet" href="{{ asset('css/components.css') }}">
     @stack('page-styles')
     @stack('after-styles')
+    <script type="text/javascript">
+        var APP_URL = {!! json_encode(url('/')) !!}
+    </script>
 
 </head>
 

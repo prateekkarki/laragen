@@ -1,6 +1,6 @@
 <div class="form-group row">
     <label class="col-md-2 form-control-label" for="drop{{key}}">{{display}}</label>
-    <div class="col-md-5" id="{{key}}Container">
+    <div class="col-md-10" id="{{key}}Container">
         <div class="dropzone dropzone-file-area" id="drop{{key}}">
             <div class="dz-default dz-message">
                 <h3 class="sbold">Drop image here to upload</h3>
@@ -28,6 +28,6 @@
 
 @push('after-scripts')
 <script type="text/javascript">
-dropzoneupload('{{ route('backend.{{key}}.uploader') }}', '{{key}}', '{!! ${{modelNameLowercase}}->id ?? "''" !!}','{{modelNameLowercase}}', ".png,.jpg,.gif,.bmp,.jpeg", true)
+dropzoneupload('{{ route('backend.gallery.uploader') }}', '{{key}}', '{!! ${{modelNameLowercase}}->id ?? "''" !!}','{{modelNameLowercase}}', ".png,.jpg,.gif,.bmp,.jpeg", true)
 </script>
 @endpush
