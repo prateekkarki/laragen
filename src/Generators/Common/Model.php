@@ -24,7 +24,7 @@ class Model extends BaseGenerator implements GeneratorInterface
             foreach ($multipleModules as $multiple => $multipleData) {
                 $multipleModule = new Module($multiple, $multipleData);
                 
-                $multiModelTemplate = $this->buildTemplate('common/Models/MultiModel', [
+                $multiModelTemplate = $this->buildTemplate('common/Models/Model', [
                     '{{modelName}}'       => $this->module->getPivotName($multiple),
                     '{{massAssignables}}' => $this->getMultipleMassAssignables($multipleModule),
                     '{{foreignMethods}}'  => $this->getMultipleForeignMethods()
