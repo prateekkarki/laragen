@@ -2,7 +2,6 @@
 namespace Prateekkarki\Laragen\Models\Types\File;
 use Prateekkarki\Laragen\Models\Types\FileType;
 
-class ImageType extends FileType
+class SingleType extends FileType
 {
-	protected $extensions = '.png,.jpg,.gif,.bmp,.jpeg';
 }

@@ -2,17 +2,19 @@
 namespace Prateekkarki\Laragen\Models;
 
 use Prateekkarki\Laragen\Models\Types\StringType;
-use Prateekkarki\Laragen\Models\Types\FileType;
 use Prateekkarki\Laragen\Models\Types\BooleanType;
 use Prateekkarki\Laragen\Models\Types\IntegerType;
 use Prateekkarki\Laragen\Models\Types\TextType;
 use Prateekkarki\Laragen\Models\Types\DateTimeType;
 use Prateekkarki\Laragen\Models\Types\DateType;
-use Prateekkarki\Laragen\Models\Types\File\ImageType;
-use Prateekkarki\Laragen\Models\Types\Relational\GalleryType;
-use Prateekkarki\Laragen\Models\Types\Relational\ParentType;
-use Prateekkarki\Laragen\Models\Types\Relational\RelatedType;
-use Prateekkarki\Laragen\Models\Types\Relational\MultipleType;
+use Prateekkarki\Laragen\Models\Types\File\Single\ImageType;
+use Prateekkarki\Laragen\Models\Types\File\Single\MixedFileType;
+use Prateekkarki\Laragen\Models\Types\File\Multiple\AttachmentType;
+use Prateekkarki\Laragen\Models\Types\File\Multiple\GalleryType;
+use Prateekkarki\Laragen\Models\Types\Relational\Single\ParentType;
+use Prateekkarki\Laragen\Models\Types\Relational\Single\OptionType;
+use Prateekkarki\Laragen\Models\Types\Relational\Multiple\MultipleDataType;
+use Prateekkarki\Laragen\Models\Types\Relational\Multiple\RelatedType;
 
 class DataOption
 {
@@ -88,17 +90,19 @@ class DataOption
      */
     protected $keyToLaragenType = [
         'string' => StringType::class,
-        'multiple' => MultipleType::class,
-        'image' => ImageType::class,
-        'file' => FileType::class,
         'boolean' => BooleanType::class,
-        'gallery' => GalleryType::class,
-        'parent' => ParentType::class,
-        'related' => RelatedType::class,
         'integer' => IntegerType::class,
         'text' => TextType::class,
         'datetime' => DateTimeType::class,
-        'date' => DateType::class
+        'date' => DateType::class,
+        'image' => ImageType::class,
+        'file' => MixedFileType::class,
+        'gallery' => GalleryType::class,
+        'attachments' => AttachmentType::class,
+        'parent' => ParentType::class,
+        'options' => OptionType::class,
+        'related' => RelatedType::class,
+        'multiple' => MultipleDataType::class
     ];
 
     public function __construct($columnName, $optionString)

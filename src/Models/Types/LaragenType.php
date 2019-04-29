@@ -4,7 +4,7 @@ namespace Prateekkarki\Laragen\Models\Types;
 use Illuminate\Support\Str;
 use Prateekkarki\Laragen\Models\DataOption;
 
-class LaragenType
+abstract class LaragenType
 {
 	public $isRelational = false;
 	protected $columnName;
@@ -20,7 +20,7 @@ class LaragenType
         $this->columnName = $columnName;
         $this->optionString = $optionString;
 
-        $this->optionArray = explode('|', $optionString);
+        $this->optionArray = is_string($optionString) ? explode('|', $optionString) : [];
         $typePieces = array_shift($this->optionArray);
         $type = explode(':', $typePieces);
         $this->typeOption = is_array($type) && count($type) >= 2 ? $type[1] : false;
@@ -131,31 +131,6 @@ class LaragenType
                 break;
         }
     }
-    
-    public function getPivotTableName($model= "")
-    {
-        $moduleArray = [str_singular($model), str_singular($this->columnName)];
-        sort($moduleArray);
-        return implode("_", $moduleArray);
-    }
-    
-    public function getPivotName($model= "")
-    {
-        $moduleArray = [ucfirst(str_singular($model)), ucfirst(str_singular($this->columnName))];
-        sort($moduleArray);
-        return implode("", $moduleArray);
-    }
-
-    
-    public function getPivotFile($model= "", $counter = 0)
-    {
-        $fileCounter = sprintf('%06d', (int) date('His') + $counter);
-        $filenamePrefix = date('Y_m_d_').$fileCounter."_";
-        $fileName = "create_".str_singular($this->getPivotTableName($model, $this->columnName))."_table.php";
-
-        return $filenamePrefix.$fileName;
-    }
-
 
     public function getTabs($number)
     {

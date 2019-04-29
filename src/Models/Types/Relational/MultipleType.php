@@ -1,29 +1,25 @@
 <?php
 namespace Prateekkarki\Laragen\Models\Types\Relational;
-
 use Prateekkarki\Laragen\Models\Types\RelationalType;
-use Prateekkarki\Laragen\Models\DataOption;
+use Illuminate\Support\Str;
 
 class MultipleType extends RelationalType
 {
-    public function __construct($columnName, $optionString)
-    {
-        $this->columnName = $columnName;
-        $this->optionString = $optionString;
-        $this->multipleData = $optionString;
-	}
-
     public function getPivotSchema($modelName, $moduleName)
     {
         $schema = '$table->bigInteger("'.$modelName.'_id")->unsigned()->nullable();'.PHP_EOL.$this->getTabs(3);
-        $schema .= "\$table->foreign('".$modelName."_id')->references('id')->on('".$moduleName."')->onDelete('set null');";
+        $schema .= "\$table->foreign('".$modelName."_id')->references('id')->on('".$moduleName."')->onDelete('set null');".PHP_EOL.$this->getTabs(3);
 
-        foreach ($this->multipleData as $column => $optionString) {
-            $option = new DataOption($column, $optionString);
-            $schema .= $option->laragenType->getSchema();
-            $schema .= ''.PHP_EOL.$this->getTabs(3);
-        }
+        $schema .= '$table->bigInteger("'. Str::singular($this->columnName) .'_id")->unsigned()->nullable();'.PHP_EOL.$this->getTabs(3);
+        $schema .= "\$table->foreign('". Str::singular($this->columnName) ."_id')->references('id')->on('".$this->columnName."')->onDelete('set null');".PHP_EOL;
         return $schema;
     }
+    
+    public function getParentModule() {
+        return $this->typeOption;
+    }
 
+    public function getParentModel() {
+        return ucfirst(camel_case(Str::singular($this->typeOption)));
+    }
 }
