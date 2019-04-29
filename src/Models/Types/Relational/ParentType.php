@@ -1,8 +1,10 @@
 <?php
-namespace Prateekkarki\Laragen\Models\Types;
+namespace Prateekkarki\Laragen\Models\Types\Relational;
+
+use Prateekkarki\Laragen\Models\Types\RelationalType;
 use Illuminate\Support\Str;
 
-class ParentType extends LaragenType
+class ParentType extends RelationalType
 {
     protected $dataType = 'integer';
     

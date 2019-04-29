@@ -1,10 +1,9 @@
 <?php
-namespace Prateekkarki\Laragen\Models\Types;
+namespace Prateekkarki\Laragen\Models\Types\Relational;
+use Prateekkarki\Laragen\Models\Types\RelationalType;
 
-class GalleryType extends LaragenType
+class GalleryType extends RelationalType
 {
-    public $isRelational = true;
-
     public function getModulename()
     {
         return "";

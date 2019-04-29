@@ -1,11 +1,11 @@
 <?php
-namespace Prateekkarki\Laragen\Models\Types;
+namespace Prateekkarki\Laragen\Models\Types\Relational;
+
+use Prateekkarki\Laragen\Models\Types\RelationalType;
 use Illuminate\Support\Str;
 
-class RelatedType extends LaragenType
+class RelatedType extends RelationalType
 {
-    public $isRelational = true;
-
     public function getTableSchema($modelName, $moduleName)
     {
         $schema = '$table->bigInteger("'.$modelName.'_id")->unsigned()->nullable();'.PHP_EOL.$this->getTabs(3);

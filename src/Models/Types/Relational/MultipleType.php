@@ -1,11 +1,11 @@
 <?php
-namespace Prateekkarki\Laragen\Models\Types;
+namespace Prateekkarki\Laragen\Models\Types\Relational;
+
+use Prateekkarki\Laragen\Models\Types\RelationalType;
 use Prateekkarki\Laragen\Models\DataOption;
 
-class MultipleType extends LaragenType
+class MultipleType extends RelationalType
 {
-    public $isRelational = true;
-
     public function __construct($columnName, $optionString)
     {
         $this->columnName = $columnName;

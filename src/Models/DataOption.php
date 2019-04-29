@@ -2,17 +2,17 @@
 namespace Prateekkarki\Laragen\Models;
 
 use Prateekkarki\Laragen\Models\Types\StringType;
-use Prateekkarki\Laragen\Models\Types\MultipleType;
-use Prateekkarki\Laragen\Models\Types\ImageType;
 use Prateekkarki\Laragen\Models\Types\FileType;
 use Prateekkarki\Laragen\Models\Types\BooleanType;
-use Prateekkarki\Laragen\Models\Types\GalleryType;
-use Prateekkarki\Laragen\Models\Types\ParentType;
-use Prateekkarki\Laragen\Models\Types\RelatedType;
 use Prateekkarki\Laragen\Models\Types\IntegerType;
 use Prateekkarki\Laragen\Models\Types\TextType;
 use Prateekkarki\Laragen\Models\Types\DateTimeType;
 use Prateekkarki\Laragen\Models\Types\DateType;
+use Prateekkarki\Laragen\Models\Types\File\ImageType;
+use Prateekkarki\Laragen\Models\Types\Retational\GalleryType;
+use Prateekkarki\Laragen\Models\Types\Retational\ParentType;
+use Prateekkarki\Laragen\Models\Types\Retational\RelatedType;
+use Prateekkarki\Laragen\Models\Types\Retational\MultipleType;
 
 class DataOption
 {
