@@ -2,6 +2,7 @@
 namespace Prateekkarki\Laragen\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Composer;
 use Artisan;
 
 class Execute extends Command
@@ -18,6 +19,21 @@ class Execute extends Command
      * @var string
      */
     protected $description = 'Generate/Migrate/Seed your project';
+
+
+    /**
+     * Create a new command instance.
+     *
+     * @param Composer $composer
+     * @return void
+     */
+    public function __construct(Composer $composer)
+    {
+        parent::__construct();
+
+        $this->composer = $composer;
+    }
+
     /**
      * Execute the console command.
      *
@@ -30,6 +46,8 @@ class Execute extends Command
         $bar->start();
 
         Artisan::call('laragen:make');
+
+        $this->composer->dumpOptimized();
 
         $bar->advance();
         Artisan::call('laragen:migrate');

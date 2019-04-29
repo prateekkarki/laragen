@@ -19,19 +19,82 @@ if (window.Chart) {
 if (window.Dropzone) {
     Dropzone.autoDiscover = false;
 }
+function dropzoneupload(url, field, modelid, modelname, filetypes, multiple = true, data =[]) {
+    var uploadedDocumentMap = {};
+    var successMethod = multiple ? 'successmultiple' : 'success';
+    var sendingMethod = multiple ? 'sendingmultiple' : 'sending';
+    
+    $('#drop' + field).dropzone({
+        url: url,
+        uploadMultiple: multiple,
+        parallelUploads: multiple ? 10 : 1,
+        maxFilesize: 10,
+        acceptedFiles: filetypes,
+        maxFiles: multiple ? 20 : 1,
+        addRemoveLinks: true,
+        init: function () {
+
+            $.each(data, function (key, value) { //loop through it
+
+                var mockFile = { name: value.name, size: value.size }; // here we get the file name and size as response 
+                this.options.addedfile.call(this, mockFile);
+                this.options.thumbnail.call(this, mockFile, "uploadsfolder/" + value.name);//uploadsfolder is the folder where you have all those uploaded files
+
+            });
+
+            this.on(successMethod, function (file, response) {
+                if (response.status == 200 && response.filenames) {
+                    var i = 0;
+                    response.filenames.forEach(function (item) {
+                        uploadedDocumentMap[file[i].name] = item;
+                        $('#' + field + 'Container').append('<input type="hidden" name="' + field + '[]" value="' + item + '">');
+                        i++;
+                    });
+                }
+                else if (response.status == 415 || response.status == 500) {
+                    let error = '';
+                    response.message.forEach(function (e) {
+                        error = '<div class="alert alert-danger">' + e + '</div>';
+                        $('#' + field + 'Container .validation-errors').append(error);
+                    });
+                    this.removeFile(file); //remove file from preview in dz
+                }
+            });
+            this.on(sendingMethod, function (file, xhr, formData) {
+                var csrf = $('meta[name="csrf-token"]').attr('content');
+                formData.append("_token", csrf);
+                formData.append('moduleName', modelname);
+                formData.append('module', modelid);
+                formData.append('field', field);
+            });
+            this.on("removedfile", function (file, xhr, formData) {
+                file.previewElement.remove()
+                var name = ''
+                name = uploadedDocumentMap[file.name]
+                $('#' + field + 'Container').find('input[name="' + field + '[]"][value="' + name + '"]').remove();
+                delete uploadedDocumentMap[file.name];
+            });
+            this.on("addedfile", function (event) {
+                while (this.files.length > this.options.maxFiles) {
+                    this.removeFile(this.files[0]);
+                }
+            });
+        }
+    });
+}
 
 // Sticky
-$(document).ready(function(){
+$(document).ready(function () {
     var div_top = $('.section-header').offset().top;
     var sidebarWidth = $(window).width() <= 1024 ? 0 : $(".main-sidebar").width();
     var stickyWidth = $(window).width() - sidebarWidth - 70;
     $('.section-header').width(stickyWidth);
-    $(window).on('resize', function(){
+    $(window).on('resize', function () {
         stickyWidth = $(window).width() - sidebarWidth - 70;
         $('.section-header').width(stickyWidth);
     });
-  
-    $(window).scroll(function() {
+
+    $(window).scroll(function () {
         var window_top = $(window).scrollTop() - 100;
         $('.section-header').width(stickyWidth);
         if (window_top > div_top) {
@@ -45,7 +108,7 @@ $(document).ready(function(){
 });
 
 
-var delImage = function(url, moduleName, modelId, field){
+var delImage = function (url, moduleName, modelId, field) {
     var csrf = $('meta[name="csrf-token"]').attr('content');
 
     var data = {
@@ -54,24 +117,24 @@ var delImage = function(url, moduleName, modelId, field){
         modelId: modelId,
         field: field
     };
-    
+
     $.ajax({
         type: "POST",
         url: url,
         data: data,
         dataType: "json",
-        success: function(result){
+        success: function (result) {
             console.log(result);
-            $('#'+field+'-del').parent().remove(); 
+            $('#' + field + '-del').parent().remove();
             iziToast.success({
-                title: 'Removed',
-                message: 'File removed from system',
+                title: 'Removed',
+                message: 'File removed from system',
             });
         },
-        error: function(result){
+        error: function (result) {
             iziToast.error({
-                title: 'Error',
-                message: result.responseJSON.message,
+                title: 'Error',
+                message: result.responseJSON.message,
             });
         },
 
