@@ -13,7 +13,7 @@ class MultipleType extends RelationalType
         $this->multipleData = $optionString;
 	}
 
-    public function getTableSchema($modelName, $moduleName)
+    public function getPivotSchema($modelName, $moduleName)
     {
         $schema = '$table->bigInteger("'.$modelName.'_id")->unsigned()->nullable();'.PHP_EOL.$this->getTabs(3);
         $schema .= "\$table->foreign('".$modelName."_id')->references('id')->on('".$moduleName."')->onDelete('set null');";

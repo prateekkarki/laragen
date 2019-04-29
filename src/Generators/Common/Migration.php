@@ -29,7 +29,7 @@ class Migration extends BaseGenerator implements GeneratorInterface
                 $migrationTemplate = $this->buildTemplate('common/migrations/pivot', [
                     '{{pivotName}}'         => $related->getPivotName($this->module->getModelName()),
                     '{{pivotTableName}}'   => $related->getPivotTableName($this->module->getModelNameLowerCase()),
-                    '{{pivotTableSchema}}'  => $related->getTableSchema($this->module->getModelNameLowerCase(), $this->module->getModuleName())
+                    '{{pivotTableSchema}}'  => $related->getPivotSchema($this->module->getModelNameLowerCase(), $this->module->getModuleName())
                 ]);
                 
                 $fullFilePath = $this->getPath("database/migrations/laragen/") . $related->getPivotFile($this->module->getModelNameLowerCase(), ++self::$counter);
