@@ -126,6 +126,10 @@ class DataOption
         }
     }
 
+    public function getLaragenType() {
+        return $this->laragenType;
+    }
+
     public function getKey() {
         return $this->column;
     }

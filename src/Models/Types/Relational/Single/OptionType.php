@@ -5,7 +5,6 @@ use Prateekkarki\Laragen\Models\Types\Relational\SingleType;
 
 class OptionType extends SingleType
 {
-    
     public function getSchema()
     {
         $schema = "";
@@ -14,7 +13,7 @@ class OptionType extends SingleType
         $schema .= "\$table->foreign('".str_singular($parent)."_id')->references('id')->on('$parent')->onDelete('set null');".PHP_EOL;
         return $schema;
     }
-    
+
     public function getParent() {
         return "";
     }

@@ -6,7 +6,8 @@ use Prateekkarki\Laragen\Models\DataOption;
 
 abstract class LaragenType
 {
-	public $isRelational = false;
+	public $relationalType = false;
+	protected $hasPivot = false;
 	protected $columnName;
 	protected $size = 192;
 	protected $optionString;
@@ -52,14 +53,18 @@ abstract class LaragenType
         if (strncasecmp($method, "set", 3) === 0 && isset($params[0])) {
             $this->$var = $params[0];
         }
-
-   }   
+   }
 	
-    public function isRelational()
-    {
-        return $this->isRelational;
-    }
-    
+   public function isRelational()
+   {
+       return $this->relationalType;
+   }
+   
+   public function hasPivot()
+   {
+       return $this->hasPivot;
+   }
+   
     public function getSchema()
     {
         $schema = '$table->'.$this->getDataType()."('{$this->getColumn()}'";

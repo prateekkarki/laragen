@@ -7,8 +7,9 @@ class MultipleDataType extends MultipleType
 {
     public function getPivotSchema($modelName, $moduleName)
     {
-        $schema = '$table->bigInteger("'.$modelName.'_id")->unsigned()->nullable();'.PHP_EOL.$this->getTabs(3);
-        $schema .= "\$table->foreign('".$modelName."_id')->references('id')->on('".$moduleName."')->onDelete('set null');";
+        $schema = PHP_EOL.$this->getTabs(3);
+        $schema .= '$table->bigInteger("'.$modelName.'_id")->unsigned()->nullable();'.PHP_EOL.$this->getTabs(3);
+        $schema .= "\$table->foreign('".$modelName."_id')->references('id')->on('".$moduleName."')->onDelete('set null');".PHP_EOL.$this->getTabs(3);
 
         foreach ($this->getMultipleColumns() as $column => $optionString) {
             $option = new DataOption($column, $optionString);
@@ -20,7 +21,6 @@ class MultipleDataType extends MultipleType
 
     public function getMultipleColumns()
     {
-        return [];
+        return $this->optionString;
     }
-
 }

@@ -22,14 +22,24 @@ class Module
             return (is_array($elem)) ? true : false;
         });
 
-        foreach($this->laragenData as $column => $typeOptions){
+        $this->columnsData = [];
+        foreach ($moduleData as $column => $typeOptions) {
             $data = new DataOption($column, $typeOptions);
-            if($data->laragenType->isRelational()){
-                $this->relativeTypes[] = $data->laragenType;
-            }
+            $this->columnsData[$column] = $data->getLaragenType();
         }
 
         $this->name = $moduleName;
+    }
+
+    public function getPivotalColumns()
+    {
+        $relativeTypes = [];
+        foreach($this->columnsData as $type){
+            if($type->isRelational()&&$type->hasPivot()){
+                $relativeTypes[] = $type;
+            }
+        }
+        return $relativeTypes;
     }
 
     public function getName()
@@ -37,13 +47,11 @@ class Module
         return $this->name;
     }
 
-
-    public function hasRelations()
+    public function hasPivotRelations()
     {
         $hasRelations = false;
-        foreach($this->laragenData as $column => $typeOptions){
-            $data = new DataOption($column, $typeOptions);
-            if($data->laragenType->isRelational()){
+        foreach($this->columnsData as $column => $type){
+            if($type->isRelational()&&$type->hasPivot()){
                 $hasRelations = true;
                 break;
             }
@@ -244,14 +252,6 @@ class Module
         }
         return $data;
     }
-
-    public function getPivotName($related)
-    {
-        $modelArray = [$this->getModelName(), ucfirst(camel_case(str_singular($related)))];
-        sort($modelArray);
-        return implode("", $modelArray);
-    }
-
 
     public function getModuleName()
     {
