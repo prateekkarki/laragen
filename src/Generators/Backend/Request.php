@@ -55,7 +55,7 @@ class Request extends BaseGenerator implements GeneratorInterface
                 $validation[]= $validationLine;
             }
         }
-        $delimiter = ",\n{$columnOptions->getTabs(3)}";
+        $delimiter = ",\n{$this->getTabs(3)}";
         return (implode($delimiter, $validation));
 	}
 }
