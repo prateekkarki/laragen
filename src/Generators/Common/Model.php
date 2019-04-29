@@ -22,7 +22,6 @@ class Model extends BaseGenerator implements GeneratorInterface
         
         foreach ($this->module->getMultipleColumns() as $multipleModules) {
             foreach ($multipleModules as $multiple => $multipleData) {
-
                 $multipleModule = new Module($multiple, $multipleData);
                 
                 $multiModelTemplate = $this->buildTemplate('common/Models/MultiModel', [

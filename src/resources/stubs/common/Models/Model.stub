@@ -21,11 +21,5 @@ class {{modelName}} extends Model
         {{massAssignables}}
     ];
 
-    /**
-     * Check if the model has a thumbnail.
-     */
-    public function hasThumbnail(){
-        return false;
-    }
     {{foreignMethods}}
 }
