@@ -9,10 +9,10 @@ use Prateekkarki\Laragen\Models\Types\TextType;
 use Prateekkarki\Laragen\Models\Types\DateTimeType;
 use Prateekkarki\Laragen\Models\Types\DateType;
 use Prateekkarki\Laragen\Models\Types\File\ImageType;
-use Prateekkarki\Laragen\Models\Types\Retational\GalleryType;
-use Prateekkarki\Laragen\Models\Types\Retational\ParentType;
-use Prateekkarki\Laragen\Models\Types\Retational\RelatedType;
-use Prateekkarki\Laragen\Models\Types\Retational\MultipleType;
+use Prateekkarki\Laragen\Models\Types\Relational\GalleryType;
+use Prateekkarki\Laragen\Models\Types\Relational\ParentType;
+use Prateekkarki\Laragen\Models\Types\Relational\RelatedType;
+use Prateekkarki\Laragen\Models\Types\Relational\MultipleType;
 
 class DataOption
 {
