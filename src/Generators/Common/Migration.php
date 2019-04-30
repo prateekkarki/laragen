@@ -25,7 +25,6 @@ class Migration extends BaseGenerator implements GeneratorInterface
         $generatedFiles[] = $fullFilePath;
 
         if($this->module->hasPivotRelations()){
-            dump($this->module->getPivotalColumns());
             foreach($this->module->getPivotalColumns() as $type){
                 $migrationTemplate = $this->buildTemplate('common/migrations/pivot', [
                     '{{pivotName}}'        => $type->getPivotName($this->module->getModelName()),
