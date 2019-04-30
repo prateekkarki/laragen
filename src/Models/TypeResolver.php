@@ -107,83 +107,19 @@ class TypeResolver
 
     public function __construct($columnName, $optionString)
     {
-        $this->column = $columnName;
-        $this->size = false;
         if (is_array($optionString)) {
             $this->dataType = 'multiple';
             $this->laragenType = new $this->keyToLaragenType[$this->dataType]($columnName, $optionString);
-            $this->multipleOptions = [];
-            foreach ($optionString as $col => $multString) {
-                $this->multipleOptions[] = new Self($col, $multString);
-            }
         } else {
             $this->optionArray = explode('|', $optionString);
             $typePieces = array_shift($this->optionArray);
             $type = explode(':', $typePieces);
             $this->dataType = is_array($type) ? $type[0] : $type;
             $this->laragenType = new $this->keyToLaragenType[$this->dataType]($columnName, $optionString);
-            $this->typeOption = is_array($type) && count($type) >= 2 ? $type[1] : false;
         }
     }
 
     public function getLaragenType() {
         return $this->laragenType;
-    }
-
-    public function getKey() {
-        return $this->column;
-    }
-
-    public function getDisplay() {
-        return ucfirst(str_replace('_', ' ', $this->column));
-    }
-
-    public function getType() {
-        $type = $this->dataType;
-        if ($type == 'string') {
-            $type = (!$this->getSize() || $this->getSize() <= 128) ? $type : 'text';
-        } 
-        
-        return $type;
-    }
-
-    public function getSize() {
-        return $this->size;
-    }
-
-    public function isRequired() {
-        return $this->requiredFlag;
-    }
-
-    public function isUnique() {
-        return $this->uniqueFlag;
-    }
-    
-    protected function getColumnType() {
-        return $this->keyToType[$this->dataType];
-    }
-
-    protected function setOptions($optionType, $optionParam) {
-        switch ($optionType) {
-            case 'max':
-                $this->setSize($optionParam);
-                break;
-            
-            default:
-                $this->$optionType = $optionParam;
-                break;
-        }
-    }
-
-    protected function setUnique($set = true) {
-        $this->uniqueFlag = ($set === true) ? true : false;
-    }
-
-    protected function setRequired($set = true) {
-        $this->requiredFlag = ($set === true) ? true : false;
-    }
-
-    protected function setSize($size = null) {
-        $this->size = $size;
     }
 }
