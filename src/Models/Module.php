@@ -164,7 +164,7 @@ class Module
         $data = [];
         foreach ($this->data as $column => $optionString) {
             $dataOption = new TypeResolver($column, $optionString);
-            if (in_array($dataOption->getType(), $types)) {
+            if (in_array($dataOption->getLaragenType()->getType(), $types)) {
                 $data[] = $column;
             }
         }
@@ -182,7 +182,7 @@ class Module
         $data = [];
         foreach ($this->data as $column => $optionString) {
             $dataOption = new TypeResolver($column, $optionString);
-            if (in_array($dataOption->getType(), $types)) {
+            if (in_array($dataOption->getLaragenType()->getType(), $types)) {
                 $data[] = $column;
             }
         }
@@ -194,7 +194,7 @@ class Module
         $data = [];
         foreach ($this->data as $column => $optionString) {
             $dataOption = new TypeResolver($column, $optionString);
-            if ($dataOption->getType() == TypeResolver::TYPE_PARENT) {
+            if ($dataOption->getLaragenType()->getType() == TypeResolver::TYPE_PARENT) {
                 $data[] = $column;
             }
         }
@@ -206,7 +206,7 @@ class Module
         $data = [];
         foreach ($this->data as $column => $optionString) {
             $dataOption = new TypeResolver($column, $optionString);
-            if ($dataOption->getType() == 'gallery') {
+            if ($dataOption->getLaragenType()->getType() == 'gallery') {
                 $data[] = $column;
             }
         }
@@ -224,7 +224,7 @@ class Module
         $data = [];
         foreach ($this->data as $column => $optionString) {
             $dataOption = new TypeResolver($column, $optionString);
-            if (in_array($dataOption->getType(), $types)) {
+            if (in_array($dataOption->getLaragenType()->getType(), $types)) {
                 $data[] = [$column => $dataOption->laragenType->getParentModule()];
             }
         }
@@ -242,7 +242,7 @@ class Module
         $data = [];
         foreach ($this->data as $column => $optionString) {
             $dataOption = new TypeResolver($column, $optionString);
-            if (in_array($dataOption->getType(), $types)) {
+            if (in_array($dataOption->getLaragenType()->getType(), $types)) {
                 $data[] = [
                     'columnName'   => $column,
                     'parentModule' => $dataOption->laragenType->getParentModule(),
