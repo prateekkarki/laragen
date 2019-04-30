@@ -3,7 +3,7 @@ namespace Prateekkarki\Laragen\Generators\Common;
 
 use Prateekkarki\Laragen\Generators\BaseGenerator;
 use Prateekkarki\Laragen\Generators\GeneratorInterface;
-use Prateekkarki\Laragen\Models\DataOption;
+use Prateekkarki\Laragen\Models\TypeResolver;
 
 class Migration extends BaseGenerator implements GeneratorInterface
 {

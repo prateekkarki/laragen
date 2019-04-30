@@ -3,7 +3,7 @@ namespace Prateekkarki\Laragen\Generators\Backend;
 
 use Prateekkarki\Laragen\Generators\BaseGenerator;
 use Prateekkarki\Laragen\Generators\GeneratorInterface;
-use Prateekkarki\Laragen\Models\DataOption;
+use Prateekkarki\Laragen\Models\TypeResolver;
 use Prateekkarki\Laragen\Models\Module;
 use Illuminate\Support\Str;
 
@@ -70,7 +70,7 @@ class View extends BaseGenerator implements GeneratorInterface
     {
         $viewTemplate = '';
         foreach ($this->module->getData() as $column => $options) {
-            $columnOptions = new DataOption($column, $options);
+            $columnOptions = new TypeResolver($column, $options);
             $type = $columnOptions->getType();
             $viewTemplate .= $this->buildTemplate('backend/views/formelements/'.$type, [
                 '{{key}}'                   => $column,

@@ -3,7 +3,6 @@ namespace Prateekkarki\Laragen\Generators\Backend;
 
 use Prateekkarki\Laragen\Generators\BaseGenerator;
 use Prateekkarki\Laragen\Generators\GeneratorInterface;
-use Prateekkarki\Laragen\Models\DataOption;
 
 class Controller extends BaseGenerator implements GeneratorInterface
 {

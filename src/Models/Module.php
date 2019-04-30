@@ -1,6 +1,6 @@
 <?php
 namespace Prateekkarki\Laragen\Models;
-use Prateekkarki\Laragen\Models\DataOption;
+use Prateekkarki\Laragen\Models\TypeResolver;
 
 class Module
 {
@@ -24,7 +24,7 @@ class Module
 
         $this->columnsData = [];
         foreach ($moduleData as $column => $typeOptions) {
-            $data = new DataOption($column, $typeOptions);
+            $data = new TypeResolver($column, $typeOptions);
             $this->columnsData[$column] = $data->getLaragenType();
         }
 
@@ -83,7 +83,7 @@ class Module
     {
         $columns = [];
         foreach($this->getData() as $column => $optionString){
-            $data = new DataOption($column, $optionString);
+            $data = new TypeResolver($column, $optionString);
             if($onlyNonRelational && $data->laragenType->isRelational()){
                 continue;
             }
@@ -116,7 +116,7 @@ class Module
                 continue;
             }
             $optionArray = explode('|', $optionString);
-            if (in_array($optionArray[0], DataOption::$types)) {
+            if (in_array($optionArray[0], TypeResolver::$types)) {
                 $data[] = $column;
             }
         }
@@ -134,7 +134,7 @@ class Module
         $data = [];
         foreach ($this->data as $column => $optionString) {
             $optionArray = explode('|', $optionString);
-            if (in_array($optionArray[0], DataOption::$types)) {
+            if (in_array($optionArray[0], TypeResolver::$types)) {
                 $data[] = [$column => $optionArray[0]];
             }
         }
@@ -146,7 +146,7 @@ class Module
         $data = [];
         foreach ($this->data as $column => $optionString) {
             $optionArray = explode('|', $optionString);
-            if (in_array($optionArray[0], DataOption::$types)) {
+            if (in_array($optionArray[0], TypeResolver::$types)) {
                 $data[] = [$column => $optionArray[0]];
             }
         }
@@ -158,12 +158,12 @@ class Module
         if (is_array($type)) {
             $types = $type;
         } else {
-            $types = ($type == "all") ? DataOption::$relatedMultiple : [$type];
+            $types = ($type == "all") ? TypeResolver::$relatedMultiple : [$type];
         }
         
         $data = [];
         foreach ($this->data as $column => $optionString) {
-            $dataOption = new DataOption($column, $optionString);
+            $dataOption = new TypeResolver($column, $optionString);
             if (in_array($dataOption->getType(), $types)) {
                 $data[] = $column;
             }
@@ -176,12 +176,12 @@ class Module
         if (is_array($type)) {
             $types = $type;
         } else {
-            $types = ($type == "all") ? DataOption::$fileTypes : [$type];
+            $types = ($type == "all") ? TypeResolver::$fileTypes : [$type];
         }
         
         $data = [];
         foreach ($this->data as $column => $optionString) {
-            $dataOption = new DataOption($column, $optionString);
+            $dataOption = new TypeResolver($column, $optionString);
             if (in_array($dataOption->getType(), $types)) {
                 $data[] = $column;
             }
@@ -193,8 +193,8 @@ class Module
     {
         $data = [];
         foreach ($this->data as $column => $optionString) {
-            $dataOption = new DataOption($column, $optionString);
-            if ($dataOption->getType() == DataOption::TYPE_PARENT) {
+            $dataOption = new TypeResolver($column, $optionString);
+            if ($dataOption->getType() == TypeResolver::TYPE_PARENT) {
                 $data[] = $column;
             }
         }
@@ -205,7 +205,7 @@ class Module
     {
         $data = [];
         foreach ($this->data as $column => $optionString) {
-            $dataOption = new DataOption($column, $optionString);
+            $dataOption = new TypeResolver($column, $optionString);
             if ($dataOption->getType() == 'gallery') {
                 $data[] = $column;
             }
@@ -218,12 +218,12 @@ class Module
         if (is_array($type)) {
             $types = $type;
         } else {
-            $types = ($type == "all") ? DataOption::$specialTypes : [$type];
+            $types = ($type == "all") ? TypeResolver::$specialTypes : [$type];
         }
         
         $data = [];
         foreach ($this->data as $column => $optionString) {
-            $dataOption = new DataOption($column, $optionString);
+            $dataOption = new TypeResolver($column, $optionString);
             if (in_array($dataOption->getType(), $types)) {
                 $data[] = [$column => $dataOption->laragenType->getParentModule()];
             }
@@ -236,12 +236,12 @@ class Module
         if (is_array($type)) {
             $types = $type;
         } else {
-            $types = ($type == "all") ? DataOption::$specialTypes : [$type];
+            $types = ($type == "all") ? TypeResolver::$specialTypes : [$type];
         }
         
         $data = [];
         foreach ($this->data as $column => $optionString) {
-            $dataOption = new DataOption($column, $optionString);
+            $dataOption = new TypeResolver($column, $optionString);
             if (in_array($dataOption->getType(), $types)) {
                 $data[] = [
                     'columnName'   => $column,

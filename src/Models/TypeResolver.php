@@ -16,7 +16,7 @@ use Prateekkarki\Laragen\Models\Types\Relational\Single\OptionType;
 use Prateekkarki\Laragen\Models\Types\Relational\Multiple\MultipleDataType;
 use Prateekkarki\Laragen\Models\Types\Relational\Multiple\RelatedType;
 
-class DataOption
+class TypeResolver
 {
     const TYPE_PARENT = 'parent';
     const TYPE_RELATED = 'related';

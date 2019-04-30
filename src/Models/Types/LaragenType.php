@@ -2,7 +2,7 @@
 namespace Prateekkarki\Laragen\Models\Types;
 
 use Illuminate\Support\Str;
-use Prateekkarki\Laragen\Models\DataOption;
+use Prateekkarki\Laragen\Models\TypeResolver;
 
 abstract class LaragenType
 {
@@ -28,11 +28,11 @@ abstract class LaragenType
 
         
         foreach ($this->optionArray as $option) {
-            if ($option == DataOption::COLUMN_UNIQUE) {
+            if ($option == TypeResolver::COLUMN_UNIQUE) {
                 $this->setUnique();
                 continue;
             }
-            if ($option == DataOption::COLUMN_REQUIRED) {
+            if ($option == TypeResolver::COLUMN_REQUIRED) {
                 $this->setRequired();
                 continue;
             }
