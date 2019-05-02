@@ -1,7 +1,10 @@
 <?php
-namespace App\Models\Relations;
+namespace App\Models;
 
-use Illuminate\Database\Eloquent\Relations\Pivot
+use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class {{pivotName}} extends Pivot
 {
@@ -13,7 +16,7 @@ class {{pivotName}} extends Pivot
      * @var array
      */
     protected $fillable = [
-        {{massAssignables}}
+        '{{massAssignables}}'
     ];
 
     {{foreignMethods}}

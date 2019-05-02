@@ -30,6 +30,6 @@ class MultipleType extends FileType
     
     public function getTypeColumns()
     {
-        return [$this->getParentModelLowercase().'_id', 'filename'];
+        return [$this->getParentModelLowercase().'_id', 'filename', 'size'];
     }
 }

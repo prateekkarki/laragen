@@ -18,7 +18,7 @@ class {{modelName}} extends Model
      * @var array
      */
     protected $fillable = [
-        {{massAssignables}}
+        '{{massAssignables}}'
     ];
 
     {{foreignMethods}}

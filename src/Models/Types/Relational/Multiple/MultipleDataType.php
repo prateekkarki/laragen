@@ -39,8 +39,8 @@ class MultipleDataType extends MultipleType
         return $this->optionString;
     }
 
-    public function getTypeColumns($model)
+    public function getTypeColumns()
     {
-        return array_merge([$model.'_id'], array_keys($this->optionString));
+        return array_merge([$this->getParentModelLowercase().'_id'], array_keys($this->optionString));
     }
 }

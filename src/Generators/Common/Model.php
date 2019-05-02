@@ -3,6 +3,7 @@ namespace Prateekkarki\Laragen\Generators\Common;
 
 use Prateekkarki\Laragen\Generators\BaseGenerator;
 use Prateekkarki\Laragen\Generators\GeneratorInterface;
+use Illuminate\Support\Str;
 
 class Model extends BaseGenerator implements GeneratorInterface
 {
@@ -21,24 +22,23 @@ class Model extends BaseGenerator implements GeneratorInterface
         
         foreach($this->module->getFilteredColumns('hasPivot') as $type){
             $typeTemplate = $this->buildTemplate('common/Models/Pivot', [
-                '{{pivotName}}'       => $type->getPivotName($this->module->getModelName()),
-                '{{massAssignables}}' => implode(', ', $type->getTypeColumns()),
+                '{{pivotName}}'       => $type->getPivot(),
+                '{{massAssignables}}' => implode("', '", $type->getTypeColumns()),
                 '{{foreignMethods}}'  => $this->getTypeForeignMethods($type),
             ]);
-            
-            $fullFilePath = $this->getPath("app/Models/").$type->getModelName($this->module->getModelName()).".php";
+            $fullFilePath = $this->getPath("app/Models/").$type->getPivot().".php";
             file_put_contents($fullFilePath, $typeTemplate);
             $generatedFiles[] = $fullFilePath;
         }
 
         foreach($this->module->getFilteredColumns('hasModel') as $type){
             $typeTemplate = $this->buildTemplate('common/Models/Model', [
-                '{{modelName}}'       => $type->getModelName($this->module->getModelName()),
-                '{{massAssignables}}' => implode(', ', $type->getTypeColumns($this->module->getModelNameLowercase())),
+                '{{modelName}}'       => Str::singular($type->getPivot()),
+                '{{massAssignables}}' => implode("', '", $type->getTypeColumns()),
                 '{{foreignMethods}}'  => $this->getTypeForeignMethods($type),
             ]);
             
-            $fullFilePath = $this->getPath("app/Models/").$type->getModelName($this->module->getModelName()).".php";
+            $fullFilePath = $this->getPath("app/Models/").Str::singular($type->getPivot()).".php";
             file_put_contents($fullFilePath, $typeTemplate);
             $generatedFiles[] = $fullFilePath;
         }
@@ -49,7 +49,7 @@ class Model extends BaseGenerator implements GeneratorInterface
     protected function getMassAssignables()
     {
         $columns = $this->module->getColumns(true, true);
-        return "'".implode("', '", $columns)."'";
+        return implode("', '", $columns);
     }
 
     protected function getMultipleMassAssignables($multipleModule)

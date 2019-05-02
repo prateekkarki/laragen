@@ -21,4 +21,10 @@ class RelatedType extends MultipleType
         sort($modelArray);
         return implode("", $modelArray);
     }
+
+    
+    public function getTypeColumns()
+    {
+        return [$this->getParentModelLowercase().'_id', strtolower(Str::singular($this->columnName)) . '_id'];
+    }
 }
