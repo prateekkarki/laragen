@@ -16,12 +16,4 @@ class ParentType extends SingleType
         $schema .= "\$table->foreign('".str_singular($parent)."_id')->references('id')->on('$parent')->onDelete('set null');".PHP_EOL;
         return $schema;
     }
-    
-    public function getParentModule() {
-        return $this->typeOption;
-    }
-
-    public function getParentModel() {
-        return ucfirst(camel_case(Str::singular($this->typeOption)));
-    }
 }

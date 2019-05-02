@@ -105,18 +105,17 @@ class TypeResolver
         'multiple' => MultipleDataType::class
     ];
 
-    public function __construct($columnName, $optionString)
-    {
+    public function __construct($moduleName, $columnName, $optionString)
+    { 
         if (is_array($optionString)) {
             $this->dataType = 'multiple';
-            $this->laragenType = new $this->keyToLaragenType[$this->dataType]($columnName, $optionString);
         } else {
             $this->optionArray = explode('|', $optionString);
             $typePieces = array_shift($this->optionArray);
             $type = explode(':', $typePieces);
             $this->dataType = is_array($type) ? $type[0] : $type;
-            $this->laragenType = new $this->keyToLaragenType[$this->dataType]($columnName, $optionString);
         }
+        $this->laragenType = new $this->keyToLaragenType[$this->dataType]($moduleName, $columnName, $optionString);
     }
 
     public function getLaragenType() {

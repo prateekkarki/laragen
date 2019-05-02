@@ -1,34 +1,35 @@
 <?php
 namespace Prateekkarki\Laragen\Models\Types\File;
 use Prateekkarki\Laragen\Models\Types\FileType;
+use Illuminate\Support\Str;
 
 class MultipleType extends FileType
 {
     protected $hasModel = true;
+    public $relationalType = true;
 
     public function getPivotSchema($modelName, $moduleName)
     {
         $schema = '$table->bigInteger("'.$modelName.'_id")->unsigned()->nullable();'.PHP_EOL.$this->getTabs(3);
         $schema .= "\$table->foreign('".$modelName."_id')->references('id')->on('".$moduleName."')->onDelete('set null');";
         $schema .= '$table->string("filename", 192);';
+        $schema .= '$table->integer("size");';
         $schema .= '$table->timestamps();';
         return $schema;
     }
     
-    public function getPivotName($model)
+    public function getPivotTable()
     {
-        $modelArray = [$this->getSingleModelName(), ucfirst(camel_case(str_singular($model)))];
-        sort($modelArray);
-        return implode("", $modelArray);
+        return $this->getParentModule() . "_" . strtolower(Str::plural($this->columnName));
+    }
+
+    public function getPivot()
+    {
+        return $this->getParentModel() . $this->getChildModel();
     }
     
-    public function getSingleModelName()
+    public function getTypeColumns()
     {
-        return ucfirst($this->columnName);
-    }
-    
-    public function getTypeColumns($model)
-    {
-        return [$model.'_id', 'filename'];
+        return [$this->getParentModelLowercase().'_id', 'filename'];
     }
 }

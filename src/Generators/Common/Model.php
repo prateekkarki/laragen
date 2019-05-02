@@ -19,12 +19,10 @@ class Model extends BaseGenerator implements GeneratorInterface
         file_put_contents($fullFilePath, $modelTemplate);
         $generatedFiles[] = $fullFilePath;
         
-        var_dump($this->module->getModelName(), $this->module->getFilteredColumns('hasPivot'), $this->module->getFilteredColumns('hasModel'));
-
         foreach($this->module->getFilteredColumns('hasPivot') as $type){
             $typeTemplate = $this->buildTemplate('common/Models/Pivot', [
                 '{{pivotName}}'       => $type->getPivotName($this->module->getModelName()),
-                '{{massAssignables}}' => implode(', ', $type->getTypeColumns($this->module->getModelNameLowercase())),
+                '{{massAssignables}}' => implode(', ', $type->getTypeColumns()),
                 '{{foreignMethods}}'  => $this->getTypeForeignMethods($type),
             ]);
             
@@ -34,7 +32,6 @@ class Model extends BaseGenerator implements GeneratorInterface
         }
 
         foreach($this->module->getFilteredColumns('hasModel') as $type){
-            var_dump($type->getColumn(), $type->getTypeColumns($this->module->getModelNameLowercase()));
             $typeTemplate = $this->buildTemplate('common/Models/Model', [
                 '{{modelName}}'       => $type->getModelName($this->module->getModelName()),
                 '{{massAssignables}}' => implode(', ', $type->getTypeColumns($this->module->getModelNameLowercase())),
@@ -51,7 +48,7 @@ class Model extends BaseGenerator implements GeneratorInterface
 
     protected function getMassAssignables()
     {
-        $columns = array_merge($this->module->getNativeColumns(), $this->module->getFileColumns(), $this->module->getParentColumns());
+        $columns = $this->module->getColumns(true, true);
         return "'".implode("', '", $columns)."'";
     }
 
@@ -82,7 +79,7 @@ class Model extends BaseGenerator implements GeneratorInterface
         //         $foreignMethods .= $this->buildTemplate('common/Models/fragments/parent', [
         //             '{{parent}}'      => str_singular($parent),
         //             '{{columnName}}'  => $column,
-        //             '{{parentModel}}' => ($parent == 'users' && class_exists('\\App\\User')) ? "\\App\\User" : ucfirst(camel_case(str_singular($parent)))
+        //             '{{parentModel}}' => ($parent == 'users' && class_exists('\\App\\User')) ? "\\App\\User" : ucfirst(Str::camel(str_singular($parent)))
         //         ]);
         //     }
         // }
@@ -92,7 +89,7 @@ class Model extends BaseGenerator implements GeneratorInterface
         //         $foreignMethods .= $this->buildTemplate('common/Models/fragments/related', [
         //             '{{related}}'      => str_singular($relatedModel),
         //             '{{columnName}}'  => $column,
-        //             '{{relatedModel}}' => ($relatedModel == 'users' && class_exists('\\App\\User')) ? "\\App\\User" : ucfirst(camel_case(str_singular($relatedModel)))
+        //             '{{relatedModel}}' => ($relatedModel == 'users' && class_exists('\\App\\User')) ? "\\App\\User" : ucfirst(Str::camel(str_singular($relatedModel)))
         //         ]);
         //     }
         // }

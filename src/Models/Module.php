@@ -1,6 +1,7 @@
 <?php
 namespace Prateekkarki\Laragen\Models;
 use Prateekkarki\Laragen\Models\TypeResolver;
+use Illuminate\Support\Str;
 
 class Module
 {
@@ -22,9 +23,12 @@ class Module
             return (is_array($elem)) ? true : false;
         });
 
+        $moduleData['sort'] = 'integer';
+        $moduleData['status'] = 'boolean';
+
         $this->columnsData = [];
         foreach ($moduleData as $column => $typeOptions) {
-            $data = new TypeResolver($column, $typeOptions);
+            $data = new TypeResolver($moduleName, $column, $typeOptions);
             $this->columnsData[$column] = $data->getLaragenType();
         }
 
@@ -56,6 +60,23 @@ class Module
             }
         }
         return $filteredTypes;
+    }
+
+
+    public function getColumns($onlyNonRelational = false, $columnsOnly = false)
+    {
+        $columns = [];
+        foreach($this->columnsData as $type){
+            if($onlyNonRelational && $type->isRelational()){
+                continue;
+            }
+            if($columnsOnly){
+                $columns[] = $type->getColumn(); 
+            }else{
+                $columns[$type->getColumn()] = $type;
+            }
+        }
+        return $columns;
     }
 
     public function getName()
@@ -93,23 +114,6 @@ class Module
         $keyArray = array_keys($this->getColumns(true, true));
         $lastColumn = array_pop($keyArray);
         return $lastColumn;
-    }
-
-    public function getColumns($onlyNonRelational = false, $columnsOnly = false)
-    {
-        $columns = [];
-        foreach($this->getData() as $column => $optionString){
-            $data = new TypeResolver($column, $optionString);
-            if($onlyNonRelational && $data->laragenType->isRelational()){
-                continue;
-            }
-            if($columnsOnly){
-                $columns[] = $column; 
-            }else{
-                $columns[$column] = $data->laragenType;
-            }
-        }
-        return $columns;
     }
 
     public function getBackendColumnTitles()
@@ -168,107 +172,7 @@ class Module
         }
         return $data;
     }
-
-    public function getRelatedTypes($type = 'all')
-    {
-        if (is_array($type)) {
-            $types = $type;
-        } else {
-            $types = ($type == "all") ? TypeResolver::$relatedMultiple : [$type];
-        }
-        
-        $data = [];
-        foreach ($this->data as $column => $optionString) {
-            $dataOption = new TypeResolver($column, $optionString);
-            if (in_array($dataOption->getLaragenType()->getType(), $types)) {
-                $data[] = $column;
-            }
-        }
-        return $data;
-    }
-
-    public function getFileColumns($type = 'all')
-    {
-        if (is_array($type)) {
-            $types = $type;
-        } else {
-            $types = ($type == "all") ? TypeResolver::$fileTypes : [$type];
-        }
-        
-        $data = [];
-        foreach ($this->data as $column => $optionString) {
-            $dataOption = new TypeResolver($column, $optionString);
-            if (in_array($dataOption->getLaragenType()->getType(), $types)) {
-                $data[] = $column;
-            }
-        }
-        return $data;
-    }
-
-    public function getParentColumns()
-    {
-        $data = [];
-        foreach ($this->data as $column => $optionString) {
-            $dataOption = new TypeResolver($column, $optionString);
-            if ($dataOption->getLaragenType()->getType() == TypeResolver::TYPE_PARENT) {
-                $data[] = $column;
-            }
-        }
-        return $data;
-    }
-
-    public function getGalleries()
-    {
-        $data = [];
-        foreach ($this->data as $column => $optionString) {
-            $dataOption = new TypeResolver($column, $optionString);
-            if ($dataOption->getLaragenType()->getType() == 'gallery') {
-                $data[] = $column;
-            }
-        }
-        return $data;
-    }
-
-    public function getForeignColumns($type = 'all')
-    {
-        if (is_array($type)) {
-            $types = $type;
-        } else {
-            $types = ($type == "all") ? TypeResolver::$specialTypes : [$type];
-        }
-        
-        $data = [];
-        foreach ($this->data as $column => $optionString) {
-            $dataOption = new TypeResolver($column, $optionString);
-            if (in_array($dataOption->getLaragenType()->getType(), $types)) {
-                $data[] = [$column => $dataOption->laragenType->getParentModule()];
-            }
-        }
-        return $data;
-    }
-
-    public function getForeignData($type = 'all')
-    {
-        if (is_array($type)) {
-            $types = $type;
-        } else {
-            $types = ($type == "all") ? TypeResolver::$specialTypes : [$type];
-        }
-        
-        $data = [];
-        foreach ($this->data as $column => $optionString) {
-            $dataOption = new TypeResolver($column, $optionString);
-            if (in_array($dataOption->getLaragenType()->getType(), $types)) {
-                $data[] = [
-                    'columnName'   => $column,
-                    'parentModule' => $dataOption->laragenType->getParentModule(),
-                    'parentModel'  => $dataOption->laragenType->getParentModel()
-                ];
-            }
-        }
-        return $data;
-    }
-
+    
     public function getModuleName()
     {
         return $this->name;
@@ -291,12 +195,12 @@ class Module
 
     public function getModelName()
     {
-        return ucfirst(camel_case(str_singular($this->name)));
+        return ucfirst(Str::camel(str_singular($this->name)));
     }
 
     public function getModelNamePlural()
     {
-        return ucfirst(camel_case($this->name));
+        return ucfirst(Str::camel($this->name));
     }
 
     public function getModelNameLowercase()

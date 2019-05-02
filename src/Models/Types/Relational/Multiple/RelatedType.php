@@ -6,11 +6,19 @@ use Prateekkarki\Laragen\Models\Types\Relational\MultipleType;
 
 class RelatedType extends MultipleType
 {
-    public function getParentModule() {
-        return $this->typeOption;
-    }
+    protected $hasPivot = true;
 
-	public function getParentModel() {
-        return ucfirst(camel_case(Str::singular($this->typeOption)));
+    public function getPivotTable()
+    {
+        $modelArray = [$this->getParentModelLowercase(), strtolower(Str::singular($this->columnName))];
+        sort($modelArray);
+        return implode("_", $modelArray);
+    }
+    
+    public function getPivot()
+    {
+        $modelArray = [$this->getParentModel(), ucfirst(Str::camel(Str::singular($this->columnName)))];
+        sort($modelArray);
+        return implode("", $modelArray);
     }
 }

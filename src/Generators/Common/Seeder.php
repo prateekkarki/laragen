@@ -118,7 +118,7 @@ class Seeder extends BaseGenerator implements GeneratorInterface
             foreach ($parents as $column => $parent) {
                 $foreignData .= $this->buildTemplate('common/Factories/fragments/parent', [
                     '{{parent}}'      => str_singular($parent),
-                    '{{parentModel}}' => ucfirst(camel_case(str_singular($parent)))
+                    '{{parentModel}}' => ucfirst(Str::camel(str_singular($parent)))
                 ]);
                 
                 if ($column != last($columns)) {

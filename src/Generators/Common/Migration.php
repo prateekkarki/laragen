@@ -23,19 +23,17 @@ class Migration extends BaseGenerator implements GeneratorInterface
         $fullFilePath = $this->getMigrationFile();
         file_put_contents($fullFilePath, $migrationTemplate);
         $generatedFiles[] = $fullFilePath;
-
-        if($this->module->hasPivotRelations()){
-            foreach($this->module->getPivotalColumns() as $type){
-                $migrationTemplate = $this->buildTemplate('common/migrations/pivot', [
-                    '{{pivotName}}'        => $type->getPivotName($this->module->getModelName()),
-                    '{{pivotTableName}}'   => $type->getPivotTableName($this->module->getModelNameLowerCase()),
-                    '{{pivotTableSchema}}' => $type->getPivotSchema($this->module->getModelNameLowerCase(), $this->module->getModuleName())
-                ]);
-                
-                $fullFilePath = $this->getPivotFile($type);
-                file_put_contents($fullFilePath, $migrationTemplate);
-                $generatedFiles[] = $fullFilePath;
-            }
+        
+        foreach($this->module->getFilteredColumns(['hasModel', 'hasPivot']) as $type){
+            $migrationTemplate = $this->buildTemplate('common/migrations/pivot', [
+                '{{pivotName}}'        => $type->getPivot(),
+                '{{pivotTableName}}'   => $type->getPivotTable($this->module->getModelNameLowerCase()),
+                '{{pivotTableSchema}}' => $type->getPivotSchema($this->module->getModelNameLowerCase(), $this->module->getModuleName())
+            ]);
+            
+            $fullFilePath = $this->getPivotFile($type);
+            file_put_contents($fullFilePath, $migrationTemplate);
+            $generatedFiles[] = $fullFilePath;
         }
         return $generatedFiles;
     }
@@ -53,7 +51,7 @@ class Migration extends BaseGenerator implements GeneratorInterface
     {
         $fileCounter = sprintf('%06d', (int) date('His') + ++self::$counter);
         $filenamePrefix = date('Y_m_d_').$fileCounter."_";
-        $fileName = "create_". $related->getPivotFile($this->module->getModelNameLowerCase())."_table.php";
+        $fileName = "create_". $related->getPivotTable($this->module->getModelNameLowerCase())."_table.php";
 
         return $this->getPath("database/migrations/laragen/").$filenamePrefix.$fileName;
     }

@@ -6,19 +6,20 @@ use Prateekkarki\Laragen\Models\TypeResolver;
 
 abstract class LaragenType
 {
-	public $relationalType = false;
+	protected $relationalType = false;
     protected $hasPivot = false;
     protected $hasModel = false;
-	protected $columnName;
 	protected $size = 192;
-	protected $optionString;
     protected $uniqueFlag = false;
     protected $requiredFlag = false;
-
 	protected $dataType = 'string';
+	protected $moduleName;
+	protected $columnName;
+	protected $optionString;
 	
-    public function __construct($columnName, $optionString)
+    public function __construct($moduleName, $columnName, $optionString)
     {
+        $this->moduleName = $moduleName;
         $this->columnName = $columnName;
         $this->optionString = $optionString;
 
@@ -87,7 +88,27 @@ abstract class LaragenType
         $options .= $this->isRequired() ? 'required="required" ' : '';
         return $options;
     }
-	
+
+    public function getChildModel()
+    {
+        return ucfirst($this->columnName);
+    }
+    
+    public function getParentModel()
+    {
+        return ucfirst(Str::camel(Str::singular($this->moduleName)));
+    }
+
+    public function getParentModule()
+    {
+        return $this->moduleName;
+    }
+
+    public function getParentModelLowercase()
+    {
+        return Str::singular($this->moduleName);
+    }
+
     public function getTextRows() {
         if (!$this->size)
             return 4;
