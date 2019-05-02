@@ -8,8 +8,10 @@ class MultipleType extends FileType
     protected $hasModel = true;
     public $relationalType = true;
 
-    public function getPivotSchema($modelName, $moduleName)
+    public function getPivotSchema()
     {
+        $modelName = $this->getParentModelLowercase();
+        $moduleName = $this->getParentModule();
         $schema = '$table->bigInteger("'.$modelName.'_id")->unsigned()->nullable();'.PHP_EOL.$this->getTabs(3);
         $schema .= "\$table->foreign('".$modelName."_id')->references('id')->on('".$moduleName."')->onDelete('set null');";
         $schema .= '$table->string("filename", 192);';
