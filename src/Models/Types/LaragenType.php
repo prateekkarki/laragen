@@ -7,7 +7,8 @@ use Prateekkarki\Laragen\Models\TypeResolver;
 abstract class LaragenType
 {
 	public $relationalType = false;
-	protected $hasPivot = false;
+    protected $hasPivot = false;
+    protected $hasModel = false;
 	protected $columnName;
 	protected $size = 192;
 	protected $optionString;
@@ -63,6 +64,11 @@ abstract class LaragenType
    public function hasPivot()
    {
        return $this->hasPivot;
+   }
+   
+   public function hasModel()
+   {
+       return $this->hasModel;
    }
    
     public function getSchema()

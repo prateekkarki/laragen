@@ -1,0 +1,20 @@
+<?php
+namespace App\Models\Relations;
+
+use Illuminate\Database\Eloquent\Relations\Pivot
+
+class {{pivotName}} extends Pivot
+{
+    protected $guarded = ['id'];
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        {{massAssignables}}
+    ];
+
+    {{foreignMethods}}
+}

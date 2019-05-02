@@ -2,7 +2,6 @@
 namespace Prateekkarki\Laragen\Generators\Common;
 
 use Prateekkarki\Laragen\Generators\BaseGenerator;
-use Prateekkarki\Laragen\Models\Module;
 use Prateekkarki\Laragen\Generators\GeneratorInterface;
 
 class Model extends BaseGenerator implements GeneratorInterface
@@ -20,20 +19,31 @@ class Model extends BaseGenerator implements GeneratorInterface
         file_put_contents($fullFilePath, $modelTemplate);
         $generatedFiles[] = $fullFilePath;
         
-        foreach ($this->module->getMultipleColumns() as $multipleModules) {
-            foreach ($multipleModules as $multiple => $multipleData) {
-                $multipleModule = new Module($multiple, $multipleData);
-                
-                $multiModelTemplate = $this->buildTemplate('common/Models/Model', [
-                    '{{modelName}}'       => $this->module->getPivotName($multiple),
-                    '{{massAssignables}}' => $this->getMultipleMassAssignables($multipleModule),
-                    '{{foreignMethods}}'  => $this->getMultipleForeignMethods()
-                ]);
+        var_dump($this->module->getModelName(), $this->module->getFilteredColumns('hasPivot'), $this->module->getFilteredColumns('hasModel'));
 
-                $fullFilePath = $this->getPath("app/Models/").$this->module->getPivotName($multiple).".php";
-                file_put_contents($fullFilePath, $multiModelTemplate);
-                $generatedFiles[] = $fullFilePath;
-            }
+        foreach($this->module->getFilteredColumns('hasPivot') as $type){
+            $typeTemplate = $this->buildTemplate('common/Models/Pivot', [
+                '{{pivotName}}'       => $type->getPivotName($this->module->getModelName()),
+                '{{massAssignables}}' => implode(', ', $type->getTypeColumns($this->module->getModelNameLowercase())),
+                '{{foreignMethods}}'  => $this->getTypeForeignMethods($type),
+            ]);
+            
+            $fullFilePath = $this->getPath("app/Models/").$type->getModelName($this->module->getModelName()).".php";
+            file_put_contents($fullFilePath, $typeTemplate);
+            $generatedFiles[] = $fullFilePath;
+        }
+
+        foreach($this->module->getFilteredColumns('hasModel') as $type){
+            var_dump($type->getColumn(), $type->getTypeColumns($this->module->getModelNameLowercase()));
+            $typeTemplate = $this->buildTemplate('common/Models/Model', [
+                '{{modelName}}'       => $type->getModelName($this->module->getModelName()),
+                '{{massAssignables}}' => implode(', ', $type->getTypeColumns($this->module->getModelNameLowercase())),
+                '{{foreignMethods}}'  => $this->getTypeForeignMethods($type),
+            ]);
+            
+            $fullFilePath = $this->getPath("app/Models/").$type->getModelName($this->module->getModelName()).".php";
+            file_put_contents($fullFilePath, $typeTemplate);
+            $generatedFiles[] = $fullFilePath;
         }
 
         return $generatedFiles;
@@ -51,7 +61,7 @@ class Model extends BaseGenerator implements GeneratorInterface
         return "'".implode("', '", $columns)."'";
     }
 
-    protected function getMultipleForeignMethods()
+    protected function getTypeForeignMethods($type)
     {
         $foreignMethods = "";
 

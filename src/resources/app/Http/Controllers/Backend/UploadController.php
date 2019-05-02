@@ -6,12 +6,22 @@ use Illuminate\Http\Request;
 use Symfony\Component\Filesystem\Filesystem;
 use Validator;
 use Image;
+use Storage;
 
 /**
  * Class UploadController.
  */
 class UploadController extends Controller
 {
+    function __construct()
+    {
+        $this->thumbnail_sizes = [
+            'sm' => config('laragen.options.image_sizes.sm'),
+            'md' => config('laragen.options.image_sizes.md'),
+            'xs' => config('laragen.options.image_sizes.xs'),
+        ];
+    }
+
     /**
      * @return json
      * 
@@ -27,11 +37,14 @@ class UploadController extends Controller
         $valid = $this->validateUpload($file, $moduleName, $field);
 
         if ($valid) {
-            $imagename = $this->getWritableFilename(str_slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)).'.'.$file->getClientOriginalExtension(), $moduleName, true); ;
+            $imagename = $this->getWritableFilename(str_slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)).'.'.$file->getClientOriginalExtension(), $moduleName, true);
     
-            $destinationPath = storage_path('images/'.$moduleName);
+            $destinationPath = storage_path('temp/'.$moduleName);
     
             $file->move($destinationPath, $imagename);
+            
+            // Storage::put('/public/'.$moduleName .'/'. $imagename, $file );
+
     
             return response()->json(['message' => 'File successfully uploaded', 'filename' => $imagename, 'status' => 200], 200);
         }
@@ -47,7 +60,7 @@ class UploadController extends Controller
 
         foreach ($request->file('file') as $file) {
             $imagename = $this->getWritableFilename(str_slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)).'.'.$file->getClientOriginalExtension(), $moduleName, true); ;
-            $destinationPath = storage_path('images/'.$moduleName);
+            $destinationPath = storage_path('temp/'.$moduleName);
             try {
                 $file->move($destinationPath, $imagename);
                 $files[] = $imagename;
@@ -70,7 +83,7 @@ class UploadController extends Controller
         $model = $modelToCall::find($request->input('modelId'));
         $field = $request->input('field');
         $filename = $model->$field;
-        $filePath = public_path('images/'.$moduleName.'/'.$filename);
+        $filePath = public_path('temp/'.$moduleName.'/'.$filename);
         $fileSystem = new Filesystem;
 
         try {
@@ -89,28 +102,44 @@ class UploadController extends Controller
      */
     public function process($filename, $moduleName)
     {
+        
         $messages = ['errors'=>[]];
-        $tempFile = storage_path('images/'.$moduleName.'/'.$filename);
-        $fileToWrite = $this->getWritableFilename($filename, $moduleName);
+        $filePath = storage_path('temp/'.$moduleName.'/'.$filename);
+        $filenameToStore=$this->getFilenameToStore($filename);
+        
+        foreach ($this->thumbnail_sizes as $thumbType => $thumbSizes)
+        {
+            $thumbDir          = $thumbType;
+            [$width, $height]  = explode('x', $thumbSizes);
 
-        $tempImage = Image::make($tempFile);
+            $img = Image::make($filePath)->resize($width, $height, function($constraint) {
+                $constraint->aspectRatio();
+            });
 
-        $methodToUse = $tempImage->width() > $tempImage->height() ? 'widen' : 'heighten';
+            if (! is_dir(storage_path("app/public/images/".$moduleName.'/'.$thumbDir))) {
+                @mkdir(storage_path("app/public/images/".$moduleName.'/'.$thumbDir), 0777, true);
+            }
 
-        try {
-            $tempImage->$methodToUse(2000, function($constraint) {
-                $constraint->upsize();
-            })->save($fileToWrite);
-            $messages['success']['filename'] = $fileToWrite;
-        } catch (\Exception $ex) {
-            $messages['errors'][] = ['fileError' => $ex->getMessage()];
+            $thumbnailpath = storage_path(("app/public/images/".$moduleName.'/'.$thumbDir.'/'.$filenameToStore));
+
+            try {
+                $img->save($thumbnailpath);
+                $messages['filename'] = $filenameToStore;
+            } catch (\Exception $ex) {
+                $messages['errors'][] = ['fileError' => $ex->getMessage()];
+            }
         }
         return $messages;
     }
 
+    public function getThumbnailSizeFor($type)
+    {
+        return explode('x', $this->thumbnail_sizes[$type]);
+    }
+
     protected function getWritableFilename($filename, $moduleName, $is_storage = false)
     {
-        $dir = $is_storage ? $this->getPath(storage_path('images/'.$moduleName)) : $this->getPath(public_path('images/'.$moduleName));
+        $dir = $is_storage ? $this->getPath(storage_path('temp/'.$moduleName)) : $this->getPath(storage_path('app/public/'.$moduleName));
         $path = $dir.'/'.$filename;
         if (file_exists($path)) {
             $filename = pathinfo($path, PATHINFO_FILENAME);
@@ -119,6 +148,21 @@ class UploadController extends Controller
         } else {
             return $is_storage ? $filename : $path;
         }
+    }
+
+    function getFilename($filename)
+    {
+        return pathinfo($filename, PATHINFO_FILENAME);
+    }
+
+    function getFileExtension($filename)
+    {
+        return pathinfo($filename, PATHINFO_EXTENSION);
+    }
+
+    function getFilenameToStore($filename)
+    {
+        return $this->getFilename($filename).'_'.uniqid().'.'.$this->getFileExtension($filename);
     }
 
     protected function getPath($path)

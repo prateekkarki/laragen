@@ -5,6 +5,8 @@ use Prateekkarki\Laragen\Models\Types\Relational\MultipleType;
 
 class MultipleDataType extends MultipleType
 {
+    protected $hasModel = true;
+    
     public function getPivotSchema($modelName, $moduleName)
     {
         $schema = PHP_EOL.$this->getTabs(3);
@@ -22,5 +24,10 @@ class MultipleDataType extends MultipleType
     public function getMultipleColumns()
     {
         return $this->optionString;
+    }
+
+    public function getTypeColumns($model)
+    {
+        return array_merge([$model.'_id'], $this->optionString);
     }
 }

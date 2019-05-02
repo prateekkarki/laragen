@@ -5,8 +5,6 @@ use Illuminate\Support\Str;
 
 class MultipleType extends RelationalType
 {
-    protected $hasPivot = true;
-
     public function getPivotSchema($modelName, $moduleName)
     {
         $schema = PHP_EOL.$this->getTabs(3);

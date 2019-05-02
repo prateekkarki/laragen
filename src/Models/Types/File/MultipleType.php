@@ -4,7 +4,7 @@ use Prateekkarki\Laragen\Models\Types\FileType;
 
 class MultipleType extends FileType
 {
-    protected $hasPivot = true;
+    protected $hasModel = true;
 
     public function getPivotSchema($modelName, $moduleName)
     {
@@ -17,14 +17,18 @@ class MultipleType extends FileType
     
     public function getPivotName($model)
     {
-        $modelArray = [$this->getModelName(), ucfirst(camel_case(str_singular($model)))];
+        $modelArray = [$this->getSingleModelName(), ucfirst(camel_case(str_singular($model)))];
         sort($modelArray);
         return implode("", $modelArray);
     }
     
-    public function getModelName()
+    public function getSingleModelName()
     {
         return ucfirst($this->columnName);
     }
-
+    
+    public function getTypeColumns($model)
+    {
+        return [$model.'_id', 'filename'];
+    }
 }

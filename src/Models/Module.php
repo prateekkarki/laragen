@@ -42,6 +42,22 @@ class Module
         return $relativeTypes;
     }
 
+
+    public function getFilteredColumns($options = [])
+    {
+        $filteredTypes = [];
+        $options = is_array($options) ? $options : [$options];
+        foreach($this->columnsData as $type){
+            foreach ($options as $option) {
+                if($type->$option()){
+                    $filteredTypes[] = $type;
+                    break;
+                }
+            }
+        }
+        return $filteredTypes;
+    }
+
     public function getName()
     {
         return $this->name;
