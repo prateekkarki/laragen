@@ -42,14 +42,6 @@ class Generate extends Command
         $modules = config('laragen.modules');
         $generatedFiles = [];
 
-        $existingMigrationFiles = is_dir(database_path('migrations/laragen/')) ? scandir(database_path('migrations/laragen/')) : [];
-
-        foreach ($existingMigrationFiles as $file) {
-            $file = database_path("migrations/laragen") . "/" . $file;
-            if (is_file($file))
-                unlink($file);
-        }
-
         $itemsToGenerate = $this->configToGenerators($options['items_to_generate']);
         $bar = $this->output->createProgressBar(count($modules) * (count($itemsToGenerate) + count($this->filesToPublish)));
         $bar->setOverwrite(true);

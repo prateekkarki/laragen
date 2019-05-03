@@ -11,7 +11,29 @@ class Migration extends BaseGenerator implements GeneratorInterface
 
     public function generate()
     {
+        if(self::$counter==0){
+            $existingMigrationFiles = is_dir(database_path('migrations/laragen/')) ? scandir(database_path('migrations/laragen/')) : [];
+
+            foreach ($existingMigrationFiles as $file) {
+                $file = database_path("migrations/laragen") . "/" . $file;
+                if (is_file($file))
+                    unlink($file);
+            }
+        }
+
         $generatedFiles = [];
+
+        foreach($this->module->getFilteredColumns('needsTableInit') as $type){
+            $migrationTemplate = $this->buildTemplate('common/migrations/pivot', [
+                '{{pivotName}}'        => $type->getMigrationPivot(),
+                '{{pivotTableName}}'   => $type->getPivotTable(),
+                '{{pivotTableSchema}}' => $type->getPivotSchema()
+            ]);
+            
+            $fullFilePath = $this->getPivotFile($type);
+            file_put_contents($fullFilePath, $migrationTemplate);
+            $generatedFiles[] = $fullFilePath;
+        }
 
         $migrationTemplate = $this->buildTemplate('common/migrations/table', [
             '{{modelName}}'         => $this->module->getModelName(),
@@ -26,7 +48,7 @@ class Migration extends BaseGenerator implements GeneratorInterface
         
         foreach($this->module->getFilteredColumns(['hasModel', 'hasPivot']) as $type){
             $migrationTemplate = $this->buildTemplate('common/migrations/pivot', [
-                '{{pivotName}}'        => $type->getPivot(),
+                '{{pivotName}}'        => $type->getMigrationPivot(),
                 '{{pivotTableName}}'   => $type->getPivotTable(),
                 '{{pivotTableSchema}}' => $type->getPivotSchema()
             ]);

@@ -4,6 +4,7 @@ namespace Prateekkarki\Laragen\Models\Types;
 class IntegerType extends LaragenType
 {
 	protected $dataType = 'integer';
+	protected $size = false;
 
     public function getSchema()
     {

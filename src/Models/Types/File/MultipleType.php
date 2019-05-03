@@ -13,16 +13,21 @@ class MultipleType extends FileType
         $modelName = $this->getParentModelLowercase();
         $moduleName = $this->getParentModule();
         $schema = '$table->bigInteger("'.$modelName.'_id")->unsigned()->nullable();'.PHP_EOL.$this->getTabs(3);
-        $schema .= "\$table->foreign('".$modelName."_id')->references('id')->on('".$moduleName."')->onDelete('set null');";
-        $schema .= '$table->string("filename", 192);';
-        $schema .= '$table->integer("size");';
-        $schema .= '$table->timestamps();';
+        $schema .= "\$table->foreign('".$modelName."_id')->references('id')->on('".$moduleName."')->onDelete('set null');".PHP_EOL.$this->getTabs(3);
+        $schema .= '$table->string("filename", 192);'.PHP_EOL.$this->getTabs(3);
+        $schema .= '$table->integer("size");'.PHP_EOL.$this->getTabs(3);
+        $schema .= '$table->timestamps();'.PHP_EOL.$this->getTabs(3);
         return $schema;
     }
-    
+
     public function getPivotTable()
     {
-        return $this->getParentModule() . "_" . strtolower(Str::plural($this->columnName));
+        return $this->getParentModelLowercase() . "_" . strtolower(Str::plural($this->columnName));
+    }
+
+    public function getMigrationPivot()
+    {
+        return $this->getParentModel() . Str::plural($this->getChildModel());
     }
 
     public function getPivot()

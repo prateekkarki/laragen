@@ -44,17 +44,16 @@ class Seeder extends BaseGenerator implements GeneratorInterface
     }
 
     protected function getUsedModels() {
-        $foreignModels = $this->module->getForeignColumns();
         $namespace = "App\\Models\\";
         $usedModels = "use ".$namespace.$this->module->getModelName().";";
 
-        foreach ($foreignModels as $models) {
-            foreach ($models as $column => $module) {
-                $namespace = ($module == 'users' && class_exists('App\\User')) ? "App\\" : "App\\Models\\";
-                $class = $namespace.$this->moduleToModelName($module);
-                $usedModels .= PHP_EOL."use ".$class.";";
-            }
+        foreach($this->module->getFilteredColumns(['hasModel', 'hasPivot']) as $type){
+            $module = $type->getParentModule();
+            $namespace = ($module == 'users' && class_exists('App\\User')) ? "App\\" : "App\\Models\\";
+            $class = $namespace.$type->getParentModel();
+            $usedModels .= PHP_EOL."use ".$class.";";
         }
+
         return $usedModels;
     }
 
@@ -110,20 +109,16 @@ class Seeder extends BaseGenerator implements GeneratorInterface
     }
 
     protected function getForeignData() {
-        $columns = $this->module->getForeignColumns('parent');
-
         $foreignData = "";
 
-        foreach ($columns as $parents) {
-            foreach ($parents as $column => $parent) {
-                $foreignData .= $this->buildTemplate('common/Factories/fragments/parent', [
-                    '{{parent}}'      => str_singular($parent),
-                    '{{parentModel}}' => ucfirst(Str::camel(str_singular($parent)))
-                ]);
-                
-                if ($column != last($columns)) {
-                    $foreignData .= ",".PHP_EOL;
-                }
+        foreach($this->module->getFilteredColumns(['hasModel', 'hasPivot']) as $type){
+            $foreignData .= $this->buildTemplate('common/Factories/fragments/parent', [
+                '{{parent}}'      => $type->getParentModelLowercase(),
+                '{{parentModel}}' => $type->getParentModel()
+            ]);
+            
+            if ($type != last($type)) {
+                $foreignData .= ",".PHP_EOL;
             }
         }
 

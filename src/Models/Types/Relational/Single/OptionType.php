@@ -2,15 +2,45 @@
 namespace Prateekkarki\Laragen\Models\Types\Relational\Single;
 
 use Prateekkarki\Laragen\Models\Types\Relational\SingleType;
+use Illuminate\Support\Str;
 
 class OptionType extends SingleType
 {
+    protected $needsTableInit = true;
+
     public function getSchema()
     {
         $schema = "";
-        $parent = $this->getParent();
-        $schema .= "\$table->bigInteger('".str_singular($parent)."_id')->unsigned()->nullable();".PHP_EOL.$this->getTabs(3);
-        $schema .= "\$table->foreign('".str_singular($parent)."_id')->references('id')->on('$parent')->onDelete('set null');".PHP_EOL;
+        $parent = $this->getParentModelLowercase();
+        $schema .= "\$table->bigInteger('".$this->getColumn()."')->unsigned()->nullable();".PHP_EOL.$this->getTabs(3);
+        $schema .= "\$table->foreign('".$this->getColumn()."')->references('id')->on('".$this->getPivotTable()."')->onDelete('set null');".PHP_EOL;
         return $schema;
+    }
+
+    public function getPivotSchema()
+    {
+        $schema = '$table->string("title", 192);'.PHP_EOL.$this->getTabs(3);
+        $schema .= '$table->timestamps();'.PHP_EOL.$this->getTabs(3);
+        return $schema;
+    }
+    
+    public function getPivotTable()
+    {
+        return $this->getParentModelLowercase() . "_" . Str::plural($this->columnName);
+    }
+
+    public function getMigrationPivot()
+    {
+        return $this->getParentModel() . Str::plural($this->getChildModel());
+    }
+
+    public function getPivot()
+    {
+        return $this->getParentModel() . $this->getChildModel();
+    }
+    
+    public function getTypeColumns()
+    {
+        return [$this->getParentModelLowercase().'_id', 'filename', 'size'];
     }
 }

@@ -5,15 +5,18 @@ use Prateekkarki\Laragen\Models\Types\Relational\SingleType;
 use Illuminate\Support\Str;
 
 class ParentType extends SingleType
-{
-    protected $dataType = 'integer';
-    
+{    
     public function getSchema()
     {
         $schema = "";
-        $parent = $this->typeOption;
-        $schema .= "\$table->bigInteger('".str_singular($parent)."_id')->unsigned()->nullable();".PHP_EOL.$this->getTabs(3);
-        $schema .= "\$table->foreign('".str_singular($parent)."_id')->references('id')->on('$parent')->onDelete('set null');".PHP_EOL;
+        $parentTable = ($this->typeOption == $this->getParentModule() || $this->typeOption == "self") ? $this->getParentModule() : $this->typeOption;
+        $schema .= "\$table->bigInteger('".$this->columnName."')->unsigned()->nullable();".PHP_EOL.$this->getTabs(3);
+        $schema .= "\$table->foreign('".$this->columnName."')->references('id')->on('$parentTable')->onDelete('set null');".PHP_EOL;
         return $schema;
+    }
+
+    public function getPivot()
+    {
+        return ($this->typeOption == $this->getParentModule() || $this->typeOption == "self") ? $this->getParentModel() : ucfirst(Str::singular(Str::camel($this->typeOption)));
     }
 }

@@ -12,7 +12,7 @@ class Model extends BaseGenerator implements GeneratorInterface
         $generatedFiles = [];
         $modelTemplate = $this->buildTemplate('common/Models/Model', [
             '{{modelName}}'       => $this->module->getModelName(),
-            '{{massAssignables}}' => $this->getMassAssignables(),
+            '{{massAssignables}}' => implode("', '", $this->module->getColumns(true, true)),
             '{{foreignMethods}}'  => $this->getForeignMethods()
         ]);
         
@@ -46,25 +46,14 @@ class Model extends BaseGenerator implements GeneratorInterface
         return $generatedFiles;
     }
 
-    protected function getMassAssignables()
-    {
-        $columns = $this->module->getColumns(true, true);
-        return implode("', '", $columns);
-    }
-
-    protected function getMultipleMassAssignables($multipleModule)
-    {
-        $columns = array_merge($multipleModule->getNativeColumns(), $multipleModule->getFileColumns(), $multipleModule->getParentColumns());
-        return "'".implode("', '", $columns)."'";
-    }
-
     protected function getTypeForeignMethods($type)
     {
         $foreignMethods = "";
-
-        $foreignMethods .= $this->buildTemplate('common/Models/fragments/multiple', [
-            '{{parent}}'      => $this->module->getModelNameLowercase(),
-            '{{parentModel}}' => $this->module->getModelName()
+        $stub = $type->getStub('modelMethod') ?: 'common/Models/fragments/hasMany';
+        $foreignMethods .= $this->buildTemplate($stub, [
+            '{{columnName}}'  => $type->getColumn(),
+            '{{parent}}'      => $type->getParentModelLowercase(),
+            '{{parentModel}}' => $type->getParentModel(),
         ]);
 
         return $foreignMethods;
@@ -74,36 +63,19 @@ class Model extends BaseGenerator implements GeneratorInterface
     {
         $foreignMethods = "";
 
-        // foreach ($this->module->getForeignColumns('parent') as $parents) {
-        //     foreach ($parents as $column => $parent) {
-        //         $foreignMethods .= $this->buildTemplate('common/Models/fragments/parent', [
-        //             '{{parent}}'      => str_singular($parent),
-        //             '{{columnName}}'  => $column,
-        //             '{{parentModel}}' => ($parent == 'users' && class_exists('\\App\\User')) ? "\\App\\User" : ucfirst(Str::camel(str_singular($parent)))
-        //         ]);
-        //     }
-        // }
-
-        // foreach ($this->module->getForeignColumns('related') as $relatedModels) {
-        //     foreach ($relatedModels as $column => $relatedModel) {
-        //         $foreignMethods .= $this->buildTemplate('common/Models/fragments/related', [
-        //             '{{related}}'      => str_singular($relatedModel),
-        //             '{{columnName}}'  => $column,
-        //             '{{relatedModel}}' => ($relatedModel == 'users' && class_exists('\\App\\User')) ? "\\App\\User" : ucfirst(Str::camel(str_singular($relatedModel)))
-        //         ]);
-        //     }
-        // }
-
-
-        // foreach ($this->module->getMultipleColumns() as $multipleModules) {
-        //     foreach ($multipleModules as $multiple => $multipleData) {
-        //         $foreignMethods .= $this->buildTemplate('common/Models/fragments/multiple_relation', [
-        //             '{{related}}'      => str_singular($multiple),
-        //             '{{columnName}}'  => str_plural($multiple),
-        //             '{{relatedModel}}' => $this->module->getPivotName($multiple)
-        //         ]);
-        //     }
-        // }
+        foreach($this->module->getFilteredColumns(['hasModel', 'hasPivot', 'hasSingleRelation']) as $type){
+            $stub = $type->getStub('foreignMethod') ?: 'common/Models/fragments/belongsTo';
+            $foreignMethods .= $this->buildTemplate($stub, [
+                '{{columnName}}'   => $type->getColumn(),
+                '{{parent}}'       => $type->getParentModelLowercase(),
+                '{{relatedModel}}' => $type->getPivot(),
+                '{{childModel}}'   => $type->getChildModel(),
+                '{{table}}'        => $type->getPivotTable(),
+                '{{parentId}}'     => $type->getParentModelLowercase() . "_id",
+                '{{childId}}'      => $type->getChildKey(),
+            ]);
+        }
+        // return $this->belongsToMany({{childModel}}::class, '{{table}}', '{{parentId}}', '{{childId}}');
 
         return $foreignMethods;
     }

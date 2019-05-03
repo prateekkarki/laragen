@@ -13,6 +13,7 @@ abstract class LaragenType
     protected $uniqueFlag = false;
     protected $requiredFlag = false;
 	protected $dataType = 'string';
+	protected $stubs = [];
 	protected $moduleName;
 	protected $columnName;
 	protected $optionString;
@@ -55,6 +56,8 @@ abstract class LaragenType
         if (strncasecmp($method, "set", 3) === 0 && isset($params[0])) {
             $this->$var = $params[0];
         }
+
+        return property_exists($this, $method) ? $this->$method : "";
    }
 	
    public function isRelational()
@@ -91,7 +94,7 @@ abstract class LaragenType
 
     public function getChildModel()
     {
-        return ucfirst($this->columnName);
+        return ucfirst(Str::camel(Str::singular($this->typeOption ?: $this->columnName )));
     }
     
     public function getParentModel()
@@ -108,6 +111,12 @@ abstract class LaragenType
     {
         return Str::singular($this->moduleName);
     }
+
+    public function getStub($type)
+    {
+        return isset($this->stubs[$type]) ? $this->stubs[$type] : false;
+    }
+
 
     public function getTextRows() {
         if (!$this->size)
