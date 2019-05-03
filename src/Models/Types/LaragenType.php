@@ -92,6 +92,11 @@ abstract class LaragenType
         return $options;
     }
 
+    public function getRelatedModel()
+    {
+        return $this->getChildModel();
+    }
+
     public function getChildModel()
     {
         return ucfirst(Str::camel(Str::singular($this->typeOption ?: $this->columnName )));

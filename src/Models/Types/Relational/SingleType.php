@@ -7,7 +7,7 @@ class SingleType extends RelationalType
     protected $dataType = 'integer';    
     protected $hasSingleRelation = true;
     protected $size = false;
-    public $relationalType = false;
+    protected $relationalType = false;
     
     protected $stubs = [
         'modelMethod' => 'common/Models/fragments/hasOne',

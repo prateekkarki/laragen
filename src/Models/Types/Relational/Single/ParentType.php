@@ -19,4 +19,14 @@ class ParentType extends SingleType
     {
         return ($this->typeOption == $this->getParentModule() || $this->typeOption == "self") ? $this->getParentModel() : ucfirst(Str::singular(Str::camel($this->typeOption)));
     }
+    
+    public function getRelatedModel()
+    {
+        return $this->getChildModel();
+    }
+    
+    public function getChildModel()
+    {
+        return ($this->typeOption == $this->getParentModule() || $this->typeOption == "self") ? $this->getParentModel() : ucfirst(Str::singular(Str::camel($this->typeOption)));
+    }
 }

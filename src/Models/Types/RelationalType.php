@@ -3,5 +3,5 @@ namespace Prateekkarki\Laragen\Models\Types;
 
 class RelationalType extends LaragenType
 {
-    public $relationalType = true;
+    protected $relationalType = true;
 }

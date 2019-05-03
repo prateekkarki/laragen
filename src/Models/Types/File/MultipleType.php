@@ -6,7 +6,7 @@ use Illuminate\Support\Str;
 class MultipleType extends FileType
 {
     protected $hasModel = true;
-    public $relationalType = true;
+    protected $relationalType = true;
 
     public function getPivotSchema()
     {
@@ -28,6 +28,11 @@ class MultipleType extends FileType
     public function getMigrationPivot()
     {
         return $this->getParentModel() . Str::plural($this->getChildModel());
+    }
+
+    public function getRelatedModel()
+    {
+        return $this->getPivot();
     }
 
     public function getPivot()

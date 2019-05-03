@@ -24,6 +24,11 @@ class OptionType extends SingleType
         return $schema;
     }
     
+    public function getRelatedModel()
+    {
+        return $this->getPivot();
+    }
+    
     public function getPivotTable()
     {
         return $this->getParentModelLowercase() . "_" . Str::plural($this->columnName);
@@ -41,6 +46,6 @@ class OptionType extends SingleType
     
     public function getTypeColumns()
     {
-        return [$this->getParentModelLowercase().'_id', 'filename', 'size'];
+        return [$this->getParentModelLowercase().'_id', 'title'];
     }
 }

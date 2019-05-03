@@ -1,7 +1,8 @@
 <?php
-namespace Prateekkarki\Laragen\Models\Types;
+namespace Prateekkarki\Laragen\Models\Types\General;
+use Prateekkarki\Laragen\Models\Types\GeneralType;
 
-class BooleanType extends LaragenType
+class BooleanType extends GeneralType
 {
 	protected $dataType = 'boolean';
 	    

@@ -24,6 +24,11 @@ class MultipleDataType extends MultipleType
         return $schema;
     }
 
+    public function getRelatedModel()
+    {
+        return $this->getPivot();
+    }
+
     public function getPivot()
     {
         return $this->getParentModel() . $this->getChildModel();

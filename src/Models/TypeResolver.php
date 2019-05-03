@@ -1,12 +1,12 @@
 <?php
 namespace Prateekkarki\Laragen\Models;
 
-use Prateekkarki\Laragen\Models\Types\StringType;
-use Prateekkarki\Laragen\Models\Types\BooleanType;
-use Prateekkarki\Laragen\Models\Types\IntegerType;
-use Prateekkarki\Laragen\Models\Types\TextType;
-use Prateekkarki\Laragen\Models\Types\DateTimeType;
-use Prateekkarki\Laragen\Models\Types\DateType;
+use Prateekkarki\Laragen\Models\Types\General\StringType;
+use Prateekkarki\Laragen\Models\Types\General\BooleanType;
+use Prateekkarki\Laragen\Models\Types\General\IntegerType;
+use Prateekkarki\Laragen\Models\Types\General\TextType;
+use Prateekkarki\Laragen\Models\Types\General\DateTimeType;
+use Prateekkarki\Laragen\Models\Types\General\DateType;
 use Prateekkarki\Laragen\Models\Types\File\Single\ImageType;
 use Prateekkarki\Laragen\Models\Types\File\Single\MixedFileType;
 use Prateekkarki\Laragen\Models\Types\File\Multiple\AttachmentType;
