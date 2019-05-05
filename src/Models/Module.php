@@ -46,22 +46,20 @@ class Module
         return $relativeTypes;
     }
 
-
-    public function getFilteredColumns($options = [])
+    public function getFilteredColumns($options = [], $columnsOnly = false)
     {
         $filteredTypes = [];
         $options = is_array($options) ? $options : [$options];
         foreach($this->columnsData as $type){
             foreach ($options as $option) {
                 if($type->$option()){
-                    $filteredTypes[] = $type;
+                    $filteredTypes[] = $columnsOnly ? $type->getColumn() : $type;
                     break;
                 }
             }
         }
         return $filteredTypes;
     }
-
 
     public function getColumns($onlyNonRelational = false, $columnsOnly = false)
     {

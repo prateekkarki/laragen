@@ -28,7 +28,7 @@ class Request extends BaseGenerator implements GeneratorInterface
         $modelname = $this->module->getModelNameLowercase();
 
         foreach($moduleData as $column => $options){
-            $columnOptions = new TypeResolver($column, $options);
+            $columnOptions = new TypeResolver($this->module->getModuleName(), $column, $options);
             $type = $columnOptions->laragenType->getDataType();
             $rules = $columnOptions->laragenType->optionArray();
 

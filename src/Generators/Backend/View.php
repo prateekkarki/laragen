@@ -69,16 +69,15 @@ class View extends BaseGenerator implements GeneratorInterface
     public function formGenerateCreate()
     {
         $viewTemplate = '';
-        foreach ($this->module->getData() as $column => $options) {
-            $columnOptions = new TypeResolver($column, $options);
-            $type = $columnOptions->getType();
-            $viewTemplate .= $this->buildTemplate('backend/views/formelements/'.$type, [
-                '{{key}}'                   => $column,
-                '{{display}}'               => $columnOptions->getDisplay(),
-                '{{options}}'               => $columnOptions->laragenType->getFormOptions(),
-                '{{parentModule}}'          => $columnOptions->laragenType->getParentModule(),
-                '{{parentModuleSinglular}}' => Str::singular($columnOptions->laragenType->getParentModule()),
-                '{{parentDisplay}}'         => $this->getParentDisplay($columnOptions->laragenType->getParentModule()),
+
+        foreach ($this->module->getFilteredColumns('general') as $type) {
+            $viewTemplate .= $this->buildTemplate('backend/views/formelements/'.$type->getDataType(), [
+                '{{key}}'                   => $type->getColumn(),
+                '{{display}}'               => $type->getDisplay(),
+                '{{options}}'               => $type->getFormOptions(),
+                '{{parentModule}}'          => $type->getParentModule(),
+                '{{parentModuleSinglular}}' => $type->getParentModelLowercase(),
+                '{{parentDisplay}}'         => $this->getParentDisplay($type->getParentModule()),
                 '{{modelNameLowercase}}'    => $this->module->getModelNameLowercase(),
                 '{{modulename}}'            => $this->module->getModuleName(),
             ]);
