@@ -31,7 +31,7 @@ class Model extends BaseGenerator implements GeneratorInterface
             $generatedFiles[] = $fullFilePath;
         }
 
-        foreach($this->module->getFilteredColumns('hasModel') as $type){
+        foreach($this->module->getFilteredColumns(['hasModel', 'needsTableInit']) as $type){
             $typeTemplate = $this->buildTemplate('common/Models/Model', [
                 '{{modelName}}'       => Str::singular($type->getPivot()),
                 '{{massAssignables}}' => implode("', '", $type->getTypeColumns()),
@@ -68,15 +68,12 @@ class Model extends BaseGenerator implements GeneratorInterface
             $foreignMethods .= $this->buildTemplate($stub, [
                 '{{columnName}}'   => $type->getColumn(),
                 '{{parent}}'       => $type->getParentModelLowercase(),
-                '{{relatedModel}}' => $type->getPivot(),
-                '{{childModel}}'   => $type->getChildModel(),
+                '{{relatedModel}}' => $type->getRelatedModel(),
                 '{{table}}'        => $type->getPivotTable(),
                 '{{parentId}}'     => $type->getParentModelLowercase() . "_id",
                 '{{childId}}'      => $type->getChildKey(),
             ]);
         }
-        // return $this->belongsToMany({{childModel}}::class, '{{table}}', '{{parentId}}', '{{childId}}');
-
         return $foreignMethods;
     }
 }

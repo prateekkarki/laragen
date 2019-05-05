@@ -1,0 +1,3 @@
+        '{{parent}}' => function () {
+            return {{parentModel}}::inRandomOrder()->first()->id;
+        }
