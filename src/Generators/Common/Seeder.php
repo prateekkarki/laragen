@@ -48,11 +48,8 @@ class Seeder extends BaseGenerator implements GeneratorInterface
 
         $classes = [$namespace.$this->module->getModelName()];
         foreach($this->module->getFilteredColumns(['hasSingleRelation']) as $type){
-            $module = $type->getRelatedModel();
-            $namespace = ($module == 'User' && class_exists('App\\User')) ? "App\\" : "App\\Models\\";
-            $class = $namespace;
-            $class .= $type->getRelatedModel();
-
+            $model = $type->getRelatedModel();
+            $class = ($model == 'User') ? config('laragen.options.user_model') : "App\\Models\\".$model;
             if(in_array($class, $classes)){
                 continue;
             }
@@ -142,7 +139,7 @@ class Seeder extends BaseGenerator implements GeneratorInterface
         $this->insertIntoFile(
             $laragenSeederFile,
             "\n        // End factories",
-            "\n".$this->getTabs(2)."factory(".$this->module->getModelName()."::class, 25)->create();",
+            "\n".$this->getTabs(2)."factory(".$this->module->getModelName()."::class, ".config('laragen.options.seed_rows').")->create();",
             false
         );
 

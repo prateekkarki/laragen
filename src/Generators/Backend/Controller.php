@@ -77,11 +77,8 @@ class Controller extends BaseGenerator implements GeneratorInterface
 
         $classes = [$namespace.$this->module->getModelName()];
         foreach($this->module->getFilteredColumns(['hasSingleRelation', 'hasPivot', 'hasModel']) as $type){
-            $module = $type->getRelatedModel();
-            $namespace = ($module == 'User' && class_exists('App\\User')) ? "App\\" : "App\\Models\\";
-            $class = $namespace;
-            $class .= $type->getRelatedModel();
-
+            $model = $type->getRelatedModel();
+            $class = ($model == 'User') ? config('laragen.options.user_model') : "App\\Models\\".$model;
             if(in_array($class, $classes)){
                 continue;
             }
