@@ -81,8 +81,3 @@
 </div>
 
 @endsection
-
-@push('page_scripts')
-    <!-- JS Libraies -->
-    <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
-@endpush
