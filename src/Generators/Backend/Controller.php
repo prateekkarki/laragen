@@ -16,7 +16,8 @@ class Controller extends BaseGenerator implements GeneratorInterface
             '{{relatedUpdates}}'     => $this->getRelatedUpdates(),
             '{{foreignData}}'        => "",
             '{{usedModels}}'         => $this->getUsedModels(),
-            '{{fileExtentions}}'     => ""
+            '{{fileExtentions}}'     => "",
+            '{{perPage}}'            => config("laragen.options.listing_per_page")
         ]);
         
         $fullFilePath = $this->getPath("app/Http/Controllers/Backend/").$this->module->getModelName()."Controller".".php";
