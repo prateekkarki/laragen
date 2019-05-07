@@ -40,8 +40,6 @@ class View extends BaseGenerator implements GeneratorInterface
             ]);
         }
 
-        
-
         $this->insertIntoFile(
             $mainMenuFile,
             '{{-- Main Menu --}}',
@@ -60,8 +58,8 @@ class View extends BaseGenerator implements GeneratorInterface
 	public function getHeadings() {
         $columns = $this->module->getBackendColumnTitles();
         $headings = "";
-        foreach ($columns as $column) {
-            $headings .= "<th>".$column."</th>";
+        foreach ($columns as $key => $column) {
+            $headings .= "<th> <a href=\"{{ route('backend.".$this->module->getModuleName().".index') }}?sort=".$key."\">".$column."</a> </th>";
         }
 		return $headings;
 	}

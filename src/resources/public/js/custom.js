@@ -107,6 +107,18 @@ $(document).ready(function () {
     });
 });
 
+// Select
+$(document).ready(function () {
+    $(".custom-control-input.parent-checkbox").change(function() {
+        if(this.checked) {
+            $('.custom-control-input.child-checkbox').prop("checked", true);;
+        }else{
+            $('.custom-control-input.child-checkbox').prop("checked", false);;
+        }
+    });
+    
+});
+
 
 var delImage = function (url, moduleName, modelId, field) {
     var csrf = $('meta[name="csrf-token"]').attr('content');
