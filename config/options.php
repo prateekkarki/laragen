@@ -17,8 +17,6 @@ return [
 			'View'
 		]
 	],
-	'skip_generators' => [],
-	'override' => true,
 	'seed_rows' => 25,
 	'user_model' => 'App\User'
 ];
