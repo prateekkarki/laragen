@@ -91,6 +91,21 @@ abstract class LaragenType
         $options .= $this->isRequired() ? 'required="required" ' : '';
         return $options;
     }
+    
+    public function getFilteredColumns($options = [], $columnsOnly = false)
+    {
+        $filteredTypes = [];
+        $options = is_array($options) ? $options : [$options];
+        foreach($this->getPivotColumns() as $type){
+            foreach ($options as $option) {
+                if($type->$option()){
+                    $filteredTypes[] = $columnsOnly ? $type->getColumn() : $type;
+                    break;
+                }
+            }
+        }
+        return $filteredTypes;
+    }
 
     public function getRelatedModel()
     {

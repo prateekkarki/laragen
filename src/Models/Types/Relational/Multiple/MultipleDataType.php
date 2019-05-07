@@ -10,17 +10,11 @@ class MultipleDataType extends MultipleType
 
     public function getPivotSchema()
     {
-        $modelName = $this->getParentModelLowercase();
-        $moduleName = $this->getParentModule();
         $schema = PHP_EOL.$this->getTabs(3);
-        $schema .= '$table->bigInteger("'.$modelName.'_id")->unsigned()->nullable();'.PHP_EOL.$this->getTabs(3);
-        $schema .= "\$table->foreign('".$modelName."_id')->references('id')->on('".$moduleName."')->onDelete('set null');".PHP_EOL.$this->getTabs(3);
-
-        foreach ($this->getMultipleColumns() as $column => $optionString) {
-            $option = new TypeResolver($moduleName, $column, $optionString);
-            $schema .= $option->laragenType->getSchema();
-            $schema .= ''.PHP_EOL.$this->getTabs(3);
+        foreach ($this->getPivotColumns() as $type) {
+            $schema .= $type->getSchema().PHP_EOL.$this->getTabs(3);
         }
+        $schema .= '$table->timestamps();'.PHP_EOL.$this->getTabs(3);
         return $schema;
     }
 
@@ -44,9 +38,14 @@ class MultipleDataType extends MultipleType
         return $this->getParentModelLowercase(). "_" . strtolower(Str::plural($this->columnName));
     }
 
-    public function getMultipleColumns()
+    public function getPivotColumns()
     {
-        return $this->optionString;
+        $columns = [];
+        foreach (array_merge([$this->getParentModelLowercase().'_id' => 'parent:'.$this->getParentModule()], $this->optionString )  as $column => $optionString) {
+            $data = new TypeResolver($this->getPivotTable(), $column, $optionString);
+            $columns[$column] = $data->getLaragenType();
+        }
+        return $columns;
     }
 
     public function getTypeColumns()

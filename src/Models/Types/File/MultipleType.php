@@ -1,5 +1,6 @@
 <?php
 namespace Prateekkarki\Laragen\Models\Types\File;
+use Prateekkarki\Laragen\Models\TypeResolver;
 use Prateekkarki\Laragen\Models\Types\FileType;
 use Illuminate\Support\Str;
 
@@ -40,6 +41,22 @@ class MultipleType extends FileType
         return $this->getParentModel() . $this->getChildModel();
     }
     
+    public function getPivotColumns()
+    {
+        $columnModels = [];
+        $columns = [
+            $this->getParentModelLowercase().'_id' => 'parent:'.$this->getParentModule(), 
+            'filename' => 'string', 
+            'size' => 'integer'
+        ];
+        
+        foreach ($columns as $column => $optionString) {
+            $data = new TypeResolver($this->getPivotTable(), $column, $optionString);
+            $columnModels[$column] = $data->getLaragenType();
+        }
+        return $columnModels;
+    }
+
     public function getTypeColumns()
     {
         return [$this->getParentModelLowercase().'_id', 'filename', 'size'];

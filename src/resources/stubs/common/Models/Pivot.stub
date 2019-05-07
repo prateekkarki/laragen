@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 class {{pivotName}} extends Pivot
 {
     protected $guarded = ['id'];
+    public $timestamps = false;
 
     /**
      * The attributes that are mass assignable.

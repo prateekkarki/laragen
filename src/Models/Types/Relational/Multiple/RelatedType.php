@@ -1,5 +1,6 @@
 <?php
 namespace Prateekkarki\Laragen\Models\Types\Relational\Multiple;
+use Prateekkarki\Laragen\Models\TypeResolver;
 use Illuminate\Support\Str;
 
 use Prateekkarki\Laragen\Models\Types\Relational\MultipleType;
@@ -13,16 +14,30 @@ class RelatedType extends MultipleType
 
     public function getPivotSchema()
     {
-        $modelName = $this->getParentModelLowercase();
         $moduleName = $this->getParentModule();
         $schema = PHP_EOL.$this->getTabs(3);
-        $schema .= '$table->bigInteger("'.$modelName.'_id")->unsigned()->nullable();'.PHP_EOL.$this->getTabs(3);
-        $schema .= '$table->foreign("'.$modelName.'_id")->references("id")->on("'.$moduleName.'")->onDelete("set null");'.PHP_EOL.$this->getTabs(3);
+        $schema .= '$table->bigInteger("'.$this->getParentKey().'")->unsigned()->nullable();'.PHP_EOL.$this->getTabs(3);
+        $schema .= '$table->foreign("'.$this->getParentKey().'")->references("id")->on("'.$moduleName.'")->onDelete("set null");'.PHP_EOL.$this->getTabs(3);
 
         $schema .= '$table->bigInteger("'. $this->getChildKey() .'")->unsigned()->nullable();'.PHP_EOL.$this->getTabs(3);
         $schema .= '$table->foreign("'.$this->getChildKey().'")->references("id")->on("'.$this->typeOption.'")->onDelete("set null");'.PHP_EOL;
 
         return $schema;
+    }
+
+    public function getParentKey()
+    {
+        return $this->getParentModelLowercase()."_id";
+    }
+    
+    public function getRelatedModel()
+    {
+        return $this->getOptionModel();
+    }
+
+    public function getOptionModel()
+    {
+        return ucfirst(Str::camel(Str::singular($this->typeOption)));
     }
 
     public function getChildKey()
@@ -44,7 +59,9 @@ class RelatedType extends MultipleType
 
     public function getMigrationPivot()
     {
-        return $this->getParentModel() . $this->getChildModel();
+        $modelArray = [$this->getParentModel(), $this->getChildModel()];
+        sort($modelArray);
+        return implode("", $modelArray);
     }
 
     public function getPivot()
@@ -52,6 +69,21 @@ class RelatedType extends MultipleType
         $modelArray = [$this->getParentModel(), $this->getChildModel()];
         sort($modelArray);
         return implode("", $modelArray);
+    }
+
+    public function getPivotColumns()
+    {
+        $columnModels = [];
+        $columns = [
+            $this->getParentModelLowercase().'_id' => 'parent:'.$this->getParentModule(), 
+            $this->getChildKey() => 'parent:'.$this->typeOption, 
+        ];
+        
+        foreach ($columns as $column => $optionString) {
+            $data = new TypeResolver($this->getPivotTable(), $column, $optionString);
+            $columnModels[$column] = $data->getLaragenType();
+        }
+        return $columnModels;
     }
 
     public function getTypeColumns()

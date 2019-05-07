@@ -43,9 +43,9 @@ class Generate extends Command
         $generatedFiles = [];
 
         $itemsToGenerate = $this->configToGenerators($options['items_to_generate']);
-        // $bar = $this->output->createProgressBar(count($modules) * (count($itemsToGenerate) + count($this->filesToPublish)));
-        // $bar->setOverwrite(true);
-        // $bar->start();
+        $bar = $this->output->createProgressBar(count($modules) * (count($itemsToGenerate) + count($this->filesToPublish)));
+        $bar->setOverwrite(true);
+        $bar->start();
         $fs = new FileSystem();
         foreach ($this->filesToPublish as $src ) {
             $fs->clone($src, '\\');
@@ -63,10 +63,10 @@ class Generate extends Command
                 else
                     $generatedFiles = array_merge($generatedFiles, $returnedFiles);
                 
-                // $bar->advance();
+                $bar->advance();
             }
         }
-        // $bar->finish();
+        $bar->finish();
         
         $this->line("\n");
 

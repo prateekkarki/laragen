@@ -13,4 +13,8 @@ class SingleType extends RelationalType
         'modelMethod' => 'common/Models/fragments/hasOne',
         'foreignMethod' => 'common/Models/fragments/belongsTo'
     ];
+
+    public function hasSelfParent(){
+        return ($this->typeOption == $this->getParentModule() || $this->typeOption == "self");
+    }
 }

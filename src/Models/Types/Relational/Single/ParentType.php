@@ -9,7 +9,7 @@ class ParentType extends SingleType
     public function getSchema()
     {
         $schema = "";
-        $parentTable = ($this->typeOption == $this->getParentModule() || $this->typeOption == "self") ? $this->getParentModule() : $this->typeOption;
+        $parentTable = $this->hasSelfParent() ? $this->getParentModule() : $this->typeOption;
         $schema .= "\$table->bigInteger('".$this->columnName."')->unsigned()->nullable();".PHP_EOL.$this->getTabs(3);
         $schema .= "\$table->foreign('".$this->columnName."')->references('id')->on('$parentTable')->onDelete('set null');".PHP_EOL;
         return $schema;
@@ -19,7 +19,7 @@ class ParentType extends SingleType
     {
         return ($this->typeOption == $this->getParentModule() || $this->typeOption == "self") ? $this->getParentModel() : ucfirst(Str::singular(Str::camel($this->typeOption)));
     }
-    
+
     public function getRelatedModel()
     {
         return $this->getChildModel();
