@@ -85,7 +85,7 @@ class View extends BaseGenerator implements GeneratorInterface
     {
         $formTemplate = '';
 
-        if(in_array($page, ['create', 'update'])){
+        if(in_array($page, ['create', 'edit'])){
             $viewTemplate = '';
             foreach ($this->module->getColumns() as $type) {
                 $viewTemplate .= $this->buildTemplate('backend/views/formelements/'.$page.'/'.$type->getFormType(), [
