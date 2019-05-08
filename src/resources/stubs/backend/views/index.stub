@@ -25,6 +25,20 @@
                                     </div>
                                 </th>
                                 {{headings}}
+                                <th> 
+                                    <a href="{{ route('backend.{{moduleName}}.index') }}?sort=updated_at&sort_dir={{ request()->input('sort_dir')=='asc' ? 'desc' : 'asc' }}">Last Updated 
+                                        @if(request()->input('sort')=='updated_at')
+                                            {!! request()->input('sort_dir')=='asc' ? '<i class="fas fa-arrow-down"></i>' : '<i class="fas fa-arrow-up"></i>' !!}
+                                        @endif
+                                    </a>
+                                </th>
+                                <th> 
+                                    <a href="{{ route('backend.{{moduleName}}.index') }}?sort=status&sort_dir={{ request()->input('sort_dir')=='asc' ? 'desc' : 'asc' }}">Status 
+                                        @if(request()->input('sort')=='status')
+                                            {!! request()->input('sort_dir')=='asc' ? '<i class="fas fa-arrow-down"></i>' : '<i class="fas fa-arrow-up"></i>' !!}
+                                        @endif
+                                    </a>
+                                </th>
                                 <th>
                                     Actions
                                 </th>
