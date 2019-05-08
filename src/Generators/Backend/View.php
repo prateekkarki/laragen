@@ -100,8 +100,8 @@ class View extends BaseGenerator implements GeneratorInterface
             }
     
             $formTemplate = $this->buildTemplate('backend/views/formelements/'.$page.'/_form',[
-                '{{modulename}}'            => $this->module-> getModuleName(),
-                '{{modelNameLowercase}}'    => $this->module-> getModelNameLowercase(),
+                '{{modulename}}'            => $this->module->getModuleName(),
+                '{{modelNameLowercase}}'    => $this->module->getModelNameLowercase(),
                 '{{createElements}}'        => $viewTemplate,
             ]);
         }
