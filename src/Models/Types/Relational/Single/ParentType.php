@@ -5,7 +5,7 @@ use Prateekkarki\Laragen\Models\Types\Relational\SingleType;
 use Illuminate\Support\Str;
 
 class ParentType extends SingleType
-{    
+{
     public function getSchema()
     {
         $schema = "";

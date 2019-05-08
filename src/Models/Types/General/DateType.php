@@ -4,4 +4,6 @@ use Prateekkarki\Laragen\Models\Types\GeneralType;
 
 class DateType extends GeneralType
 {
+	protected $dataType = 'date';
+	protected $formType = 'date';
 }

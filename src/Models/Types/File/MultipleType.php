@@ -8,6 +8,7 @@ class MultipleType extends FileType
 {
     protected $hasModel = true;
     protected $relationalType = true;
+    protected $formType = 'multipleFiles';
 
     public function getPivotSchema()
     {

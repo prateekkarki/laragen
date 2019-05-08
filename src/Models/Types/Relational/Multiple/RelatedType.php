@@ -8,6 +8,7 @@ use Prateekkarki\Laragen\Models\Types\Relational\MultipleType;
 class RelatedType extends MultipleType
 {
     protected $hasPivot = true;
+	protected $formType = 'related';
     protected $stubs = [
         'foreignMethod' => 'common/Models/fragments/belongsToMany'
     ];

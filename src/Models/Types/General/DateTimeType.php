@@ -4,5 +4,6 @@ use Prateekkarki\Laragen\Models\Types\GeneralType;
 
 class DateTimeType extends GeneralType
 {
-
+	protected $dataType = 'datetime';
+	protected $formType = 'datetime';
 }

@@ -8,6 +8,7 @@ class SingleType extends RelationalType
     protected $hasSingleRelation = true;
     protected $size = false;
     protected $relationalType = false;
+	protected $formType = 'parent';
     
     protected $stubs = [
         'modelMethod' => 'common/Models/fragments/hasOne',

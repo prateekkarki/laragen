@@ -3,7 +3,6 @@ namespace Prateekkarki\Laragen\Generators\Backend;
 
 use Prateekkarki\Laragen\Generators\BaseGenerator;
 use Prateekkarki\Laragen\Generators\GeneratorInterface;
-use Prateekkarki\Laragen\Models\TypeResolver;
 use Prateekkarki\Laragen\Models\Module;
 use Illuminate\Support\Str;
 
@@ -68,10 +67,10 @@ class View extends BaseGenerator implements GeneratorInterface
     {
         $viewTemplate = '';
 
-        foreach ($this->module->getFilteredColumns('general') as $type) {
-            $viewTemplate .= $this->buildTemplate('backend/views/formelements/'.$type->getDataType(), [
+        foreach ($this->module->getColumns() as $type) {
+            $viewTemplate .= $this->buildTemplate('backend/views/formelements/'.$type->getFormType(), [
                 '{{key}}'                   => $type->getColumn(),
-                '{{display}}'               => $type->getDisplay(),
+                '{{label}}'                 => Str::title(str_replace("_", " ", $type->getColumn())),
                 '{{options}}'               => $type->getFormOptions(),
                 '{{parentModule}}'          => $type->getParentModule(),
                 '{{parentModuleSinglular}}' => $type->getParentModelLowercase(),

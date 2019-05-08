@@ -7,7 +7,8 @@ use Illuminate\Support\Str;
 class MultipleDataType extends MultipleType
 {
     protected $hasModel = true;
-
+    protected $formType = 'multiple';
+    
     public function getPivotSchema()
     {
         $schema = PHP_EOL.$this->getTabs(3);

@@ -1,5 +1,5 @@
 <div class="form-group row">
-    <label class="col-md-2 form-control-label" for="drop{{key}}">{{display}}</label>
+    <label class="col-md-2 form-control-label" for="drop{{key}}">{{label}}</label>
     <div class="col-md-10" id="{{key}}Container">
         <div class="dropzone dropzone-file-area" id="drop{{key}}">
             <div class="dz-default dz-message">

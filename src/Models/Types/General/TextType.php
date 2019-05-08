@@ -5,7 +5,8 @@ use Prateekkarki\Laragen\Models\Types\GeneralType;
 class TextType extends GeneralType
 {
 	protected $dataType = 'text';
-
+    protected $formType = 'text';
+    
     public function getSchema()
     {
         $schema = '$table->'.$this->getDataType()."('{$this->getColumn()}')";

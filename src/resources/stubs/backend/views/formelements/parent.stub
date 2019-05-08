@@ -1,5 +1,5 @@
 <div class="form-group row">
-  	<label class="col-md-2 col-form-label" for="{{key}}">{{display}}</label>
+  	<label class="col-md-2 col-form-label" for="{{key}}">{{label}}</label>
   	<div class="col-md-10">
 		<select class="form-control select2" id="{{key}}" name="{{parentModuleSinglular}}_id">
 			<option value="0">Please select</option>

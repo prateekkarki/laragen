@@ -13,6 +13,7 @@ abstract class LaragenType
     protected $uniqueFlag = false;
     protected $requiredFlag = false;
 	protected $dataType = 'string';
+	protected $formType = 'string';
 	protected $stubs = [];
 	protected $moduleName;
 	protected $columnName;

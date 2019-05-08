@@ -4,7 +4,8 @@ use Prateekkarki\Laragen\Models\Types\GeneralType;
 
 class IntegerType extends GeneralType
 {
-	protected $dataType = 'integer';
+    protected $dataType = 'integer';
+	protected $formType = 'integer';
 	protected $size = false;
 
     public function getSchema()
