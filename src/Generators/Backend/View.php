@@ -56,12 +56,12 @@ class View extends BaseGenerator implements GeneratorInterface
 
     public function getHeadings()
     {
-        $columns = $this->module->getBackendColumnTitles();
+        $columns = $this->module->getDisplayColumns();
         $headings = "";
-        foreach ($columns as $key => $column) {
+        foreach ($columns as $column) {
             $headings .= "<th> 
-                    <a href=\"{{ route('backend." . $this->module->getModuleName() . ".index') }}?sort=" . $key . "&sort_dir={{ request()->input('sort_dir')=='asc' ? 'desc' : 'asc' }}\">" . $column . " 
-                        @if(request()->input('sort')=='" . $key . "')
+                    <a href=\"{{ route('backend." . $this->module->getModuleName() . ".index') }}?sort=" . $column->getColumn() . "&sort_dir={{ request()->input('sort_dir')=='asc' ? 'desc' : 'asc' }}\">" . $column->getDisplay() . " 
+                        @if(request()->input('sort')=='" . $column->getColumn() . "')
                             {!! request()->input('sort_dir')=='asc' ? '<i class=\"fas fa-arrow-down\"></i>' : '<i class=\"fas fa-arrow-up\"></i>' !!}
                         @endif
                     </a>
@@ -91,7 +91,6 @@ class View extends BaseGenerator implements GeneratorInterface
                 '{{options}}'               => $type->getFormOptions(),
                 '{{parentModule}}'          => $type->getParentModule(),
                 '{{parentModuleSinglular}}' => $type->getParentModelLowercase(),
-                '{{parentDisplay}}'         => $this->getParentDisplay($type->getParentModule()),
                 '{{modelNameLowercase}}'    => $this->module->getModelNameLowercase(),
                 '{{modulename}}'            => $this->module->getModuleName(),
             ]);
@@ -109,21 +108,5 @@ class View extends BaseGenerator implements GeneratorInterface
         $generatedFiles[] = $formFilePath;
         return $generatedFiles;
 
-    }
-
-    public function getParentDisplay($parentModule)
-    {
-        $modules = config('laragen.modules');
-        $displayColumn = "";
-        if (isset($modules[$parentModule])) {
-            $module = $modules[$parentModule];
-            $module = new Module($parentModule, $module);
-            $displayColumn = $module->getDisplayColumn();
-        }
-
-        if ($parentModule == 'users') {
-            $displayColumn = 'name';
-        }
-        return $displayColumn;
     }
 }

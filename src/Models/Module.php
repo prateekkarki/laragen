@@ -27,12 +27,25 @@ class Module
         $moduleData['status'] = 'boolean';
 
         $this->columnsData = [];
+        $this->displayColumns = [];
         foreach ($moduleData as $column => $typeOptions) {
             $data = new TypeResolver($moduleName, $column, $typeOptions);
-            $this->columnsData[$column] = $data->getLaragenType();
+            $type = $data->getLaragenType();
+            $this->columnsData[$column] = $type;
+            if($type->isDisplay())
+                $this->displayColumns[] = $type;
+        }
+
+        if(sizeof($this->displayColumns)==0){
+            $this->displayColumns[] = array_values($this->columnsData)[0];
         }
 
         $this->name = $moduleName;
+    }
+
+    public function getDisplayColumns()
+    {
+        return $this->displayColumns;
     }
 
     public function getPivotalColumns()
@@ -179,28 +192,6 @@ class Module
     public function getModuleDisplayName()
     {
         return Str::title(str_replace('_', '', $this->name));
-    }
-
-    public function getDisplayColumn()
-    {
-        foreach ($this->data as $column => $optionString) {
-            $optionArray = explode('|', $optionString);
-            if (in_array($optionArray[0], ['string', 'int']) && in_array($column, ['title', 'firstname', 'lastname', 'name'])) {
-                return $column;
-            }
-        }
-    }
-
-
-    public function getDisplayColumns()
-    {
-        $columns = [];
-        foreach ($this->getFilteredColumns('general') as $type) {
-            if (in_array($type->getDataType(), ['string', 'integer', 'boolean']) && in_array($type->getColumn(), ['title', 'firstname', 'lastname', 'name'])) {
-                $columns[] = $type;
-            }
-        }
-        return $columns;
     }
 
     public function getModelName()

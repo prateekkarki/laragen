@@ -12,6 +12,7 @@ abstract class LaragenType
 	protected $size = 192;
     protected $uniqueFlag = false;
     protected $requiredFlag = false;
+    protected $isDisplay = false;
 	protected $dataType = 'string';
 	protected $formType = 'string';
 	protected $stubs = [];
@@ -38,6 +39,10 @@ abstract class LaragenType
             }
             if ($option == TypeResolver::COLUMN_REQUIRED) {
                 $this->setRequired();
+                continue;
+            }
+            if ($option == "*") {
+                $this->setIsDisplay();
                 continue;
             }
             if (Str::contains($option, ':')) {
@@ -181,6 +186,10 @@ abstract class LaragenType
 
     protected function setRequired($set = true) {
         $this->requiredFlag = ($set === true) ? true : false;
+    }
+
+    protected function setIsDisplay($set = true) {
+        $this->isDisplay = ($set === true) ? true : false;
     }
 
     protected function setSize($size = null) {
