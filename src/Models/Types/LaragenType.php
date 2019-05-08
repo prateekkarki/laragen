@@ -161,10 +161,15 @@ abstract class LaragenType
         return $this->size;
     }
 
+    public function getDisplay()
+    {
+        return Str::title(str_replace("_", " ", $this->columnName));
+    }
+
     public function getColumn()
     {
         return $this->columnName;
-	}
+    }
     
     public function getDataType() {
         return $this->dataType;

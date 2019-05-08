@@ -178,7 +178,7 @@ class Module
 
     public function getModuleDisplayName()
     {
-        return ucfirst(str_replace('_', '', $this->name));
+        return Str::title(str_replace('_', '', $this->name));
     }
 
     public function getDisplayColumn()
@@ -189,6 +189,18 @@ class Module
                 return $column;
             }
         }
+    }
+
+
+    public function getDisplayColumns()
+    {
+        $columns = [];
+        foreach ($this->getFilteredColumns('general') as $type) {
+            if (in_array($type->getDataType(), ['string', 'integer', 'boolean']) && in_array($type->getColumn(), ['title', 'firstname', 'lastname', 'name'])) {
+                $columns[] = $type;
+            }
+        }
+        return $columns;
     }
 
     public function getModelName()

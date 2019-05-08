@@ -20,7 +20,7 @@ class View extends BaseGenerator implements GeneratorInterface
         foreach ($viewsToBeGenerated as $view) {
             $viewTemplate = $this->buildTemplate('backend/views/'.$view, [
                 '{{headings}}' 			 => $this->getHeadings(),
-                '{{moduleDisplayName}}'  => $this->module->getModuleDisplayName(),
+                '{{displayFields}}'      => $this->getDisplayFields(),
                 '{{modelNameLowercase}}' => Str::singular($this->module->getModuleName()),
                 '{{modelName}}'          => $this->module->getModelName(),
                 '{{moduleName}}'         => $this->module->getModuleName()
@@ -52,16 +52,33 @@ class View extends BaseGenerator implements GeneratorInterface
 		);
         $generatedFiles = array_merge($generatedFiles, $this->formGenerateCreate());
         return $generatedFiles;
-	}
+    }
 
-	public function getHeadings() {
+    public function getHeadings()
+    {
         $columns = $this->module->getBackendColumnTitles();
         $headings = "";
         foreach ($columns as $key => $column) {
-            $headings .= "<th> <a href=\"{{ route('backend.".$this->module->getModuleName().".index') }}?sort=".$key."\">".$column."</a> </th>";
+            $headings .= "<th> 
+                    <a href=\"{{ route('backend." . $this->module->getModuleName() . ".index') }}?sort=" . $key . "&sort_dir={{ request()->input('sort_dir')=='asc' ? 'desc' : 'asc' }}\">" . $column . " 
+                        @if(request()->input('sort')=='" . $key . "')
+                            {!! request()->input('sort_dir')=='asc' ? '<i class=\"fas fa-arrow-down\"></i>' : '<i class=\"fas fa-arrow-up\"></i>' !!}
+                        @endif
+                    </a>
+                </th>";
         }
-		return $headings;
-	}
+        return $headings;
+    }
+
+    public function getDisplayFields()
+    {
+        $columns = $this->module->getDisplayColumns();
+        $data = "";
+        foreach ($columns as $column) {
+            $data .= "<td> {{ $". $this->module->getModelNameLowercase()."->".$column->getColumn() . " }}</td>".PHP_EOL;
+        }
+        return $data;
+    }
 
     public function formGenerateCreate()
     {
@@ -70,7 +87,7 @@ class View extends BaseGenerator implements GeneratorInterface
         foreach ($this->module->getColumns() as $type) {
             $viewTemplate .= $this->buildTemplate('backend/views/formelements/'.$type->getFormType(), [
                 '{{key}}'                   => $type->getColumn(),
-                '{{label}}'                 => Str::title(str_replace("_", " ", $type->getColumn())),
+                '{{label}}'                 => $type->getDisplay(),
                 '{{options}}'               => $type->getFormOptions(),
                 '{{parentModule}}'          => $type->getParentModule(),
                 '{{parentModuleSinglular}}' => $type->getParentModelLowercase(),

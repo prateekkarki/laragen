@@ -40,9 +40,9 @@
                                         <label for="checkbox-{{ ${{modelNameLowercase}}->id }}" class="custom-control-label">{{ $key + $index }}</label>
                                     </div>
                                 </td>
-
-                                <td>{{ ${{modelNameLowercase}}->title }}</td>
                                 
+                                {{displayFields}}
+
                                 <td>{{ ${{modelNameLowercase}}->updated_at }}</td>
 
                                 <td>
