@@ -23,7 +23,8 @@ class View extends BaseGenerator implements GeneratorInterface
                 '{{displayFields}}'      => $this->getDisplayFields(),
                 '{{modelNameLowercase}}' => Str::singular($this->module->getModuleName()),
                 '{{modelName}}'          => $this->module->getModelName(),
-                '{{moduleName}}'         => $this->module->getModuleName()
+                '{{moduleName}}'         => $this->module->getModuleName(),
+                '{{form}}'               => $this->formGenerate($view)
             ]);
 
             $fullFilePath = $this->getPath("resources/views/backend/".$this->module->getModuleName())."/{$view}.blade.php";
@@ -50,7 +51,7 @@ class View extends BaseGenerator implements GeneratorInterface
                     </ul>
                 </li>'
 		);
-        $generatedFiles = array_merge($generatedFiles, $this->formGenerateCreate());
+        // $generatedFiles = array_merge($generatedFiles, $this->formGenerateCreate());
         return $generatedFiles;
     }
 
@@ -80,33 +81,36 @@ class View extends BaseGenerator implements GeneratorInterface
         return $data;
     }
 
-    public function formGenerateCreate()
+    public function formGenerate($page="create")
     {
-        $viewTemplate = '';
+        $formTemplate = '';
 
-        foreach ($this->module->getColumns() as $type) {
-            $viewTemplate .= $this->buildTemplate('backend/views/formelements/'.$type->getFormType(), [
-                '{{key}}'                   => $type->getColumn(),
-                '{{label}}'                 => $type->getDisplay(),
-                '{{options}}'               => $type->getFormOptions(),
-                '{{parentModule}}'          => $type->getParentModule(),
-                '{{parentModuleSinglular}}' => $type->getParentModelLowercase(),
-                '{{modelNameLowercase}}'    => $this->module->getModelNameLowercase(),
-                '{{modulename}}'            => $this->module->getModuleName(),
+        if(in_array($page, ['create', 'update'])){
+            $viewTemplate = '';
+            foreach ($this->module->getColumns() as $type) {
+                $viewTemplate .= $this->buildTemplate('backend/views/formelements/'.$page.'/'.$type->getFormType(), [
+                    '{{key}}'                   => $type->getColumn(),
+                    '{{label}}'                 => $type->getDisplay(),
+                    '{{options}}'               => $type->getFormOptions(),
+                    '{{parentModule}}'          => $type->getParentModule(),
+                    '{{parentModuleSinglular}}' => $type->getParentModelLowercase(),
+                    '{{modelNameLowercase}}'    => $this->module->getModelNameLowercase(),
+                    '{{modulename}}'            => $this->module->getModuleName(),
+                ]);
+            }
+    
+            $formTemplate = $this->buildTemplate('backend/views/formelements/'.$page.'/_form',[
+                '{{modulename}}'            => $this->module-> getModuleName(),
+                '{{modelNameLowercase}}'    => $this->module-> getModelNameLowercase(),
+                '{{createElements}}'        => $viewTemplate,
             ]);
         }
 
-        $formTemplate = $this->buildTemplate('backend/views/formelements/_form',[
-            '{{modulename}}'            => $this->module-> getModuleName(),
-            '{{modelNameLowercase}}'    => $this->module-> getModelNameLowercase(),
-            '{{createElements}}'        => $viewTemplate,
-        ]);
+        return $formTemplate;
+        // $formFilePath = $this->getPath("resources/views/backend/".$this->module->getModuleName())."/_form.blade.php";
+        // file_put_contents($formFilePath, $formTemplate);
 
-        $formFilePath = $this->getPath("resources/views/backend/".$this->module->getModuleName())."/_form.blade.php";
-        file_put_contents($formFilePath, $formTemplate);
-
-        $generatedFiles[] = $formFilePath;
-        return $generatedFiles;
-
+        // $generatedFiles[] = $formFilePath;
+        // return $generatedFiles;
     }
 }

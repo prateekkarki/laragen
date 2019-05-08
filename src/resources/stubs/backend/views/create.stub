@@ -46,7 +46,7 @@
 
         <form action="{{ route('backend.{{moduleName}}.store') }}" enctype="multipart/form-data" method="POST" id="{{modelNameLowercase}}-form">
             @csrf
-            @include('backend.{{moduleName}}._form')
+            {{form}}
         </form>
     </div>
 </div>

@@ -1,0 +1,6 @@
+<div class="form-group row">
+    <label class="col-md-2 form-control-label" for="{{key}}">{{label}}</label>
+    <div class="col-md-10">
+        <input class="form-control" type="text" name="{{key}}" id="{{key}}" placeholder="{{label}}" value="{{ !empty(old('{{key}}')) ? old('{{key}}') :  (isset(${{modelNameLowercase}}) ? ${{modelNameLowercase}}->{{key}} : '') }}" {{options}}>
+    </div>
+</div>

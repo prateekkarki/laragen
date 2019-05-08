@@ -1,0 +1,8 @@
+<div class="row mt-4 mb-4">
+	<div class="col">
+		{{createElements}}
+		<button class="btn btn-primary" type="submit">
+			<i class="fa fa-save"></i> {{ (Request::route()->getName()=='backend.{{modulename}}.create') ?  "Save {{modelNameLowercase}}" : "Update {{modelNameLowercase}}"  }}
+		</button>
+	</div>
+</div>

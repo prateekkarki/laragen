@@ -49,7 +49,7 @@
         <form action="{{ route('backend.{{moduleName}}.update', ${{modelNameLowercase}}) }}" enctype="multipart/form-data" method="POST" id="{{modelNameLowercase}}-form">
             @csrf
             @method('PUT')
-            @include('backend.{{moduleName}}._form')
+            {{form}}
         </form>
     </div>
 </div>
