@@ -29,8 +29,9 @@ class {{modelName}}Controller extends Controller
      */
     public function index(Request $request): View
     {
+        $sortDirection= $request->input('sort_dir') ?: 'asc';
         return view('backend.{{moduleName}}.index', [
-            '{{moduleName}}' => {{modelName}}::orderBy($request->input('sort') ?: 'created_at' )->paginate({{perPage}})
+            '{{moduleName}}' => {{modelName}}::orderBy($request->input('sort') ?: 'created_at',  $sortDirection)->paginate({{perPage}})
         ]);
     }
 
