@@ -1,7 +1,7 @@
-<div class="form-group row">
-  	<label class="col-md-2 col-form-label" for="{{key}}[]">{{label}}</label>
-  	<div class="col-md-10">
-		<select multiple class="form-control select2" id="{{key}}" name="{{key}}[]">
+<div class="{{inputRowCLasses}}">
+  	<label class="{{labelClasses}}" for="{{key}}[]">{{label}}</label>
+  	<div class="{{inputContainerClasses}}">
+		<select multiple class="{{inputClasses}} select2" id="{{key}}" name="{{key}}[]">
 		{{-- 
 			@foreach(${{parentModule}} as ${{key}})
 				@if(isset($post) && $post->{{parentModule}})

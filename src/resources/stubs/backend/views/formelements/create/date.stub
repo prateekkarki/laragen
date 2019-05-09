@@ -1,6 +1,6 @@
-<div class="form-group row">
-    <label class="col-md-2 form-control-label" for="{{key}}">{{label}}</label>
-    <div class="col-md-10">
-        <input class="form-control datepicker" type="text" name="{{key}}" id="{{key}}" placeholder="{{label}}" value="{{ isset(${{modelNameLowercase}}) ? ${{modelNameLowercase}}->{{key}} : '' }}" {{options}}>
+<div class="{{inputRowCLasses}}">
+    <label class="{{labelClasses}}" for="{{key}}">{{label}}</label>
+    <div class="{{inputContainerClasses}}">
+        <input class="{{inputClasses}} datepicker" type="text" name="{{key}}" id="{{key}}" placeholder="{{label}}" {{options}}>
     </div>
 </div>

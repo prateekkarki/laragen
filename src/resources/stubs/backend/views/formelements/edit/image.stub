@@ -1,6 +1,6 @@
-<div class="form-group row">
-    <label class="col-md-2 form-control-label" for="drop{{key}}">{{label}}</label>
-    <div class="col-md-5" id="{{key}}Container">
+<div class="{{inputRowCLasses}}">
+    <label class="{{labelClasses}}" for="drop{{key}}">{{label}}</label>
+    <div class="{{inputContainerClasses}}" id="{{key}}Container">
         <div class="dropzone dropzone-file-area" id="drop{{key}}">
             <div class="dz-default dz-message">
                 <h3 class="sbold">Drop image here to upload</h3>
@@ -8,26 +8,12 @@
             </div>
         </div>
         <div class="validation-errors">
-            
         </div>
     </div>
-    @if(isset(${{modelNameLowercase}}) && ${{modelNameLowercase}}->{{key}})
-    <div class="col-md-3">
-        <div class="gallery gallery-lg">
-            <div class="gallery-item" data-image="{{asset('images/{{modelNameLowercase}}/'.${{modelNameLowercase}}->{{key}})}}" data-title="Image" href="{{asset('images/{{modelNameLowercase}}/'.${{modelNameLowercase}}->{{key}})}}" title="Image" style="background-image: url({{asset('images/{{modelNameLowercase}}/'.${{modelNameLowercase}}->{{key}})}});">
-            </div>
-            <div class="image-badge" id="{{key}}-del" 
-                data-confirm="Delete image|Are you sure?" 
-                data-confirm-yes="delImage('{{ route('backend.uploader.delete') }}', '{{modelNameLowercase}}', '{{ ${{modelNameLowercase}}->id }}', '{{key}}');">
-                <div class="image-badge-item bg-danger"><i class="fas fa-trash"></i></div>
-            </div>
-        </div>
-    </div>
-    @endif
 </div>
 
 @push('after-scripts')
 <script type="text/javascript">
-dropzoneupload('{{ route('backend.uploader') }}', '{{key}}', '{!! ${{modelNameLowercase}}->id ?? "''" !!}','{{modelNameLowercase}}', ".png,.jpg,.gif,.bmp,.jpeg", false)
+    dropzoneupload('{{ route('backend.uploader') }}', '{{key}}', '{!! ${{modelNameLowercase}}->id ?? "''" !!}','{{modelNameLowercase}}', ".png,.jpg,.gif,.bmp,.jpeg", false)
 </script>
 @endpush

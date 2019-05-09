@@ -96,6 +96,10 @@ class View extends BaseGenerator implements GeneratorInterface
                     '{{parentModuleSinglular}}' => $type->getParentModelLowercase(),
                     '{{modelNameLowercase}}'    => $this->module->getModelNameLowercase(),
                     '{{modulename}}'            => $this->module->getModuleName(),
+                    '{{inputRowCLasses}}'       => "form-group row mb-4",
+                    '{{labelClasses}}'          => "col-form-label text-md-right col-12 col-md-3 col-lg-3",
+                    '{{inputContainerClasses}}' => "col-sm-12 col-md-7",
+                    '{{inputClasses}}'          => "form-control",
                 ]);
             }
     
