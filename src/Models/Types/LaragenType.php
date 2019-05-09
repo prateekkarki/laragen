@@ -118,6 +118,16 @@ abstract class LaragenType
         return $this->getChildModel();
     }
 
+    public function getRelatedModule()
+    {
+        return Str::snake(Str::plural($this->getRelatedModel()));
+    }
+
+    public function getRelatedModelLowercase()
+    {
+        return strtolower($this->getRelatedModel());
+    }
+
     public function getChildModel()
     {
         return ucfirst(Str::camel(Str::singular($this->typeOption ?: $this->columnName )));

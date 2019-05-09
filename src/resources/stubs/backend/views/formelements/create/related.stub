@@ -2,15 +2,9 @@
   	<label class="{{labelClasses}}" for="{{key}}[]">{{label}}</label>
   	<div class="{{inputContainerClasses}}">
 		<select multiple class="{{inputClasses}} select2" id="{{key}}" name="{{key}}[]">
-		{{-- 
-			@foreach(${{parentModule}} as ${{key}})
-				@if(isset($post) && $post->{{parentModule}})
-					<option value="{{ ${{key}}->id }}" @if($post->{{parentModule}}->contains('id', ${{key}}->id)) {{'selected'}} @endif>{{ ${{key}}->title }}</option>
-				@else
-					<option value="{{ ${{key}}->id }}">{{ ${{key}}->title }}</option>
-				@endif
+			@foreach(${{relatedModule}} as ${{relatedModelLowercase}})
+				<option value="{{ ${{relatedModelLowercase}}->id }}">{{ ${{relatedModelLowercase}}->title }}</option>
 			@endforeach
-		--}}
 		</select>
   	</div>
 </div>
