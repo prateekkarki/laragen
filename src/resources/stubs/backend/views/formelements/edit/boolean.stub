@@ -1,8 +1,8 @@
-<div class="form-group row">
-    <div class="col-md-2 control-label">{{label}}</div>
-    <label class="col-md-1 custom-switch mt-2" for="{{key}}">
-        <input type="checkbox" class="custom-switch-input" id="{{key}}" onclick="if (this.checked) $('#{{key}}-hidden').val(1); else{$('#{{key}}-hidden').val(0); $(this).removeAttr('checked');}" {{ (${{modelNameLowercase}}->{{key}} == true) ? 'checked' : '' }} {{options}}>
-        <input type="hidden" name="{{key}}" id="{{key}}-hidden" value="{{ (${{modelNameLowercase}}->{{key}} == true) ? '1' : '0' }}">
+<div class="form-group row mb-4">
+    <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3" for="{{key}}">{{label}}</label>
+
+    <label class="col-sm-12 col-md-7 custom-switch mt-2" for="{{key}}">
+        <input type="checkbox" name="{{key}}" class="form-control custom-switch-input" id="{{key}}" {{ (${{modelNameLowercase}}->{{key}}) ? 'checked' : '' }} {{options}}>
         <span class="custom-switch-indicator"></span>
     </label>
 </div>

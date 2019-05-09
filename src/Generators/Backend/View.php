@@ -83,34 +83,22 @@ class View extends BaseGenerator implements GeneratorInterface
 
     public function formGenerate($page="create")
     {
-        $formTemplate = '';
+        $viewTemplate = '';
 
         if(in_array($page, ['create', 'edit'])){
-            $viewTemplate = '';
             foreach ($this->module->getColumns() as $type) {
                 $viewTemplate .= $this->buildTemplate('backend/views/formelements/'.$page.'/'.$type->getFormType(), [
                     '{{key}}'                   => $type->getColumn(),
                     '{{label}}'                 => $type->getDisplay(),
                     '{{options}}'               => $type->getFormOptions(),
-                    '{{parentModule}}'          => $type->getParentModule(),
-                    '{{parentModuleSinglular}}' => $type->getParentModelLowercase(),
+                    '{{relatedModule}}'         => $type->getRelatedModule(),
+                    '{{relatedModelLowercase}}' => $type->getRelatedModelLowercase(),
                     '{{modelNameLowercase}}'    => $this->module->getModelNameLowercase(),
                     '{{modulename}}'            => $this->module->getModuleName(),
                 ]);
             }
-    
-            $formTemplate = $this->buildTemplate('backend/views/formelements/'.$page.'/_form',[
-                '{{modulename}}'            => $this->module->getModuleName(),
-                '{{modelNameLowercase}}'    => $this->module->getModelNameLowercase(),
-                '{{createElements}}'        => $viewTemplate,
-            ]);
         }
 
-        return $formTemplate;
-        // $formFilePath = $this->getPath("resources/views/backend/".$this->module->getModuleName())."/_form.blade.php";
-        // file_put_contents($formFilePath, $formTemplate);
-
-        // $generatedFiles[] = $formFilePath;
-        // return $generatedFiles;
+        return $viewTemplate;
     }
 }

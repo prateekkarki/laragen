@@ -1,6 +1,6 @@
-<div class="form-group row">
-    <label class="col-md-2 form-control-label" for="{{key}}">{{label}}</label>
-    <div class="col-md-10">
-        <input class="form-control" type="number" name="{{key}}" id="{{key}}" placeholder="{{label}}" value="{{ isset(${{modelNameLowercase}}) ? ${{modelNameLowercase}}->{{key}} : '' }}" {{options}}>
+<div class="form-group row mb-4">
+    <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3" for="{{key}}">{{label}}</label>
+    <div class="col-sm-12 col-md-7">
+        <input class="form-control" type="number" name="{{key}}" id="{{key}}" placeholder="{{label}}" {{options}}>
     </div>
 </div>

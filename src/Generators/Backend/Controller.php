@@ -14,7 +14,7 @@ class Controller extends BaseGenerator implements GeneratorInterface
             '{{modelNameLowercase}}' => $this->module->getModelNameLowercase(),
             '{{fileUploads}}'        => $this->getFileUploads(),
             '{{relatedUpdates}}'     => $this->getRelatedUpdates(),
-            '{{foreignData}}'        => "",
+            '{{foreignData}}'        => $this->getForeignData(),
             '{{usedModels}}'         => $this->getUsedModels(),
             '{{fileExtentions}}'     => "",
             '{{perPage}}'            => config("laragen.options.listing_per_page")
@@ -64,10 +64,15 @@ class Controller extends BaseGenerator implements GeneratorInterface
 
     protected function getForeignData() {
         $foreignData = "";
-        $parents = $this->module->getForeignData();
-        foreach ($parents as $parent) {
-            $foreignData .= "'".$parent['parentModule']."' => ".$parent['parentModel']."::all()";
-            $foreignData .= ($parent == last($parents)) ? '' : ', ';
+        $parents = $this->module->getFilteredColumns(['hasPivot','hasSingleRelation']);
+        $columns = [];
+        foreach ($parents as $type) {
+            $column = $type->getRelatedModule();
+            if(!in_array($column, $columns)){
+                $foreignData .= "'".$column."' => ".$type->getRelatedModel()."::all()";
+                $foreignData .= ($type == last($parents)) ? '' : ', ';
+                $columns[] = $column;
+            }
         }
         return $foreignData;
     }

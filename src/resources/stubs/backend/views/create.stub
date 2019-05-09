@@ -46,7 +46,14 @@
 
         <form action="{{ route('backend.{{moduleName}}.store') }}" enctype="multipart/form-data" method="POST" id="{{modelNameLowercase}}-form">
             @csrf
-            {{form}}
+            <div class="row mt-4 mb-4">
+                <div class="col">
+                    {{form}}
+                    <button class="btn btn-primary" type="submit">
+                        <i class="fa fa-save"></i> Create {{modelNameLowercase}}
+                    </button>
+                </div>
+            </div>
         </form>
     </div>
 </div>

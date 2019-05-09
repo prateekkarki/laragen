@@ -6,4 +6,5 @@ class DateTimeType extends GeneralType
 {
 	protected $dataType = 'datetime';
 	protected $formType = 'datetime';
+	protected $size = false;
 }
