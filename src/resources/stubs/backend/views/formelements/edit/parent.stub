@@ -1,17 +1,12 @@
 <div class="form-group row mb-4">
   	<label class="col-form-label text-md-right col-12 col-md-3 col-lg-3" for="{{key}}">{{label}}</label>
   	<div class="col-sm-12 col-md-7">
-		<select class="form-control select2" id="{{key}}" name="{{parentModuleSinglular}}_id">
-			<option value="0">Please select</option>
-			{{-- 
-			@foreach(${{parentModule}} as ${{key}})
-				@if(isset(${{modelNameLowercase}}) && ${{modelNameLowercase}}->{{key}})
-					<option value="{{ ${{key}}->id }}" @if( ${{modelNameLowercase}}->{{key}}->id == ${{key}}->id ) {{'selected'}} @endif>{{ ${{key}}->{{parentDisplay}} }}</option>
-				@else
-					<option value="{{ ${{key}}->id }}">{{ ${{key}}->{{parentDisplay}} }}</option>
-				@endif
+		<select class="form-control select2" id="{{key}}" name="{{key}}">
+			@foreach(${{relatedModule}} as ${{relatedModelLowercase}})
+				<option value="{{ ${{relatedModelLowercase}}->id }}" {{ 
+					(${{relatedModelLowercase}}->id == ${{modelNameLowercase}}->{{key}}) ? 'selected' : ''
+				}}>{{ ${{relatedModelLowercase}}->{{relatedModelDisplayColumn}} }}</option>
 			@endforeach
-			 --}}
 		</select>
   	</div>
 </div>
