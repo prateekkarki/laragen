@@ -12,7 +12,6 @@ class Request extends BaseGenerator implements GeneratorInterface
     {
         $controllerTemplate = $this->buildTemplate('backend/Request', [
             '{{modelName}}'     => $this->module->getModelName(),
-            '{{authorization}}' => "true",
             '{{rules}}' 		=> $this->getRules()
         ]);
         
@@ -24,13 +23,12 @@ class Request extends BaseGenerator implements GeneratorInterface
     protected function getRules()
     {
         $validation = [];
-        $moduleData =$this->module->getData();
         $modelname = $this->module->getModelNameLowercase();
 
-        foreach($moduleData as $column => $options){
-            $columnOptions = new TypeResolver($this->module->getModuleName(), $column, $options);
-            $type = $columnOptions->laragenType->getDataType();
-            $rules = $columnOptions->laragenType->optionArray();
+        foreach($this->module->getColumns() as $column){
+            $type = $column->getDataType();
+            // $rules = $column->getRules();
+            $rules = [];
 
             $valid_types = [
                 'text' => 'string',
@@ -41,16 +39,13 @@ class Request extends BaseGenerator implements GeneratorInterface
                 $type = $valid_types[$type];
             }
 
-            if(in_array($type, TypeResolver::$fileTypes) || ($type == TypeResolver::TYPE_RELATED)) continue;
-
-            $uniqueValidation = '\''.$column.'\' => ($this->route()->'.$modelname.') ? ';
-            $uniqueValidation .= '\''.TypeResolver::COLUMN_UNIQUE.':'.$this->module->getModulename().','.$column.','.'\''.'.$this->route()->'.$modelname.'->id';
-            $uniqueValidation .= ':\''.TypeResolver::COLUMN_UNIQUE.':'.$this->module->getModulename().'\'';
-
-            if ($columnOptions->laragenType->isUnique()) {
+            if ($column->isUnique()) {
+                $uniqueValidation = '\''.$column->getColumn().'\' => ($this->route()->'.$modelname.') ? ';
+                $uniqueValidation .= '\''.TypeResolver::COLUMN_UNIQUE.':'.$this->module->getModulename().','.$column->getColumn().','.'\''.'.$this->route()->'.$modelname.'->id';
+                $uniqueValidation .= ':\''.TypeResolver::COLUMN_UNIQUE.':'.$this->module->getModulename().'\'';
                 $validation[]= $uniqueValidation;
             } else {
-                $validationLine = ($type == TypeResolver::TYPE_PARENT) ? "'" . $column . "' => 'integer" : "'" . $column . "' => '" . $type;
+                $validationLine = ($type == TypeResolver::TYPE_PARENT) ? "'" . $column->getColumn() . "' => 'integer" : "'" . $column->getColumn() . "' => '" . $type;
                 $validationLine .= empty($rules) ? "'" : "|" . implode('|', $rules) . "'";
                 $validation[]= $validationLine;
             }
