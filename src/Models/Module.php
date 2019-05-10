@@ -43,6 +43,48 @@ class Module
         $this->name = $moduleName;
     }
 
+    public function getTabTitles()
+    {
+        $tabs = ['General'];
+        if (sizeof($this->getFilteredColumns('isParent'))) {
+            $tabs[] = 'Relations';
+        }
+        if (sizeof($this->getFilteredColumns('hasFile'))) {
+            $tabs[] = 'Attachments';
+        }
+        if (sizeof($this->getFilteredColumns('hasImage'))) {
+            $tabs[] = 'Images';
+        }
+        if (sizeof($this->getFilteredColumns('hasModel'))) {
+            foreach ($this->getFilteredColumns('hasModel') as $type) {
+                $tabs[] = Str::plural($type->getChildModel());
+            }
+        }
+        $tabs[] = 'Seo';
+        return $tabs;
+    }
+
+    public function getTabs()
+    {
+        $tabs = ['general'];
+        if (sizeof($this->getFilteredColumns('isParent'))) {
+            $tabs[] = 'isParent';
+        }
+        if (sizeof($this->getFilteredColumns('hasFile'))) {
+            $tabs[] = 'hasFile';
+        }
+        if (sizeof($this->getFilteredColumns('hasImage'))) {
+            $tabs[] = 'hasImage';
+        }
+        if (sizeof($this->getFilteredColumns('hasModel'))) {
+            foreach ($this->getFilteredColumns('hasModel') as $type) {
+                $tabs[] = Str::plural($type->getChildModel());
+            }
+        }
+        $tabs[] = 'Seo';
+        return $tabs;
+    }
+
     public function getDisplayColumns()
     {
         return $this->displayColumns;

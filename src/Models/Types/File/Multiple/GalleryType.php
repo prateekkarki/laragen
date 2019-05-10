@@ -4,4 +4,6 @@ use Prateekkarki\Laragen\Models\Types\File\MultipleType;
 
 class GalleryType extends MultipleType
 {
+    protected $hasImage = true;
+
 }

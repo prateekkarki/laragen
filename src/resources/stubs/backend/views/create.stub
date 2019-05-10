@@ -30,25 +30,30 @@
         <h4>Create {{moduleName}}</h4>
     </div>
     <div class="card-body">
-        <div class="row">
-            <div class="col-sm-12">
-                @if ($errors->any())
+	    @if ($errors->any())
+            <div class="row">
+                <div class="col-sm-12">
                     <div class="alert alert-danger">
                         <ul>
                             @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
+                            <li>{{ $error }}</li>
                             @endforeach
                         </ul>
                     </div>
-                @endif
+                </div>
             </div>
-        </div>
+		@endif        
+
 
         <form action="{{ route('backend.{{moduleName}}.store') }}" enctype="multipart/form-data" method="POST" id="{{modelNameLowercase}}-form">
             @csrf
             <div class="row mt-4 mb-4">
                 <div class="col">
-                    {{form}}
+                    
+                    <ul class="nav nav-tabs nav-top-border no-hover-bg">
+                        {{tabLinks}}
+                    </ul>
+                    {{tabContents}}
                     <button class="btn btn-primary" type="submit">
                         <i class="fa fa-save"></i> Create {{modelNameLowercase}}
                     </button>

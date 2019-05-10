@@ -24,7 +24,9 @@ class View extends BaseGenerator implements GeneratorInterface
                 '{{modelNameLowercase}}' => Str::singular($this->module->getModuleName()),
                 '{{modelName}}'          => $this->module->getModelName(),
                 '{{moduleName}}'         => $this->module->getModuleName(),
-                '{{form}}'               => $this->formGenerate($view)
+                '{{tabLinks}}'           => $this->getTabLinks(),
+                '{{tabContents}}'        => $this->tabContents($view),
+                '{{form}}'               => $this->formGenerate($view),
             ]);
 
             $fullFilePath = $this->getPath("resources/views/backend/".$this->module->getModuleName())."/{$view}.blade.php";
@@ -71,28 +73,81 @@ class View extends BaseGenerator implements GeneratorInterface
         return $headings;
     }
 
+    public function getTabLinks()
+    {
+        $tabs = $this->module->getTabTitles();
+        $data = "";
+        foreach ($tabs as $key => $tab) {
+            $activeClass = ($key==0) ? 'active' : '';
+            $data .= '<li class="nav-item">'.PHP_EOL.$this->getTabs(3);
+            $data .= '<a class="nav-link '. $activeClass .'" id="base-tab'.$key.'" data-toggle="tab" aria-controls="tab'.$key.'" href="#tab'.$key.'" aria-expanded="true">'.$tab. '</a>' . PHP_EOL . $this->getTabs(3);
+            $data .= '</li>' . PHP_EOL . $this->getTabs(3);
+        }
+        return $data;
+    }
+
     public function getDisplayFields()
     {
         $columns = $this->module->getDisplayColumns();
         $data = "";
         foreach ($columns as $column) {
-            $data .= "<td> {{ $". $this->module->getModelNameLowercase()."->".$column->getColumn() . " }}</td>".PHP_EOL;
+            $data .= "<td> {{ $" . $this->module->getModelNameLowercase() . "->" . $column->getColumn() . " }}</td>" . PHP_EOL;
         }
         return $data;
     }
 
-    public function formGenerate($page="create")
+    public function tabContents($page = "create")
+    {
+
+        $tabs = $this->module->getTabs();
+        $viewTemplate = "";
+        foreach ($tabs as $key => $tab) {
+            if ($tab =="Seo") {
+                continue;
+            }
+            // $viewTemplate = '';
+            if (in_array($page, ['create', 'edit'])) {
+                foreach ($this->module->getFilteredColumns($tab) as $type) {
+                    $activeClass = ($key == 0) ? 'active' : '';
+                    $viewTemplate .= '<div class="tab-content px-1 pt-1">
+					<div role="tabpanel" class="tab-pane '.$activeClass.'" id="tab'.$key.'" aria-expanded="true" aria-labelledby="base-tab'.$key.'">
+
+						<div class="row mt-4 mb-4">
+							<div class="col">';
+                    $displayColumn = $type->getRelatedModule() == 'users' ? 'name' : 'title';
+                    if (($type->hasPivot() || $type->isParent()) && $type->getRelatedModule() != 'users') {
+                        $module = new Module($type->getRelatedModule(), config('laragen.modules.' . $type->getRelatedModule()));
+                        $displayColumn = $module->getDisplayColumns()[0]->getColumn();
+                    }
+                    $viewTemplate .= $this->buildTemplate('backend/views/formelements/' . $page . '/' . $type->getFormType(), [
+                        '{{key}}'                   => $type->getColumn(),
+                        '{{label}}'                 => $type->getDisplay(),
+                        '{{options}}'               => $type->getFormOptions(),
+                        '{{relatedModule}}'         => $type->getRelatedModule(),
+                        '{{relatedModelLowercase}}' => $type->getRelatedModelLowercase(),
+                        '{{relatedModelDisplayColumn}}' => $displayColumn,
+                        '{{modelNameLowercase}}'    => $this->module->getModelNameLowercase(),
+                        '{{modulename}}'            => $this->module->getModuleName(),
+                    ]);
+                    $viewTemplate .= '</div></div></div></div>';
+                }
+            }
+        }
+        return $viewTemplate;
+    }
+
+    public function formGenerate($page = "create")
     {
         $viewTemplate = '';
 
-        if(in_array($page, ['create', 'edit'])){
+        if (in_array($page, ['create', 'edit'])) {
             foreach ($this->module->getColumns() as $type) {
                 $displayColumn = $type->getRelatedModule() == 'users' ? 'name' : 'title';
-                if(($type->hasPivot() || $type->isParent())&&$type->getRelatedModule() != 'users' ){
-                    $module = new Module($type->getRelatedModule(), config('laragen.modules.'.$type->getRelatedModule()));
+                if (($type->hasPivot() || $type->isParent()) && $type->getRelatedModule() != 'users') {
+                    $module = new Module($type->getRelatedModule(), config('laragen.modules.' . $type->getRelatedModule()));
                     $displayColumn = $module->getDisplayColumns()[0]->getColumn();
                 }
-                $viewTemplate .= $this->buildTemplate('backend/views/formelements/'.$page.'/'.$type->getFormType(), [
+                $viewTemplate .= $this->buildTemplate('backend/views/formelements/' . $page . '/' . $type->getFormType(), [
                     '{{key}}'                   => $type->getColumn(),
                     '{{label}}'                 => $type->getDisplay(),
                     '{{options}}'               => $type->getFormOptions(),
