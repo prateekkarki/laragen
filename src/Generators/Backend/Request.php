@@ -25,7 +25,7 @@ class Request extends BaseGenerator implements GeneratorInterface
         $validation = [];
         $modelname = $this->module->getModelNameLowercase();
 
-        foreach($this->module->getColumns() as $column){
+        foreach($this->module->getColumns(true) as $column){
             $type = $column->getDataType();
             // $rules = $column->getRules();
             $rules = [];

@@ -37,7 +37,7 @@ class Controller extends BaseGenerator implements GeneratorInterface
         } else {
             $type = $relatedTypes[0];
             $relatedUpdates .= 'if ($request->has("'.$type->getColumn().'")) {'.PHP_EOL;
-            $relatedUpdates .= $this->getTabs(3).'$post->'.$type->getColumn().'()->sync($request->input("'.$type->getColumn().'"));'.PHP_EOL;
+            $relatedUpdates .= $this->getTabs(3).'$'.$this->module->getModelNameLowercase().'->'.$type->getColumn().'()->sync($request->input("'.$type->getColumn().'"));'.PHP_EOL;
             $relatedUpdates .= $this->getTabs(2).'}'.PHP_EOL;
         }
         return $relatedUpdates;
