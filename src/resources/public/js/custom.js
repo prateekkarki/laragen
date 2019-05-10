@@ -1,5 +1,20 @@
 "use strict";
 
+function slugify(string) {
+    const a = 'àáäâãåăæçèéëêǵḧìíïîḿńǹñòóöôœṕŕßśșțùúüûǘẃẍÿź·/_,:;'
+    const b = 'aaaaaaaaceeeeghiiiimnnnoooooprssstuuuuuwxyz------'
+    const p = new RegExp(a.split('').join('|'), 'g')
+
+    return string.toString().toLowerCase()
+        .replace(/\s+/g, '-') // Replace spaces with -
+        .replace(p, c => b.charAt(a.indexOf(c))) // Replace special characters
+        .replace(/&/g, '-and-') // Replace & with 'and'
+        .replace(/[^\w\-]+/g, '') // Remove all non-word characters
+        .replace(/\-\-+/g, '-') // Replace multiple - with single -
+        .replace(/^-+/, '') // Trim - from start of text
+        .replace(/-+$/, '') // Trim - from end of text
+}
+
 // ChartJS
 if (window.Chart) {
     Chart.defaults.global.defaultFontFamily = "'Nunito', 'Segoe UI', 'Arial'";
@@ -19,11 +34,11 @@ if (window.Chart) {
 if (window.Dropzone) {
     Dropzone.autoDiscover = false;
 }
-function dropzoneupload(url, field, modelid, modelname, filetypes, multiple = true, data =[]) {
+function dropzoneupload(url, field, modelid, modelname, filetypes, multiple = true, data = false) {
     var uploadedDocumentMap = {};
     var successMethod = multiple ? 'successmultiple' : 'success';
     var sendingMethod = multiple ? 'sendingmultiple' : 'sending';
-    
+
     $('#drop' + field).dropzone({
         url: url,
         uploadMultiple: multiple,
@@ -34,22 +49,31 @@ function dropzoneupload(url, field, modelid, modelname, filetypes, multiple = tr
         addRemoveLinks: true,
         init: function () {
 
-            $.each(data, function (key, value) { //loop through it
+            var thisDropzone = this;
+            // console.log(data);
+            if (data) {
+                $.each($.parseJSON(data), function (key, value) { //loop through it
+                    // console.log($.parseJSON(data), value);
+                    var mockFile = { name: value.name, size: value.size }; // here we get the file name and size as response 
+                    thisDropzone.options.addedfile.call(thisDropzone, mockFile);
+                    thisDropzone.options.thumbnail.call(thisDropzone, mockFile, APP_URL + "/storage/images/" + modelname + '/xs/' + value.name);//uploadsfolder is the folder where you have all those uploaded files
 
-                var mockFile = { name: value.name, size: value.size }; // here we get the file name and size as response 
-                this.options.addedfile.call(this, mockFile);
-                this.options.thumbnail.call(this, mockFile, "uploadsfolder/" + value.name);//uploadsfolder is the folder where you have all those uploaded files
-
-            });
+                });
+            }
 
             this.on(successMethod, function (file, response) {
-                if (response.status == 200 && response.filenames) {
-                    var i = 0;
-                    response.filenames.forEach(function (item) {
-                        uploadedDocumentMap[file[i].name] = item;
-                        $('#' + field + 'Container').append('<input type="hidden" name="' + field + '[]" value="' + item + '">');
-                        i++;
-                    });
+                if (response.status == 200) {
+                    if (multiple) {
+                        var i = 0;
+                        response.filenames.forEach(function (item) {
+                            uploadedDocumentMap[file[i].name] = item;
+                            $('#' + field + 'Container').append('<input type="hidden" name="' + field + '[]" value="' + item + '">');
+                            i++;
+                        });
+                    } else {
+                        uploadedDocumentMap[file.name] = response.filename;
+                        $('#' + field + 'Container').append('<input type="hidden" name="' + field + '" value="' + response.filename + '">');
+                    }
                 }
                 else if (response.status == 415 || response.status == 500) {
                     let error = '';
@@ -62,6 +86,7 @@ function dropzoneupload(url, field, modelid, modelname, filetypes, multiple = tr
             });
             this.on(sendingMethod, function (file, xhr, formData) {
                 var csrf = $('meta[name="csrf-token"]').attr('content');
+                console.log(sendingMethod, csrf);
                 formData.append("_token", csrf);
                 formData.append('moduleName', modelname);
                 formData.append('module', modelid);
@@ -72,6 +97,9 @@ function dropzoneupload(url, field, modelid, modelname, filetypes, multiple = tr
                 var name = ''
                 name = uploadedDocumentMap[file.name]
                 $('#' + field + 'Container').find('input[name="' + field + '[]"][value="' + name + '"]').remove();
+                if (data && !uploadedDocumentMap[file.name]) {
+                    $('#' + field + 'Container').append('<input type="hidden" name="removed_' + field + '[]" value="' + file.name + '">');
+                }
                 delete uploadedDocumentMap[file.name];
             });
             this.on("addedfile", function (event) {
@@ -85,38 +113,61 @@ function dropzoneupload(url, field, modelid, modelname, filetypes, multiple = tr
 
 // Sticky
 $(document).ready(function () {
+    // var div_top = $('.section-header').offset().top;
+    // var sidebarWidth = $(window).width() <= 1024 ? 0 : $(".main-sidebar").width();
+    // var stickyWidth = $(window).width() - sidebarWidth - 70;
+    // // $('.section-header').width(stickyWidth);
+    // $(window).on('resize', function () {
+    //     stickyWidth = $(window).width() - sidebarWidth - 70;
+    //     // $('.section-header').width(stickyWidth);
+    // });
+
+    // $(window).scroll(function () {
+    //     var window_top = $(window).scrollTop() - 100;
+    //     // $('.section-header').width(stickyWidth);
+    //     if (window_top > div_top) {
+    //         if (!$('.section-header').is('.sticky')) {
+    //             $('.section-header').addClass('sticky');
+    //         }
+    //     } else {
+    //         $('.section-header').removeClass('sticky');
+    //     }
+    // });
+
+
+    var sidebar = $(".main-sidebar");
+    var screenwidth = $(window).width();
+    var width = '';
     var div_top = $('.section-header').offset().top;
-    var sidebarWidth = $(window).width() <= 1024 ? 0 : $(".main-sidebar").width();
-    var stickyWidth = $(window).width() - sidebarWidth - 70;
-    $('.section-header').width(stickyWidth);
+
+    function getCurrentSidebarWidth() {
+        return sidebar.width();
+    }
+
+    function newStickyWidth() {
+        width = screenwidth - getCurrentSidebarWidth() - 70;
+        return width;
+    }
+
     $(window).on('resize', function () {
-        stickyWidth = $(window).width() - sidebarWidth - 70;
-        $('.section-header').width(stickyWidth);
+        stickyWidth = newStickyWidth();
+        // $('.section-header').width(stickyWidth());
     });
 
     $(window).scroll(function () {
-        var window_top = $(window).scrollTop() - 100;
-        $('.section-header').width(stickyWidth);
+        var window_top = $(window).scrollTop();
+
+        $('.section-header').width(newStickyWidth());
+
         if (window_top > div_top) {
             if (!$('.section-header').is('.sticky')) {
                 $('.section-header').addClass('sticky');
             }
         } else {
             $('.section-header').removeClass('sticky');
+            $('.section-header').removeAttr('style');
         }
     });
-});
-
-// Select
-$(document).ready(function () {
-    $(".custom-control-input.parent-checkbox").change(function() {
-        if(this.checked) {
-            $('.custom-control-input.child-checkbox').prop("checked", true);;
-        }else{
-            $('.custom-control-input.child-checkbox').prop("checked", false);;
-        }
-    });
-    
 });
 
 
