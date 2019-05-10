@@ -26,7 +26,6 @@ class View extends BaseGenerator implements GeneratorInterface
                 '{{moduleName}}'         => $this->module->getModuleName(),
                 '{{tabLinks}}'           => $this->getTabLinks(),
                 '{{tabContents}}'        => $this->tabContents($view),
-                '{{form}}'               => $this->formGenerate($view),
             ]);
 
             $fullFilePath = $this->getPath("resources/views/backend/".$this->module->getModuleName())."/{$view}.blade.php";
@@ -53,7 +52,6 @@ class View extends BaseGenerator implements GeneratorInterface
                     </ul>
                 </li>'
 		);
-        // $generatedFiles = array_merge($generatedFiles, $this->formGenerateCreate());
         return $generatedFiles;
     }
 
@@ -98,22 +96,16 @@ class View extends BaseGenerator implements GeneratorInterface
 
     public function tabContents($page = "create")
     {
-
         $tabs = $this->module->getTabs();
-        $viewTemplate = "";
+        $viewTemplate = '<div class="tab-content px-1 pt-1">';
         foreach ($tabs as $key => $tab) {
-            if ($tab =="Seo") {
-                continue;
-            }
-            // $viewTemplate = '';
+            $activeClass = ($key == 0) ? 'active' : '';
+            $viewTemplate .= '
+                <div role="tabpanel" class="tab-pane '.$activeClass.'" id="tab'.$key.'" aria-expanded="true" aria-labelledby="base-tab'.$key.'">
+                    <div class="row mt-4 mb-4">
+                        <div class="col">'.PHP_EOL;
             if (in_array($page, ['create', 'edit'])) {
                 foreach ($this->module->getFilteredColumns($tab) as $type) {
-                    $activeClass = ($key == 0) ? 'active' : '';
-                    $viewTemplate .= '<div class="tab-content px-1 pt-1">
-					<div role="tabpanel" class="tab-pane '.$activeClass.'" id="tab'.$key.'" aria-expanded="true" aria-labelledby="base-tab'.$key.'">
-
-						<div class="row mt-4 mb-4">
-							<div class="col">';
                     $displayColumn = $type->getRelatedModule() == 'users' ? 'name' : 'title';
                     if (($type->hasPivot() || $type->isParent()) && $type->getRelatedModule() != 'users') {
                         $module = new Module($type->getRelatedModule(), config('laragen.modules.' . $type->getRelatedModule()));
@@ -128,38 +120,15 @@ class View extends BaseGenerator implements GeneratorInterface
                         '{{relatedModelDisplayColumn}}' => $displayColumn,
                         '{{modelNameLowercase}}'    => $this->module->getModelNameLowercase(),
                         '{{modulename}}'            => $this->module->getModuleName(),
-                    ]);
-                    $viewTemplate .= '</div></div></div></div>';
+                    ]) . PHP_EOL;
                 }
             }
+            
+            $viewTemplate .= '</div>'.PHP_EOL;
+            $viewTemplate .= '</div>'.PHP_EOL;
+            $viewTemplate .= '</div>'.PHP_EOL;
         }
-        return $viewTemplate;
-    }
-
-    public function formGenerate($page = "create")
-    {
-        $viewTemplate = '';
-
-        if (in_array($page, ['create', 'edit'])) {
-            foreach ($this->module->getColumns() as $type) {
-                $displayColumn = $type->getRelatedModule() == 'users' ? 'name' : 'title';
-                if (($type->hasPivot() || $type->isParent()) && $type->getRelatedModule() != 'users') {
-                    $module = new Module($type->getRelatedModule(), config('laragen.modules.' . $type->getRelatedModule()));
-                    $displayColumn = $module->getDisplayColumns()[0]->getColumn();
-                }
-                $viewTemplate .= $this->buildTemplate('backend/views/formelements/' . $page . '/' . $type->getFormType(), [
-                    '{{key}}'                   => $type->getColumn(),
-                    '{{label}}'                 => $type->getDisplay(),
-                    '{{options}}'               => $type->getFormOptions(),
-                    '{{relatedModule}}'         => $type->getRelatedModule(),
-                    '{{relatedModelLowercase}}' => $type->getRelatedModelLowercase(),
-                    '{{relatedModelDisplayColumn}}' => $displayColumn,
-                    '{{modelNameLowercase}}'    => $this->module->getModelNameLowercase(),
-                    '{{modulename}}'            => $this->module->getModuleName(),
-                ]);
-            }
-        }
-
+        $viewTemplate .= '</div>'.PHP_EOL;
         return $viewTemplate;
     }
 }

@@ -11,7 +11,6 @@ class OptionType extends SingleType
     public function getSchema()
     {
         $schema = "";
-        $parent = $this->getParentModelLowercase();
         $schema .= "\$table->bigInteger('".$this->getColumn()."')->unsigned()->nullable();".PHP_EOL.$this->getTabs(3);
         $schema .= "\$table->foreign('".$this->getColumn()."')->references('id')->on('".$this->getPivotTable()."')->onDelete('set null');".PHP_EOL;
         return $schema;

@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 class MultipleDataType extends MultipleType
 {
     protected $hasModel = true;
+    protected $isMultipleType = true;
     protected $formType = 'multiple';
     
     public function getPivotSchema()

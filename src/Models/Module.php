@@ -55,8 +55,8 @@ class Module
         if (sizeof($this->getFilteredColumns('hasImage'))) {
             $tabs[] = 'Images';
         }
-        if (sizeof($this->getFilteredColumns('hasModel'))) {
-            foreach ($this->getFilteredColumns('hasModel') as $type) {
+        if (sizeof($this->getFilteredColumns('isMultipleType'))) {
+            foreach ($this->getFilteredColumns('isMultipleType') as $type) {
                 $tabs[] = Str::plural($type->getChildModel());
             }
         }
@@ -76,8 +76,8 @@ class Module
         if (sizeof($this->getFilteredColumns('hasImage'))) {
             $tabs[] = 'hasImage';
         }
-        if (sizeof($this->getFilteredColumns('hasModel'))) {
-            foreach ($this->getFilteredColumns('hasModel') as $type) {
+        if (sizeof($this->getFilteredColumns('isMultipleType'))) {
+            foreach ($this->getFilteredColumns('isMultipleType') as $type) {
                 $tabs[] = Str::plural($type->getChildModel());
             }
         }

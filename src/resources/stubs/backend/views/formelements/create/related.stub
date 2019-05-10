@@ -3,7 +3,7 @@
   	<div class="col-sm-12 col-md-7">
 		<select multiple class="form-control select2" id="{{key}}" name="{{key}}[]">
 			@foreach(${{relatedModule}} as ${{relatedModelLowercase}})
-				<option value="{{ ${{relatedModelLowercase}}->id }}">{{ ${{relatedModelLowercase}}->title }}</option>
+			<option value="{{ ${{relatedModelLowercase}}->id }}">{{ ${{relatedModelLowercase}}->title }}</option>
 			@endforeach
 		</select>
   	</div>
