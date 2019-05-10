@@ -4,7 +4,7 @@
 		<select class="form-control select2" id="{{key}}" name="{{key}}">
 			<option>Please select</option>
 			@foreach(${{relatedModule}} as ${{relatedModelLowercase}})
-				<option value="{{ ${{relatedModelLowercase}}->id }}">{{ ${{relatedModelLowercase}}->title }}</option>
+				<option value="{{ ${{relatedModelLowercase}}->id }}">{{ ${{relatedModelLowercase}}->{{relatedModelDisplayColumn}} }}</option>
 			@endforeach
 		</select>
   	</div>

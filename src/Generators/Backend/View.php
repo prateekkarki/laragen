@@ -87,12 +87,18 @@ class View extends BaseGenerator implements GeneratorInterface
 
         if(in_array($page, ['create', 'edit'])){
             foreach ($this->module->getColumns() as $type) {
+                $displayColumn = $type->getRelatedModule() == 'users' ? 'name' : 'title';
+                if(($type->hasPivot() || $type->isParent())&&$type->getRelatedModule() != 'users' ){
+                    $module = new Module($type->getRelatedModule(), config('laragen.modules.'.$type->getRelatedModule()));
+                    $displayColumn = $module->getDisplayColumns()[0]->getColumn();
+                }
                 $viewTemplate .= $this->buildTemplate('backend/views/formelements/'.$page.'/'.$type->getFormType(), [
                     '{{key}}'                   => $type->getColumn(),
                     '{{label}}'                 => $type->getDisplay(),
                     '{{options}}'               => $type->getFormOptions(),
                     '{{relatedModule}}'         => $type->getRelatedModule(),
                     '{{relatedModelLowercase}}' => $type->getRelatedModelLowercase(),
+                    '{{relatedModelDisplayColumn}}' => $displayColumn,
                     '{{modelNameLowercase}}'    => $this->module->getModelNameLowercase(),
                     '{{modulename}}'            => $this->module->getModuleName(),
                 ]);

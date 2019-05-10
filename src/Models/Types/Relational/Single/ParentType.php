@@ -6,6 +6,8 @@ use Illuminate\Support\Str;
 
 class ParentType extends SingleType
 {
+    protected $isParent = true;
+
     public function getSchema()
     {
         $schema = "";
