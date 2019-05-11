@@ -64,6 +64,7 @@ class {{modelName}}Controller extends Controller
             return redirect()->back()->withErrors($errors);    
         }else{
             ${{modelNameLowercase}} = {{modelName}}::create($request->all());
+            {{createRelated}}
             return redirect()->route('backend.{{moduleName}}.edit', ${{modelNameLowercase}})->withSuccess(__('{{moduleName}}.created'));
         }
     }

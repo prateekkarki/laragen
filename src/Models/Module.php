@@ -66,9 +66,9 @@ class Module
 
     public function getTabs()
     {
-        $tabs = ['general'];
-        if (sizeof($this->getFilteredColumns('isParent'))) {
-            $tabs[] = 'isParent';
+        $tabs = [['general', 'hasOptions']];
+        if (sizeof($this->getFilteredColumns(['isParent', 'hasPivot']))) {
+            $tabs[] = ['isParent', 'hasPivot'];
         }
         if (sizeof($this->getFilteredColumns('hasFile'))) {
             $tabs[] = 'hasFile';

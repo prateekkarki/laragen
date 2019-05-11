@@ -14,6 +14,7 @@ class Controller extends BaseGenerator implements GeneratorInterface
             '{{modelNameLowercase}}' => $this->module->getModelNameLowercase(),
             '{{fileUploads}}'        => $this->getFileUploads(),
             '{{relatedUpdates}}'     => $this->getRelatedUpdates(),
+            '{{createRelated}}'      => $this->getCreateRelated(),
             '{{foreignData}}'        => $this->getForeignData(),
             '{{usedModels}}'         => $this->getUsedModels(),
             '{{fileExtentions}}'     => "",
@@ -23,6 +24,24 @@ class Controller extends BaseGenerator implements GeneratorInterface
         $fullFilePath = $this->getPath("app/Http/Controllers/Backend/").$this->module->getModelName()."Controller".".php";
         file_put_contents($fullFilePath, $controllerTemplate);
         return $fullFilePath;
+    }
+
+    protected function getCreateRelated() {
+        $relatedUpdates = "";
+        $relatedTypes = $this->module->getFilteredColumns(['hasPivot']);
+        if (empty($relatedTypes)) return "";
+        if (count($relatedTypes) > 1) {
+            $relatedUpdates .= $this->buildTemplate('backend/fragments/related-create', [
+                '{{modelNameLowercase}}' => $this->module->getModelNameLowercase(),
+                '{{relatedTypes}}'         => implode('", "', $this->module->getFilteredColumns(['hasPivot', 'hasModel'], true)),
+            ]);
+        } else {
+            $type = $relatedTypes[0];
+            $relatedUpdates .= 'if ($request->has("'.$type->getColumn().'")) {'.PHP_EOL;
+            $relatedUpdates .= $this->getTabs(3).'$'.$this->module->getModelNameLowercase().'->'.$type->getColumn().'()->attach($request->input("'.$type->getColumn().'"));'.PHP_EOL;
+            $relatedUpdates .= $this->getTabs(2).'}'.PHP_EOL;
+        }
+        return $relatedUpdates;
     }
 
     protected function getRelatedUpdates() {
@@ -45,7 +64,6 @@ class Controller extends BaseGenerator implements GeneratorInterface
 
     protected function getFileUploads() {
         $fileUploads = "";
-        // $fileFields = $this->module->getFileColumns();
         $fileFields = $this->module->getFilteredColumns(['hasFile']);
         if (empty($fileFields)) return "";
         if (count($fileFields) > 1) {

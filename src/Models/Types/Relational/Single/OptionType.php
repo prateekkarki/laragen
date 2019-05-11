@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 class OptionType extends SingleType
 {
     protected $needsTableInit = true;
+    protected $hasOptions = true;
 
     public function getSchema()
     {
