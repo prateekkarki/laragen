@@ -104,8 +104,30 @@ class View extends BaseGenerator implements GeneratorInterface
                 <div role="tabpanel" class="tab-pane '.$activeClass.'" id="tab'.$key.'" aria-expanded="true" aria-labelledby="base-tab'.$key.'">
                     <div class="row mt-4 mb-4">
                         <div class="col">'.PHP_EOL;
-            if (in_array($page, ['create', 'edit'])) {
-                foreach ($this->module->getFilteredColumns($tab) as $type) {
+
+            if(is_string($tab)&&in_array($page, ['create', 'edit'])){
+                if(in_array($tab, ['hasFile', 'hasImage', 'Seo'])){
+                    foreach ($this->module->getFilteredColumns($tab) as $type) {
+                        $displayColumn = $type->getRelatedModule() == 'users' ? 'name' : 'title';
+                        if (($type->hasPivot() || $type->isParent()) && $type->getRelatedModule() != 'users') {
+                            $module = new Module($type->getRelatedModule(), config('laragen.modules.' . $type->getRelatedModule()));
+                            $displayColumn = $module->getDisplayColumns()[0]->getColumn();
+                        }
+                        $viewTemplate .= $this->buildTemplate('backend/views/formelements/' . $page . '/' . $type->getFormType(), [
+                            '{{key}}'                   => $type->getColumn(),
+                            '{{label}}'                 => $type->getDisplay(),
+                            '{{options}}'               => $type->getFormOptions(),
+                            '{{relatedModule}}'         => $type->getRelatedModule(),
+                            '{{relatedModelLowercase}}' => $type->getRelatedModelLowercase(),
+                            '{{relatedModelDisplayColumn}}' => $displayColumn,
+                            '{{modelNameLowercase}}'    => $this->module->getModelNameLowercase(),
+                            '{{modulename}}'            => $this->module->getModuleName(),
+                        ]) . PHP_EOL;
+                    }
+                }else{
+                    $types = $this->module->getColumnsData();
+                    $type = $types[Str::singular(Str::snake(strtolower($tab)))];
+                    // dump($types, $type);
                     $displayColumn = $type->getRelatedModule() == 'users' ? 'name' : 'title';
                     if (($type->hasPivot() || $type->isParent()) && $type->getRelatedModule() != 'users') {
                         $module = new Module($type->getRelatedModule(), config('laragen.modules.' . $type->getRelatedModule()));
@@ -121,7 +143,11 @@ class View extends BaseGenerator implements GeneratorInterface
                         '{{modelNameLowercase}}'    => $this->module->getModelNameLowercase(),
                         '{{modulename}}'            => $this->module->getModuleName(),
                     ]) . PHP_EOL;
+                    
                 }
+            }
+            if (in_array($page, ['create', 'edit'])) {
+
             }
             
             $viewTemplate .= '</div>'.PHP_EOL;

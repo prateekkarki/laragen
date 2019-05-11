@@ -85,6 +85,11 @@ class Module
         return $tabs;
     }
 
+    public function getColumnsData()
+    {
+        return $this->columnsData;
+    }
+
     public function getDisplayColumns()
     {
         return $this->displayColumns;
