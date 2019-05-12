@@ -1,5 +1,5 @@
 
     public function {{columnName}}()
     {
-        return $this->belongsTo({{relatedModel}}::class, '{{columnName}}');
+        return $this->belongsTo({{parentModel}}::class, '{{columnName}}');
     }
