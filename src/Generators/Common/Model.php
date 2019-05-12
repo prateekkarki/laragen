@@ -30,8 +30,8 @@ class Model extends BaseGenerator implements GeneratorInterface
             file_put_contents($fullFilePath, $typeTemplate);
             $generatedFiles[] = $fullFilePath;
         }
-
-        foreach($this->module->getFilteredColumns(['hasModel', 'needsTableInit']) as $type){
+        
+        foreach($this->module->getFilteredColumns(['hasModel', 'hasOptions']) as $type){
             $typeTemplate = $this->buildTemplate('common/Models/Model', [
                 '{{modelName}}'       => Str::singular($type->getPivot()),
                 '{{massAssignables}}' => implode("', '", $type->getTypeColumns()),
@@ -49,7 +49,7 @@ class Model extends BaseGenerator implements GeneratorInterface
     protected function getTypeForeignMethods($type)
     {
         $foreignMethods = "";
-        $stub = $type->getStub('modelMethod') ?: 'common/Models/fragments/hasMany';
+        $stub = $type->getStub('modelMethod') ?: 'common/Models/fragments/belongsTo';
         $foreignMethods .= $this->buildTemplate($stub, [
             '{{columnName}}'  => $type->getColumn(),
             '{{parent}}'      => $type->getParentModelLowercase(),
@@ -62,9 +62,8 @@ class Model extends BaseGenerator implements GeneratorInterface
     protected function getForeignMethods()
     {
         $foreignMethods = "";
-
-        foreach($this->module->getFilteredColumns(['hasModel', 'hasPivot', 'hasSingleRelation']) as $type){
-            $stub = $type->getStub('foreignMethod') ?: 'common/Models/fragments/belongsTo';
+        foreach($this->module->getFilteredColumns(['hasPivot', 'hasSingleRelation', 'hasModel']) as $type){
+            $stub = $type->getStub('foreignMethod') ?: 'common/Models/fragments/hasOne';
             $foreignMethods .= $this->buildTemplate($stub, [
                 '{{columnName}}'   => $type->getColumn(),
                 '{{parent}}'       => $type->getParentModelLowercase(),

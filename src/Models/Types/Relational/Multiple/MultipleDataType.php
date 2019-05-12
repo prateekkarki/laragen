@@ -9,7 +9,11 @@ class MultipleDataType extends MultipleType
     protected $hasModel = true;
     protected $isMultipleType = true;
     protected $formType = 'multiple';
-    
+    protected $stubs = [
+        'modelMethod' => 'common/Models/fragments/belongsTo',
+        'foreignMethod' => 'common/Models/fragments/hasMany'
+    ];
+
     public function getPivotSchema()
     {
         $schema = PHP_EOL.$this->getTabs(3);

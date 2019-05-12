@@ -8,6 +8,10 @@ class OptionType extends SingleType
 {
     protected $needsTableInit = true;
     protected $hasOptions = true;
+    protected $stubs = [
+        'modelMethod' => 'common/Models/fragments/belongsTo',
+        'foreignMethod' => 'common/Models/fragments/hasOne'
+    ];
 
     public function getSchema()
     {

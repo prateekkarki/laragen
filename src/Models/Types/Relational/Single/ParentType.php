@@ -7,7 +7,11 @@ use Illuminate\Support\Str;
 class ParentType extends SingleType
 {
     protected $isParent = true;
-
+    protected $stubs = [
+        'modelMethod' => 'common/Models/fragments/belongsTo',
+        'foreignMethod' => 'common/Models/fragments/hasOne'
+    ];
+    
     public function getSchema()
     {
         $schema = "";
