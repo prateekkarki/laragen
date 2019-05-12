@@ -50,10 +50,8 @@ function dropzoneupload(url, field, modelid, modelname, filetypes, multiple = tr
         init: function () {
 
             var thisDropzone = this;
-            // console.log(data);
             if (data) {
                 $.each($.parseJSON(data), function (key, value) { //loop through it
-                    // console.log($.parseJSON(data), value);
                     var mockFile = { name: value.name, size: value.size }; // here we get the file name and size as response 
                     thisDropzone.options.addedfile.call(thisDropzone, mockFile);
                     thisDropzone.options.thumbnail.call(thisDropzone, mockFile, APP_URL + "/storage/images/" + modelname + '/xs/' + value.name);//uploadsfolder is the folder where you have all those uploaded files
@@ -113,28 +111,6 @@ function dropzoneupload(url, field, modelid, modelname, filetypes, multiple = tr
 
 // Sticky
 $(document).ready(function () {
-    // var div_top = $('.section-header').offset().top;
-    // var sidebarWidth = $(window).width() <= 1024 ? 0 : $(".main-sidebar").width();
-    // var stickyWidth = $(window).width() - sidebarWidth - 70;
-    // // $('.section-header').width(stickyWidth);
-    // $(window).on('resize', function () {
-    //     stickyWidth = $(window).width() - sidebarWidth - 70;
-    //     // $('.section-header').width(stickyWidth);
-    // });
-
-    // $(window).scroll(function () {
-    //     var window_top = $(window).scrollTop() - 100;
-    //     // $('.section-header').width(stickyWidth);
-    //     if (window_top > div_top) {
-    //         if (!$('.section-header').is('.sticky')) {
-    //             $('.section-header').addClass('sticky');
-    //         }
-    //     } else {
-    //         $('.section-header').removeClass('sticky');
-    //     }
-    // });
-
-
     var sidebar = $(".main-sidebar");
     var screenwidth = $(window).width();
     var width = '';
@@ -148,11 +124,6 @@ $(document).ready(function () {
         width = screenwidth - getCurrentSidebarWidth() - 70;
         return width;
     }
-
-    $(window).on('resize', function () {
-        stickyWidth = newStickyWidth();
-        // $('.section-header').width(stickyWidth());
-    });
 
     $(window).scroll(function () {
         var window_top = $(window).scrollTop();
