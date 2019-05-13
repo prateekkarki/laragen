@@ -109,6 +109,16 @@ function dropzoneupload(url, field, modelid, modelname, filetypes, multiple = tr
     });
 }
 
+var throttle = function(fn, wait) {
+    var time = Date.now();
+    return function() {
+      if ((time + wait - Date.now()) < 0) {
+        fn();
+        time = Date.now();
+      }
+    }
+}
+
 // Sticky
 $(document).ready(function () {
     var sidebar = $(".main-sidebar");
@@ -116,6 +126,7 @@ $(document).ready(function () {
     var width = '';
     var div_top = $('.section-header').offset().top;
 
+    $('.section-header-placeholder').height($('.section-header').outerHeight());
     function getCurrentSidebarWidth() {
         return sidebar.width();
     }
@@ -125,26 +136,27 @@ $(document).ready(function () {
         return width;
     }
 
-    $(window).scroll(function () {
+    $(window).on('scroll', throttle(function () {
         var window_top = $(window).scrollTop();
-
         $('.section-header').width(newStickyWidth());
 
         if (window_top > div_top) {
             if (!$('.section-header').is('.sticky')) {
                 $('.section-header').addClass('sticky');
+                $('.section-header-placeholder').show();
             }
         } else {
             $('.section-header').removeClass('sticky');
+            $('.section-header-placeholder').hide();
             $('.section-header').removeAttr('style');
         }
-    });
+    }, 20));
 });
 
 
-var delImage = function (url, moduleName, modelId, field) {
+var deleteMultiple = function (moduleName, modelId, field) {
     var csrf = $('meta[name="csrf-token"]').attr('content');
-
+    var base_url = APP_URL;
     var data = {
         _token: csrf,
         modelName: moduleName,
