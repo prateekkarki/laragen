@@ -29,68 +29,79 @@
 	                </select>
 	            </div>
 	        </div>
-	    </div>
-	    {!! request()->get('sort') ? ${{relatedModule}}->appends(['sort' => request()->get('sort') , 'sort_dir' => request()->get('sort_dir') ] )->links() : ${{relatedModule}}->links() !!}
-	    <div class="table-responsive">
-	        <table class="table table-striped" id="table-2">
-	            <thead>
-	                <tr>
-	                    <th>
-	                        <div class="custom-checkbox custom-control">
-	                            <input type="checkbox" class="custom-control-input parent-checkbox" id="checkbox-all">
-	                            <label for="checkbox-all" class="custom-control-label">S.No.</label>
-	                        </div>
-	                    </th>
-	                    {{headings}}
-	                    <th> Last Updated </th>
-	                    <th> Status </th>
-	                    <th>
-	                        Actions
-	                    </th>
-	                </tr>
-	            </thead>
-	            <tbody>
-	            
-	            @foreach(${{relatedModule}} as $key => ${{relatedModelLowercase}})
-	                <tr>
-	                    <td>
-	                        <div class="custom-checkbox custom-control">
-	                            <input type="checkbox" class="custom-control-input child-checkbox" id="checkbox-{{ ${{relatedModelLowercase}}->id }}">
-	                            <label for="checkbox-{{ ${{relatedModelLowercase}}->id }}" class="custom-control-label">{{ $key + $index }}</label>
-	                        </div>
-	                    </td>
-	                    
-	                    {{displayFields}}
+		</div>
+		
+		@if (${{relatedModule}}->count())
+			{!! ${{relatedModule}}->links() !!}
+			<div class="table-responsive">
+				<table class="table table-striped" id="table-2">
+					<thead>
+						<tr>
+							<th>
+								<div class="custom-checkbox custom-control">
+									<input type="checkbox" class="custom-control-input parent-checkbox" id="checkbox-all">
+									<label for="checkbox-all" class="custom-control-label">S.No.</label>
+								</div>
+							</th>
+							{{headings}}
+							<th> Last Updated </th>
+							<th> Status </th>
+							<th>
+								Actions
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+					
+					@foreach(${{relatedModule}} as $key => ${{relatedModelLowercase}})
+						<tr>
+							<td>
+								<div class="custom-checkbox custom-control">
+									<input type="checkbox" class="custom-control-input child-checkbox" id="checkbox-{{ ${{relatedModelLowercase}}->id }}">
+									<label for="checkbox-{{ ${{relatedModelLowercase}}->id }}" class="custom-control-label">{{ $key + $index }}</label>
+								</div>
+							</td>
+							
+							{{displayFields}}
 
-	                    <td>{{ ${{relatedModelLowercase}}->updated_at }}</td>
+							<td>{{ ${{relatedModelLowercase}}->updated_at }}</td>
 
-	                    <td>
-	                        @if(${{relatedModelLowercase}}->status)
-	                            <div class="badge badge-success" title="Enabled"><i class="fas fa-eye"></i></div>
-	                        @else
-	                            <div class="badge badge-danger" title="Disabled"><i class="fas fa-eye-slash"></i></div>
-	                        @endif
-	                        
-	                    </td>
-	                    <td>
-	                        <a href="#" class="btn btn-primary">
-	                            <i class="fa fa-edit" aria-hidden="true"></i>
-	                        </a>
-	                        <form action="#" method="post" class="btn-group">
-	                            @csrf
-	                            @method('DELETE')
-	                            <button class="btn btn-danger" type="submit">
-	                                <i class="fa fa-trash" aria-hidden="true"></i>
-	                            </button>
-	                        </form>
-	                    </td>
-	                </tr>
+							<td>
+								@if(${{relatedModelLowercase}}->status)
+									<div class="badge badge-success" title="Enabled"><i class="fas fa-eye"></i></div>
+								@else
+									<div class="badge badge-danger" title="Disabled"><i class="fas fa-eye-slash"></i></div>
+								@endif
+								
+							</td>
+							<td>
+								<a href="#" class="btn btn-primary">
+									<i class="fa fa-edit" aria-hidden="true"></i>
+								</a>
 
-	            @endforeach
-	            </tbody>
-	        </table>
-	        {!! request()->get('sort') ? ${{relatedModule}}->appends(['sort' => request()->get('sort')])->links() : ${{relatedModule}}->links() !!}
-	    </div>
+								<button class="btn btn-danger" type="submit" 
+									data-confirm="Delete {{label}}|Are you sure?"
+									data-confirm-yes="deleteMultiple('{{relatedModelLowercase}}', '{{ ${{relatedModelLowercase}}->id }}', '{{key}}');">
+									<i class="fa fa-trash" aria-hidden="true"></i>
+								</button>
+
+							</td>
+						</tr>
+
+					@endforeach
+					</tbody>
+				</table>
+				{!! request()->get('sort') ? ${{relatedModule}}->appends(['sort' => request()->get('sort')])->links() : ${{relatedModule}}->links() !!}
+			</div>
+		@else
+			<div class="alert alert-light alert-has-icon">
+				<div class="alert-icon"><i class="far fa-lightbulb"></i></div>
+				<div class="alert-body">
+				<div class="alert-title">Empty</div>
+				  	No data found.
+				</div>
+			  </div>
+		@endif
 	</div>
 </div>
 
