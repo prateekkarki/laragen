@@ -51,7 +51,7 @@ class Controller extends BaseGenerator implements GeneratorInterface
         if (count($relatedTypes) > 1) {
             $relatedUpdates .= $this->buildTemplate('backend/fragments/related-process', [
                 '{{modelNameLowercase}}' => $this->module->getModelNameLowercase(),
-                '{{relatedTypes}}'         => implode('", "', $this->module->getFilteredColumns(['hasPivot', 'hasModel'], true)),
+                '{{relatedTypes}}'         => implode('", "', $this->module->getFilteredColumns(['hasPivot'], true)),
             ]);
         } else {
             $type = $relatedTypes[0];
@@ -87,8 +87,7 @@ class Controller extends BaseGenerator implements GeneratorInterface
         foreach ($parents as $type) {
             $column = $type->getRelatedModule();
             if(!in_array($column, $columns)){
-                $foreignData .= "'".$column."' => ".$type->getRelatedModel()."::all()";
-                $foreignData .= ($type == last($parents)) ? '' : ', ';
+                $foreignData .= "'".$column."' => ".$type->getRelatedModel()."::all(),".PHP_EOL.$this->getTabs(3);
                 $columns[] = $column;
             }
         }

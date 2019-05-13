@@ -42,7 +42,10 @@ class {{modelName}}Controller extends Controller
     public function edit({{modelName}} ${{modelNameLowercase}}): View
     {
         {{fileExtentions}}
-        return view('backend.{{moduleName}}.edit', ['{{modelNameLowercase}}' => ${{modelNameLowercase}}, {{foreignData}}]);
+        return view('backend.{{moduleName}}.edit', [
+            '{{modelNameLowercase}}' => ${{modelNameLowercase}}, 
+            {{foreignData}}
+        ]);
     }
 
     /**

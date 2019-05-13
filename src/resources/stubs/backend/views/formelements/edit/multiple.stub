@@ -1,6 +1,103 @@
-<div class="form-group row mb-4">
-    <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3" for="{{key}}">{{label}}</label>
-    <div class="col-sm-12 col-md-7">
-        <input class="form-control" type="number" name="{{key}}" id="{{key}}" placeholder="{{label}}" {{options}}>
-    </div>
+<div class="row mb-4">
+	<div class="col-md-12 form-group">           
+		<div class="actions">
+	        <button class="create-btn btn btn-primary" id="modal-button-{{key}}" type="button"> Create a new {{label}}</button>
+	    </div>
+	    @php
+			${{relatedModule}} = ${{modelNameLowercase}}->{{key}}()->paginate(20);
+	        $index = ${{relatedModule}}->perPage()*(${{relatedModule}}->currentPage() - 1) + 1;
+	    @endphp
+	    <div class="modal-part" id="modal-{{key}}">
+	        <div class="form-group row mb-4">
+	            <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3" for="{{relatedModelLowercase}}">{{relatedModelLowercase}}</label>
+	            <div class="col-sm-12 col-md-7">
+	                <select class="form-control select2" id="{{relatedModelLowercase}}" name="{{relatedModelLowercase}}">
+	                    @foreach(${{relatedModule}} as ${{relatedModelLowercase}})
+	                        <option value="{{ ${{relatedModelLowercase}}->id }}">{{ ${{relatedModelLowercase}}->title }}</option>
+	                    @endforeach
+	                </select>
+	            </div>
+	        </div>
+
+	        <div class="form-group row mb-4">
+	            <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3" for="{{relatedModelLowercase}}">{{relatedModelLowercase}}</label>
+	            <div class="col-sm-12 col-md-7">
+	                <select class="form-control select2" id="{{relatedModelLowercase}}" name="{{relatedModelLowercase}}">
+	                    @foreach(${{relatedModule}} as ${{relatedModelLowercase}})
+	                        <option value="{{ ${{relatedModelLowercase}}->id }}">{{ ${{relatedModelLowercase}}->title }}</option>
+	                    @endforeach
+	                </select>
+	            </div>
+	        </div>
+	    </div>
+	    {!! request()->get('sort') ? ${{relatedModule}}->appends(['sort' => request()->get('sort') , 'sort_dir' => request()->get('sort_dir') ] )->links() : ${{relatedModule}}->links() !!}
+	    <div class="table-responsive">
+	        <table class="table table-striped" id="table-2">
+	            <thead>
+	                <tr>
+	                    <th>
+	                        <div class="custom-checkbox custom-control">
+	                            <input type="checkbox" class="custom-control-input parent-checkbox" id="checkbox-all">
+	                            <label for="checkbox-all" class="custom-control-label">S.No.</label>
+	                        </div>
+	                    </th>
+	                    {{headings}}
+	                    <th> Last Updated </th>
+	                    <th> Status </th>
+	                    <th>
+	                        Actions
+	                    </th>
+	                </tr>
+	            </thead>
+	            <tbody>
+	            
+	            @foreach(${{relatedModule}} as $key => ${{relatedModelLowercase}})
+	                <tr>
+	                    <td>
+	                        <div class="custom-checkbox custom-control">
+	                            <input type="checkbox" class="custom-control-input child-checkbox" id="checkbox-{{ ${{relatedModelLowercase}}->id }}">
+	                            <label for="checkbox-{{ ${{relatedModelLowercase}}->id }}" class="custom-control-label">{{ $key + $index }}</label>
+	                        </div>
+	                    </td>
+	                    
+	                    {{displayFields}}
+
+	                    <td>{{ ${{relatedModelLowercase}}->updated_at }}</td>
+
+	                    <td>
+	                        @if(${{relatedModelLowercase}}->status)
+	                            <div class="badge badge-success" title="Enabled"><i class="fas fa-eye"></i></div>
+	                        @else
+	                            <div class="badge badge-danger" title="Disabled"><i class="fas fa-eye-slash"></i></div>
+	                        @endif
+	                        
+	                    </td>
+	                    <td>
+	                        <a href="#" class="btn btn-primary">
+	                            <i class="fa fa-edit" aria-hidden="true"></i>
+	                        </a>
+	                        <form action="#" method="post" class="btn-group">
+	                            @csrf
+	                            @method('DELETE')
+	                            <button class="btn btn-danger" type="submit">
+	                                <i class="fa fa-trash" aria-hidden="true"></i>
+	                            </button>
+	                        </form>
+	                    </td>
+	                </tr>
+
+	            @endforeach
+	            </tbody>
+	        </table>
+	        {!! request()->get('sort') ? ${{relatedModule}}->appends(['sort' => request()->get('sort')])->links() : ${{relatedModule}}->links() !!}
+	    </div>
+	</div>
 </div>
+
+@push('after-scripts')
+<script type="text/javascript">
+    $('#modal-button-{{key}}').on('click', function () {
+		// $('#modal-{{key}}').modal();
+	});
+</script>
+@endpush

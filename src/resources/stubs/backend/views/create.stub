@@ -48,7 +48,6 @@
             @csrf
             <div class="row mt-4 mb-4">
                 <div class="col">
-                    
                     <ul class="nav nav-tabs nav-top-border no-hover-bg">
                         {{tabLinks}}
                     </ul>

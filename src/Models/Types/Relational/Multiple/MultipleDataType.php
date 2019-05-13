@@ -29,6 +29,11 @@ class MultipleDataType extends MultipleType
         return $this->getPivot();
     }
 
+    public function getDisplay()
+    {
+        return strtolower(Str::singular(str_replace("_", " ", $this->columnName)));
+    }
+
     public function getPivot()
     {
         return $this->getParentModel() . $this->getChildModel();
