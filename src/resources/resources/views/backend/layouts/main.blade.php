@@ -8,13 +8,13 @@
     @include('backend.includes.header')
 
     @include('backend.includes.sidebar')
-    <!-- @include('backend.includes.aside') -->
-
 
     <div class="main-content">
         <section class="section">
             <div class="section-header">
                 @yield('page-header')
+            </div>
+            <div class="section-header-placeholder" style="display:none;">
             </div>
 
             <div class="section-body">

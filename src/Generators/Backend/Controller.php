@@ -17,7 +17,6 @@ class Controller extends BaseGenerator implements GeneratorInterface
             '{{createRelated}}'      => $this->getCreateRelated(),
             '{{foreignData}}'        => $this->getForeignData(),
             '{{usedModels}}'         => $this->getUsedModels(),
-            '{{fileExtentions}}'     => "",
             '{{perPage}}'            => config("laragen.options.listing_per_page")
         ]);
         
@@ -110,14 +109,4 @@ class Controller extends BaseGenerator implements GeneratorInterface
         }
         return $usedModels;
     }
-
-    public function getFileExtentionData()
-    {
-        $controller_ = '';
-        foreach ($this->module->getFileColumns('file') as $column) {
-            $controller_ = "$".$this->module->getModelNameLowercase()."['".$column."_extention'] =".' getFileExtention($'.$this->module->getModelNameLowercase()."->".$column.");";
-        }
-        return $controller_;
-    }
-    
 }
