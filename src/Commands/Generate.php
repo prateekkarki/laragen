@@ -38,7 +38,7 @@ class Generate extends Command
      */
     public function handle()
     {
-        $laragen = new LaragenOptions(config('laragen.modules'), config('laragen.options'));
+        $laragen = new LaragenOptions();
         $modules = $laragen->getModules();
         $generatedFiles = [];
 

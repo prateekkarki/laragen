@@ -9,10 +9,10 @@ class LaragenOptions
 
     protected $options;
 
-    public function __construct($modules, $options)
+    public function __construct()
     {
-        $this->modules = $modules;
-        $this->options = $options;
+        $this->modules = config('laragen.modules');
+        $this->options = config('laragen.options');
     }
     
     public function getOptions() {
