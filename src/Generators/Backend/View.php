@@ -161,9 +161,9 @@ class View extends BaseGenerator implements GeneratorInterface
                 }
             }
             
-            $viewTemplate .= $this->getTabs(9)."@include('backend.".$this->module->getModuleName().".form_parts.". strtolower(Str::title($tabTitles[$key])) ."')".PHP_EOL;
+            $viewTemplate .= $this->getTabs(9)."@include('backend.".$this->module->getModuleName().".".$page.".form_parts.". strtolower(Str::title($tabTitles[$key])) ."')".PHP_EOL;
             
-            $fullFilePath = $this->getPath("resources/views/backend/".$this->module->getModuleName()."/form_parts/").strtolower(Str::title($tabTitles[$key])).".blade.php";
+            $fullFilePath = $this->getPath("resources/views/backend/".$this->module->getModuleName()."/".$page."/form_parts/").strtolower(Str::title($tabTitles[$key])).".blade.php";
             file_put_contents($fullFilePath, $typeTemplate);
             $this->generatedFiles[] = $fullFilePath;
 
