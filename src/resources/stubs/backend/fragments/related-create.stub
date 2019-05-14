@@ -1,0 +1,5 @@
+foreach (["{{relatedTypes}}"] as $relatedType) {
+			if ($request->has($relatedType)) {
+                ${{modelNameLowercase}}->$relatedType()->attach($request->$relatedType);
+			}
+		}

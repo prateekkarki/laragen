@@ -3,13 +3,6 @@
 	$stripped{{modelNameSingularLowercase}} = trim(preg_replace('/\s+/',' ', strip_tags(${{modelNameSingularLowercase}}->content))); 
 ?>
 <div class="{{modelNameSingularLowercase}}-grid">
-	@if (${{modelNameSingularLowercase}}->hasThumbnail())
-		<div class="{{modelNameSingularLowercase}}-grid-pic">
-			<a href="{{ route('{{moduleName}}.show', ${{modelNameSingularLowercase}})}}">
-				{{ Html::image(${{modelNameSingularLowercase}}->thumbnail->getUrl('thumb'), ${{modelNameSingularLowercase}}->thumbnail->name, ['class' => 'card-img-top']) }}
-			</a>
-		</div>
-	@endif
 	<div class="{{modelNameSingularLowercase}}-grid-info">
 		<h3>
 			<a href="{{ route('{{moduleName}}.show', ${{modelNameSingularLowercase}}) }}">

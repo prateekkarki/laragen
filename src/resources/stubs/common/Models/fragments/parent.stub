@@ -1,5 +1,0 @@
-
-    public function {{columnName}}(): BelongsTo
-    {
-        return $this->belongsTo({{parentModel}}::class, '{{parent}}_id');
-    }

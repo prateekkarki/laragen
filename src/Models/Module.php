@@ -1,6 +1,7 @@
 <?php
 namespace Prateekkarki\Laragen\Models;
-use Prateekkarki\Laragen\Models\DataOption;
+use Prateekkarki\Laragen\Models\TypeResolver;
+use Illuminate\Support\Str;
 
 class Module
 {
@@ -22,14 +23,118 @@ class Module
             return (is_array($elem)) ? true : false;
         });
 
-        foreach($this->laragenData as $column => $typeOptions){
-            $data = new DataOption($column, $typeOptions);
-            if($data->laragenType->isRelational()){
-                $this->relativeTypes[] = $data->laragenType;
-            }
+        $moduleData['sort'] = 'integer';
+        $moduleData['status'] = 'boolean';
+
+        $this->columnsData = [];
+        $this->displayColumns = [];
+        foreach ($moduleData as $column => $typeOptions) {
+            $data = new TypeResolver($moduleName, $column, $typeOptions);
+            $type = $data->getLaragenType();
+            $this->columnsData[$column] = $type;
+            if($type->isDisplay())
+                $this->displayColumns[] = $type;
+        }
+
+        if(sizeof($this->displayColumns)==0){
+            $this->displayColumns[] = array_values($this->columnsData)[0];
         }
 
         $this->name = $moduleName;
+    }
+
+    public function getTabTitles()
+    {
+        $tabs = ['General'];
+        if (sizeof($this->getFilteredColumns('isParent'))) {
+            $tabs[] = 'Relations';
+        }
+        if (sizeof($this->getFilteredColumns('hasFile'))) {
+            $tabs[] = 'Attachments';
+        }
+        if (sizeof($this->getFilteredColumns('hasImage'))) {
+            $tabs[] = 'Images';
+        }
+        if (sizeof($this->getFilteredColumns('isMultipleType'))) {
+            foreach ($this->getFilteredColumns('isMultipleType') as $type) {
+                $tabs[] = Str::plural($type->getChildModel());
+            }
+        }
+        $tabs[] = 'Seo';
+        return $tabs;
+    }
+
+    public function getTabs()
+    {
+        $tabs = [['general', 'hasOptions']];
+        if (sizeof($this->getFilteredColumns(['isParent', 'hasPivot']))) {
+            $tabs[] = ['isParent', 'hasPivot'];
+        }
+        if (sizeof($this->getFilteredColumns('hasFile'))) {
+            $tabs[] = 'hasFile';
+        }
+        if (sizeof($this->getFilteredColumns('hasImage'))) {
+            $tabs[] = 'hasImage';
+        }
+        if (sizeof($this->getFilteredColumns('isMultipleType'))) {
+            foreach ($this->getFilteredColumns('isMultipleType') as $type) {
+                $tabs[] = Str::plural($type->getChildModel());
+            }
+        }
+        $tabs[] = 'Seo';
+        return $tabs;
+    }
+
+    public function getColumnsData()
+    {
+        return $this->columnsData;
+    }
+
+    public function getDisplayColumns()
+    {
+        return $this->displayColumns;
+    }
+
+    public function getPivotalColumns()
+    {
+        $relativeTypes = [];
+        foreach($this->columnsData as $type){
+            if($type->isRelational()&&$type->hasPivot()){
+                $relativeTypes[] = $type;
+            }
+        }
+        return $relativeTypes;
+    }
+
+    public function getFilteredColumns($options = [], $columnsOnly = false)
+    {
+        $filteredTypes = [];
+        $options = is_array($options) ? $options : [$options];
+        foreach($this->columnsData as $type){
+            foreach ($options as $option) {
+                if($type->$option()){
+                    $filteredTypes[] = $columnsOnly ? $type->getColumn() : $type;
+                    break;
+                }
+            }
+        }
+        return $filteredTypes;
+    }
+
+    public function getColumns($onlyNonRelational = false, $columnsOnly = false)
+    {
+        $columns = [];
+        foreach($this->columnsData as $type){
+            if($onlyNonRelational && $type->isRelational()){
+                continue;
+            }
+            if($columnsOnly){
+                $columns[] = $type->getColumn(); 
+            }else{
+                $columns[$type->getColumn()] = $type;
+            }
+        }
+        return $columns;
     }
 
     public function getName()
@@ -37,13 +142,11 @@ class Module
         return $this->name;
     }
 
-
-    public function hasRelations()
+    public function hasPivotRelations()
     {
         $hasRelations = false;
-        foreach($this->laragenData as $column => $typeOptions){
-            $data = new DataOption($column, $typeOptions);
-            if($data->laragenType->isRelational()){
+        foreach($this->columnsData as $column => $type){
+            if($type->isRelational()&&$type->hasPivot()){
                 $hasRelations = true;
                 break;
             }
@@ -71,33 +174,16 @@ class Module
         return $lastColumn;
     }
 
-    public function getColumns($onlyNonRelational = false, $columnsOnly = false)
-    {
-        $columns = [];
-        foreach($this->getData() as $column => $optionString){
-            $data = new DataOption($column, $optionString);
-            if($onlyNonRelational && $data->laragenType->isRelational()){
-                continue;
-            }
-            if($columnsOnly){
-                $columns[] = $column; 
-            }else{
-                $columns[$column] = $data->laragenType;
-            }
-        }
-        return $columns;
-    }
-
     public function getBackendColumnTitles()
     {
-        $data = ['S.N.'];
+        $data = [];
         foreach ($this->data as $column => $optionString) {
             $optionArray = explode('|', $optionString);
             if (in_array($optionArray[0], ['string', 'int']) && in_array($column, ['title', 'firstname', 'lastname', 'name'])) {
-                $data[] = ucwords($column);
+                $data[$column] = ucwords($column);
             }
         }
-        return array_merge($data, ['Last Updated', 'Status', 'Actions']);
+        return array_merge($data, ['updated_at' => 'Last Updated', 'status' => 'Status']);
     }
 
     public function getNativeColumns()
@@ -108,7 +194,7 @@ class Module
                 continue;
             }
             $optionArray = explode('|', $optionString);
-            if (in_array($optionArray[0], DataOption::$types)) {
+            if (in_array($optionArray[0], TypeResolver::$types)) {
                 $data[] = $column;
             }
         }
@@ -126,7 +212,7 @@ class Module
         $data = [];
         foreach ($this->data as $column => $optionString) {
             $optionArray = explode('|', $optionString);
-            if (in_array($optionArray[0], DataOption::$types)) {
+            if (in_array($optionArray[0], TypeResolver::$types)) {
                 $data[] = [$column => $optionArray[0]];
             }
         }
@@ -138,121 +224,13 @@ class Module
         $data = [];
         foreach ($this->data as $column => $optionString) {
             $optionArray = explode('|', $optionString);
-            if (in_array($optionArray[0], DataOption::$types)) {
+            if (in_array($optionArray[0], TypeResolver::$types)) {
                 $data[] = [$column => $optionArray[0]];
             }
         }
         return $data;
     }
-
-    public function getRelatedTypes($type = 'all')
-    {
-        if (is_array($type)) {
-            $types = $type;
-        } else {
-            $types = ($type == "all") ? DataOption::$relatedMultiple : [$type];
-        }
-        
-        $data = [];
-        foreach ($this->data as $column => $optionString) {
-            $dataOption = new DataOption($column, $optionString);
-            if (in_array($dataOption->getType(), $types)) {
-                $data[] = $column;
-            }
-        }
-        return $data;
-    }
-
-    public function getFileColumns($type = 'all')
-    {
-        if (is_array($type)) {
-            $types = $type;
-        } else {
-            $types = ($type == "all") ? DataOption::$fileTypes : [$type];
-        }
-        
-        $data = [];
-        foreach ($this->data as $column => $optionString) {
-            $dataOption = new DataOption($column, $optionString);
-            if (in_array($dataOption->getType(), $types)) {
-                $data[] = $column;
-            }
-        }
-        return $data;
-    }
-
-    public function getParentColumns()
-    {
-        $data = [];
-        foreach ($this->data as $column => $optionString) {
-            $dataOption = new DataOption($column, $optionString);
-            if ($dataOption->getType() == DataOption::TYPE_PARENT) {
-                $data[] = $column;
-            }
-        }
-        return $data;
-    }
-
-    public function getGalleries()
-    {
-        $data = [];
-        foreach ($this->data as $column => $optionString) {
-            $dataOption = new DataOption($column, $optionString);
-            if ($dataOption->getType() == 'gallery') {
-                $data[] = $column;
-            }
-        }
-        return $data;
-    }
-
-    public function getForeignColumns($type = 'all')
-    {
-        if (is_array($type)) {
-            $types = $type;
-        } else {
-            $types = ($type == "all") ? DataOption::$specialTypes : [$type];
-        }
-        
-        $data = [];
-        foreach ($this->data as $column => $optionString) {
-            $dataOption = new DataOption($column, $optionString);
-            if (in_array($dataOption->getType(), $types)) {
-                $data[] = [$column => $dataOption->laragenType->getParentModule()];
-            }
-        }
-        return $data;
-    }
-
-    public function getForeignData($type = 'all')
-    {
-        if (is_array($type)) {
-            $types = $type;
-        } else {
-            $types = ($type == "all") ? DataOption::$specialTypes : [$type];
-        }
-        
-        $data = [];
-        foreach ($this->data as $column => $optionString) {
-            $dataOption = new DataOption($column, $optionString);
-            if (in_array($dataOption->getType(), $types)) {
-                $data[] = [
-                    'columnName'   => $column,
-                    'parentModule' => $dataOption->laragenType->getParentModule(),
-                    'parentModel'  => $dataOption->laragenType->getParentModel()
-                ];
-            }
-        }
-        return $data;
-    }
-
-    public function getPivotName($related)
-    {
-        $modelArray = [$this->getModelName(), ucfirst(camel_case(str_singular($related)))];
-        sort($modelArray);
-        return implode("", $modelArray);
-    }
-
-
+    
     public function getModuleName()
     {
         return $this->name;
@@ -260,27 +238,17 @@ class Module
 
     public function getModuleDisplayName()
     {
-        return ucfirst(str_replace('_', '', $this->name));
-    }
-
-    public function getDisplayColumn()
-    {
-        foreach ($this->data as $column => $optionString) {
-            $optionArray = explode('|', $optionString);
-            if (in_array($optionArray[0], ['string', 'int']) && in_array($column, ['title', 'firstname', 'lastname', 'name'])) {
-                return $column;
-            }
-        }
+        return Str::title(str_replace('_', '', $this->name));
     }
 
     public function getModelName()
     {
-        return ucfirst(camel_case(str_singular($this->name)));
+        return ucfirst(Str::camel(str_singular($this->name)));
     }
 
     public function getModelNamePlural()
     {
-        return ucfirst(camel_case($this->name));
+        return ucfirst(Str::camel($this->name));
     }
 
     public function getModelNameLowercase()

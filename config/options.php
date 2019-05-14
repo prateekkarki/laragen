@@ -17,6 +17,7 @@ return [
 			'View'
 		]
 	],
-	'skip_generators' => [],
-	'override' => true
+	'seed_rows' => 25,
+	'listing_per_page' => 20,
+	'user_model' => 'App\User'
 ];

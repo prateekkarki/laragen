@@ -12,7 +12,8 @@ class {{modelName}}Request extends FormRequest
      */
     public function authorize()
     {
-        return {{authorization}};
+        // Needs work
+        return true;
     }
 
     /**

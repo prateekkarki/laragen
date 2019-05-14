@@ -1,0 +1,5 @@
+
+    public function {{columnName}}()
+    {
+        return $this->hasMany({{relatedModel}}::class);
+    }

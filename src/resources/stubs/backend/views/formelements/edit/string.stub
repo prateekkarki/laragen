@@ -1,0 +1,6 @@
+<div class="form-group row mb-4">
+    <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3" for="{{key}}">{{label}}</label>
+    <div class="col-sm-12 col-md-7">
+        <input class="form-control" type="text" name="{{key}}" id="{{key}}" value="{{ ${{modelNameLowercase}}->{{key}} }}" placeholder="{{label}}" {{options}}>
+    </div>
+</div>

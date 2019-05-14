@@ -1,0 +1,38 @@
+<?php
+namespace Prateekkarki\Laragen\Models\Types\Relational\Single;
+
+use Prateekkarki\Laragen\Models\Types\Relational\SingleType;
+use Illuminate\Support\Str;
+
+class ParentType extends SingleType
+{
+    protected $isParent = true;
+    protected $stubs = [
+        'modelMethod' => 'common/Models/fragments/belongsTo',
+        'foreignMethod' => 'common/Models/fragments/hasOne'
+    ];
+    
+    public function getSchema()
+    {
+        $schema = "";
+        $parentTable = $this->hasSelfParent() ? $this->getParentModule() : $this->typeOption;
+        $schema .= "\$table->bigInteger('".$this->columnName."')->unsigned()->nullable();".PHP_EOL.$this->getTabs(3);
+        $schema .= "\$table->foreign('".$this->columnName."')->references('id')->on('$parentTable')->onDelete('set null');".PHP_EOL;
+        return $schema;
+    }
+
+    public function getPivot()
+    {
+        return ($this->typeOption == $this->getParentModule() || $this->typeOption == "self") ? $this->getParentModel() : ucfirst(Str::singular(Str::camel($this->typeOption)));
+    }
+
+    public function getRelatedModel()
+    {
+        return $this->getChildModel();
+    }
+    
+    public function getChildModel()
+    {
+        return ($this->typeOption == $this->getParentModule() || $this->typeOption == "self") ? $this->getParentModel() : ucfirst(Str::singular(Str::camel($this->typeOption)));
+    }
+}

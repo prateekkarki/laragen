@@ -1,10 +1,5 @@
 foreach (["{{relatedTypes}}"] as $relatedType) {
 			if ($request->has($relatedType)) {
-				$messages = $this->uploader->process($request->input($relatedType), "{{modelNameLowercase}}");
-				if (isset($messages['success'])) {
-					$request->merge($relatedType, $messages['success']['filename']);
-				}else{
-					$errors = $messages['errors'];
-				}
+                ${{modelNameLowercase}}->$relatedType()->sync($request->$relatedType);
 			}
 		}

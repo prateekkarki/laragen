@@ -3,7 +3,7 @@ namespace Prateekkarki\Laragen\Generators\Common;
 
 use Prateekkarki\Laragen\Generators\BaseGenerator;
 use Prateekkarki\Laragen\Generators\GeneratorInterface;
-use Prateekkarki\Laragen\Models\DataOption;
+use Prateekkarki\Laragen\Models\TypeResolver;
 
 class Migration extends BaseGenerator implements GeneratorInterface
 {
@@ -11,7 +11,29 @@ class Migration extends BaseGenerator implements GeneratorInterface
 
     public function generate()
     {
+        if(self::$counter==0){
+            $existingMigrationFiles = is_dir(database_path('migrations/laragen/')) ? scandir(database_path('migrations/laragen/')) : [];
+
+            foreach ($existingMigrationFiles as $file) {
+                $file = database_path("migrations/laragen") . "/" . $file;
+                if (is_file($file))
+                    unlink($file);
+            }
+        }
+
         $generatedFiles = [];
+
+        foreach($this->module->getFilteredColumns('needsTableInit') as $type){
+            $migrationTemplate = $this->buildTemplate('common/migrations/pivot', [
+                '{{pivotName}}'        => $type->getMigrationPivot(),
+                '{{pivotTableName}}'   => $type->getPivotTable(),
+                '{{pivotTableSchema}}' => $type->getPivotSchema()
+            ]);
+            
+            $fullFilePath = $this->getPivotFile($type);
+            file_put_contents($fullFilePath, $migrationTemplate);
+            $generatedFiles[] = $fullFilePath;
+        }
 
         $migrationTemplate = $this->buildTemplate('common/migrations/table', [
             '{{modelName}}'         => $this->module->getModelName(),
@@ -23,19 +45,17 @@ class Migration extends BaseGenerator implements GeneratorInterface
         $fullFilePath = $this->getMigrationFile();
         file_put_contents($fullFilePath, $migrationTemplate);
         $generatedFiles[] = $fullFilePath;
-
-        if($this->module->hasRelations()){
-            foreach($this->module->relativeTypes as $related){
-                $migrationTemplate = $this->buildTemplate('common/migrations/pivot', [
-                    '{{pivotName}}'         => $related->getPivotName($this->module->getModelName()),
-                    '{{pivotTableName}}'   => $related->getPivotTableName($this->module->getModelNameLowerCase()),
-                    '{{pivotTableSchema}}'  => $related->getTableSchema($this->module->getModelNameLowerCase(), $this->module->getModuleName())
-                ]);
-                
-                $fullFilePath = $this->getPath("database/migrations/laragen/") . $related->getPivotFile($this->module->getModelNameLowerCase(), ++self::$counter);
-                file_put_contents($fullFilePath, $migrationTemplate);
-                $generatedFiles[] = $fullFilePath;
-            }
+        
+        foreach($this->module->getFilteredColumns(['hasModel', 'hasPivot']) as $type){
+            $migrationTemplate = $this->buildTemplate('common/migrations/pivot', [
+                '{{pivotName}}'        => $type->getMigrationPivot(),
+                '{{pivotTableName}}'   => $type->getPivotTable(),
+                '{{pivotTableSchema}}' => $type->getPivotSchema()
+            ]);
+            
+            $fullFilePath = $this->getPivotFile($type);
+            file_put_contents($fullFilePath, $migrationTemplate);
+            $generatedFiles[] = $fullFilePath;
         }
         return $generatedFiles;
     }
@@ -53,7 +73,7 @@ class Migration extends BaseGenerator implements GeneratorInterface
     {
         $fileCounter = sprintf('%06d', (int) date('His') + ++self::$counter);
         $filenamePrefix = date('Y_m_d_').$fileCounter."_";
-        $fileName = "create_".str_singular($this->module->getPivotTableName($related))."_table.php";
+        $fileName = "create_". $related->getPivotTable()."_table.php";
 
         return $this->getPath("database/migrations/laragen/").$filenamePrefix.$fileName;
     }

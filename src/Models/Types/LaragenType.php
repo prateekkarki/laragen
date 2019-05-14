@@ -2,37 +2,47 @@
 namespace Prateekkarki\Laragen\Models\Types;
 
 use Illuminate\Support\Str;
-use Prateekkarki\Laragen\Models\DataOption;
+use Prateekkarki\Laragen\Models\TypeResolver;
 
-class LaragenType
+abstract class LaragenType
 {
-	public $isRelational = false;
-	protected $columnName;
+	protected $relationalType = false;
+    protected $hasPivot = false;
+    protected $hasModel = false;
 	protected $size = 192;
-	protected $optionString;
     protected $uniqueFlag = false;
     protected $requiredFlag = false;
-
+    protected $isDisplay = false;
 	protected $dataType = 'string';
+	protected $formType = 'string';
+	protected $stubs = [];
+	protected $moduleName;
+	protected $columnName;
+	protected $optionString;
 	
-    public function __construct($columnName, $optionString)
+    public function __construct($moduleName, $columnName, $optionString)
     {
+        $this->moduleName = $moduleName;
         $this->columnName = $columnName;
         $this->optionString = $optionString;
 
-        $this->optionArray = explode('|', $optionString);
+        $this->optionArray = is_string($optionString) ? explode('|', $optionString) : [];
         $typePieces = array_shift($this->optionArray);
         $type = explode(':', $typePieces);
         $this->typeOption = is_array($type) && count($type) >= 2 ? $type[1] : false;
 
         
         foreach ($this->optionArray as $option) {
-            if ($option == DataOption::COLUMN_UNIQUE) {
+            if ($option == TypeResolver::COLUMN_UNIQUE) {
                 $this->setUnique();
                 continue;
             }
-            if ($option == DataOption::COLUMN_REQUIRED) {
+            if ($option == TypeResolver::COLUMN_REQUIRED) {
                 $this->setRequired();
+                continue;
+            }
+            if ($option == "*") {
+                $this->setIsDisplay();
                 continue;
             }
             if (Str::contains($option, ':')) {
@@ -53,13 +63,24 @@ class LaragenType
             $this->$var = $params[0];
         }
 
-   }   
+        return property_exists($this, $method) ? $this->$method : "";
+   }
 	
-    public function isRelational()
-    {
-        return $this->isRelational;
-    }
-    
+   public function isRelational()
+   {
+       return $this->relationalType;
+   }
+   
+   public function hasPivot()
+   {
+       return $this->hasPivot;
+   }
+   
+   public function hasModel()
+   {
+       return $this->hasModel;
+   }
+   
     public function getSchema()
     {
         $schema = '$table->'.$this->getDataType()."('{$this->getColumn()}'";
@@ -76,7 +97,63 @@ class LaragenType
         $options .= $this->isRequired() ? 'required="required" ' : '';
         return $options;
     }
-	
+    
+    public function getFilteredColumns($options = [], $columnsOnly = false)
+    {
+        $filteredTypes = [];
+        $options = is_array($options) ? $options : [$options];
+        foreach($this->getPivotColumns() as $type){
+            foreach ($options as $option) {
+                if($type->$option()){
+                    $filteredTypes[] = $columnsOnly ? $type->getColumn() : $type;
+                    break;
+                }
+            }
+        }
+        return $filteredTypes;
+    }
+
+    public function getRelatedModel()
+    {
+        return $this->getChildModel();
+    }
+
+    public function getRelatedModule()
+    {
+        return Str::snake(Str::plural($this->getRelatedModel()));
+    }
+
+    public function getRelatedModelLowercase()
+    {
+        return strtolower($this->getRelatedModel());
+    }
+
+    public function getChildModel()
+    {
+        return ucfirst(Str::camel(Str::singular($this->typeOption ?: $this->columnName )));
+    }
+    
+    public function getParentModel()
+    {
+        return ucfirst(Str::camel(Str::singular($this->moduleName)));
+    }
+
+    public function getParentModule()
+    {
+        return $this->moduleName;
+    }
+
+    public function getParentModelLowercase()
+    {
+        return Str::singular($this->moduleName);
+    }
+
+    public function getStub($type)
+    {
+        return isset($this->stubs[$type]) ? $this->stubs[$type] : false;
+    }
+
+
     public function getTextRows() {
         if (!$this->size)
             return 4;
@@ -99,10 +176,15 @@ class LaragenType
         return $this->size;
     }
 
+    public function getDisplay()
+    {
+        return Str::title(str_replace("_", " ", $this->columnName));
+    }
+
     public function getColumn()
     {
         return $this->columnName;
-	}
+    }
     
     public function getDataType() {
         return $this->dataType;
@@ -114,6 +196,10 @@ class LaragenType
 
     protected function setRequired($set = true) {
         $this->requiredFlag = ($set === true) ? true : false;
+    }
+
+    protected function setIsDisplay($set = true) {
+        $this->isDisplay = ($set === true) ? true : false;
     }
 
     protected function setSize($size = null) {
@@ -131,31 +217,6 @@ class LaragenType
                 break;
         }
     }
-    
-    public function getPivotTableName($model= "")
-    {
-        $moduleArray = [str_singular($model), str_singular($this->columnName)];
-        sort($moduleArray);
-        return implode("_", $moduleArray);
-    }
-    
-    public function getPivotName($model= "")
-    {
-        $moduleArray = [ucfirst(str_singular($model)), ucfirst(str_singular($this->columnName))];
-        sort($moduleArray);
-        return implode("", $moduleArray);
-    }
-
-    
-    public function getPivotFile($model= "", $counter = 0)
-    {
-        $fileCounter = sprintf('%06d', (int) date('His') + $counter);
-        $filenamePrefix = date('Y_m_d_').$fileCounter."_";
-        $fileName = "create_".str_singular($this->getPivotTableName($model, $this->columnName))."_table.php";
-
-        return $filenamePrefix.$fileName;
-    }
-
 
     public function getTabs($number)
     {

@@ -2367,6 +2367,10 @@ pre {
   padding-left: 35px;
   padding-right: 35px; }
 
+.sidebar-mini .main-wrapper-1 .section .section-header {
+      margin-left: -25px;
+  }
+
 @media (max-width: 575.98px) {
   .section .section-title {
     font-size: 14px; }

@@ -2,6 +2,7 @@
 namespace Prateekkarki\Laragen\Commands;
 use Illuminate\Console\Command;
 use Prateekkarki\Laragen\Models\Module;
+use Prateekkarki\Laragen\Models\LaragenOptions;
 use Prateekkarki\Laragen\Models\FileSystem;
 
 class Generate extends Command
@@ -35,23 +36,28 @@ class Generate extends Command
      *
      * @return mixed
      */
-    
     public function handle()
     {
-        $options = config('laragen.options');
-        $modules = config('laragen.modules');
+        $laragen = new LaragenOptions(config('laragen.modules'), config('laragen.options'));
+        $modules = $laragen->getModules();
         $generatedFiles = [];
 
-        $existingMigrationFiles = is_dir(database_path('migrations/laragen/')) ? scandir(database_path('migrations/laragen/')) : [];
+        $generators = $laragen->getGenerators();
 
-        foreach ($existingMigrationFiles as $file) {
-            $file = database_path("migrations/laragen") . "/" . $file;
-            if (is_file($file))
-                unlink($file);
-        }
+        $this->line("
+██▓    ▄▄▄       ██▀███   ▄▄▄        ▄████ ▓█████  ███▄    █ 
+▓██▒   ▒████▄    ▓██ ▒ ██▒▒████▄     ██▒ ▀█▒▓█   ▀  ██ ▀█   █ 
+▒██░   ▒██  ▀█▄  ▓██ ░▄█ ▒▒██  ▀█▄  ▒██░▄▄▄░▒███   ▓██  ▀█ ██▒
+▒██░   ░██▄▄▄▄██ ▒██▀▀█▄  ░██▄▄▄▄██ ░▓█  ██▓▒▓█  ▄ ▓██▒  ▐▌██▒
+░██████▒▓█   ▓██▒░██▓ ▒██▒ ▓█   ▓██▒░▒▓███▀▒░▒████▒▒██░   ▓██░
+░ ▒░▓  ░▒▒   ▓▒█░░ ▒▓ ░▒▓░ ▒▒   ▓▒█░ ░▒   ▒ ░░ ▒░ ░░ ▒░   ▒ ▒ 
+░ ░ ▒  ░ ▒   ▒▒ ░  ░▒ ░ ▒░  ▒   ▒▒ ░  ░   ░  ░ ░  ░░ ░░   ░ ▒░
+    ░ ░    ░   ▒     ░░   ░   ░   ▒   ░ ░   ░    ░      ░   ░ ░ 
+    ░  ░     ░  ░   ░           ░  ░      ░    ░  ░         ░ 
+                                                                ");
 
-        $itemsToGenerate = $this->configToGenerators($options['items_to_generate']);
-        $bar = $this->output->createProgressBar(count($modules) * (count($itemsToGenerate) + count($this->filesToPublish)));
+        $this->line("Generating code...");
+        $bar = $this->output->createProgressBar(count($modules) * (count($generators) + count($this->filesToPublish)));
         $bar->setOverwrite(true);
         $bar->start();
         $fs = new FileSystem();
@@ -62,7 +68,7 @@ class Generate extends Command
         foreach ($modules as $moduleName => $moduleArray) {
             $module = new Module($moduleName, $moduleArray);
             
-            foreach ($itemsToGenerate as $generator) {
+            foreach ($generators as $generator) {
                 $itemGenerator = new $generator($module);
                 $returnedFiles = $itemGenerator->generate();
 
@@ -84,16 +90,4 @@ class Generate extends Command
 
         $this->info("Cheers!!!");
     }
-
-    protected function configToGenerators($array) {
-        $generators = [];
-        foreach ($array as $ns => $items) {
-            foreach ($items as $item) {
-                $generators[] = "\\Prateekkarki\\Laragen\\Generators\\".$ns."\\".$item;
-            }
-        }
-        return $generators;
-    }
-
-
 }

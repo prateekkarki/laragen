@@ -7,6 +7,7 @@ use Illuminate\View\View;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Backend\{{modelName}}Request;
 use App\Http\Controllers\Backend\UploadController;
+use Illuminate\Http\Request;
 {{usedModels}}
 
 /**
@@ -26,10 +27,12 @@ class {{modelName}}Controller extends Controller
     /**
      * Show the application {{moduleName}} index.
      */
-    public function index(): View
+    public function index(Request $request): View
     {
+        $sortDirection = $request->input('sort_dir') ?: 'asc';
+        $sortColumn = $request->input('sort') ?: 'created_at';
         return view('backend.{{moduleName}}.index', [
-            '{{moduleName}}' => {{modelName}}::latest()->paginate(10)
+            '{{moduleName}}' => {{modelName}}::orderBy($sortColumn, $sortDirection)->paginate({{perPage}})
         ]);
     }
 
@@ -38,8 +41,10 @@ class {{modelName}}Controller extends Controller
      */
     public function edit({{modelName}} ${{modelNameLowercase}}): View
     {
-        {{fileExtentions}}
-        return view('backend.{{moduleName}}.edit', ['{{modelNameLowercase}}' => ${{modelNameLowercase}}, {{foreignData}}]);
+        return view('backend.{{moduleName}}.edit', [
+            '{{modelNameLowercase}}' => ${{modelNameLowercase}}, 
+            {{foreignData}}
+        ]);
     }
 
     /**
@@ -61,6 +66,7 @@ class {{modelName}}Controller extends Controller
             return redirect()->back()->withErrors($errors);    
         }else{
             ${{modelNameLowercase}} = {{modelName}}::create($request->all());
+            {{createRelated}}
             return redirect()->route('backend.{{moduleName}}.edit', ${{modelNameLowercase}})->withSuccess(__('{{moduleName}}.created'));
         }
     }
