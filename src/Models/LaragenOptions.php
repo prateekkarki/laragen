@@ -7,7 +7,9 @@ class LaragenOptions
     protected $modules;
     protected $options;
 
-    public function __construct()
+    private static $instance;
+
+    private function __construct()
     {
         $this->options = config('laragen.options');
 
@@ -15,6 +17,14 @@ class LaragenOptions
         foreach (config('laragen.modules') as $moduleName => $moduleData) {
             $this->modules = array_merge($this->modules, $this->getModulesRecursive($moduleName, $moduleData));
         }
+    }
+
+    public static function getInstance()
+    {
+        if (!isset(self::$instance)) {
+            self::$instance = new LaragenOptions();
+        }
+        return self::$instance;
     }
     
     public function getOptions() {
