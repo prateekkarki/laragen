@@ -6,16 +6,13 @@ use Prateekkarki\Laragen\Models\TypeResolver;
 
 abstract class LaragenType
 {
-	protected $relationalType = false;
-    protected $hasPivot = false;
-    protected $hasModel = false;
-	protected $size = 192;
-    protected $uniqueFlag = false;
-    protected $requiredFlag = false;
-    protected $isDisplay = false;
-	protected $dataType = 'string';
-	protected $formType = 'string';
+    protected $uniqueFlag;
+    protected $requiredFlag;
+    protected $isDisplay;
+	protected $dataType;
+	protected $formType;
 	protected $stubs = [];
+	protected $size = false;
 	protected $moduleName;
 	protected $columnName;
 	protected $optionString;
@@ -66,21 +63,11 @@ abstract class LaragenType
         return property_exists($this, $method) ? $this->$method : "";
    }
 	
-   public function isRelational()
-   {
+    public function isRelational()
+    {
        return $this->relationalType;
-   }
-   
-   public function hasPivot()
-   {
-       return $this->hasPivot;
-   }
-   
-   public function hasModel()
-   {
-       return $this->hasModel;
-   }
-   
+    }
+
     public function getSchema()
     {
         $schema = '$table->'.$this->getDataType()."('{$this->getColumn()}'";
@@ -170,10 +157,6 @@ abstract class LaragenType
 
     public function optionArray() {
         return $this->optionArray;
-    }
-
-    public function getSize() {
-        return $this->size;
     }
 
     public function getDisplay()

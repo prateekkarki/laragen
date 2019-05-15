@@ -52,15 +52,20 @@ class MultipleDataType extends MultipleType
     public function getPivotColumns()
     {
         $columns = [];
-        foreach (array_merge([$this->getParentModelLowercase().'_id' => 'parent:'.$this->getParentModule()], $this->optionString )  as $column => $optionString) {
+        foreach ($this->getLaragenColumns() as $column => $optionString) {
             $data = new TypeResolver($this->getPivotTable(), $column, $optionString);
             $columns[$column] = $data->getLaragenType();
         }
         return $columns;
     }
 
+    public function getLaragenColumns()
+    {
+        return array_merge($this->optionString, [$this->getParentModelLowercase() => 'parent:'.$this->getParentModule()]);
+    }
+
     public function getTypeColumns()
     {
-        return array_merge([$this->getParentModelLowercase().'_id'], array_keys($this->optionString));
+        return array_merge(array_keys($this->optionString), [$this->getParentModelLowercase().'_id']);
     }
 }
