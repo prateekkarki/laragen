@@ -1,18 +1,20 @@
 <?php
 namespace Prateekkarki\Laragen\Models;
-use Prateekkarki\Laragen\Models\TypeResolver;
-use Illuminate\Support\Str;
+use Prateekkarki\Laragen\Models\Module;
 
 class LaragenOptions
 {
     protected $modules;
-
     protected $options;
 
     public function __construct()
     {
-        $this->modules = config('laragen.modules');
         $this->options = config('laragen.options');
+
+        $this->modules = [];
+        foreach (config('laragen.modules') as $moduleName => $moduleData) {
+            $this->modules = array_merge($this->modules, $this->getModulesRecursive($moduleName, $moduleData));
+        }
     }
     
     public function getOptions() {
@@ -21,6 +23,21 @@ class LaragenOptions
     
     public function getModules() {
         return $this->modules;
+    }
+    
+    public function getModule($name) {
+        return $this->modules[$name] ?: false;
+    }
+    
+    protected function getModulesRecursive($moduleName, $moduleData) {
+        $modules = [];
+        $module = new Module($moduleName, $moduleData);
+        $childColumns = $module->getFilteredColumns(['isMultipleType', 'hasMultipleFiles']);
+        $modules[$moduleName] = $module;
+        foreach ($childColumns as $childColumn) {
+            $modules = array_merge($modules, $this->getModulesRecursive($childColumn->getPivotTable(), $childColumn->getLaragenColumns()));
+        }
+        return $modules;
     }
     
     public function getGenerators() {
