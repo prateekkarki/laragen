@@ -5,19 +5,14 @@ use Illuminate\Support\Str;
 
 class Module
 {
-    protected $module;
-
-    protected $data;
-
     protected $name;
 
     public function __construct($moduleName, $moduleData)
     {
-        $this->module = (object) $moduleData;
         $this->laragenData = $moduleData;
-        $this->data = array_filter($moduleData, function($elem) {
-            return (is_array($elem)) ? false : true;
-        });
+        $this->name = $moduleName;
+
+
         $this->multipleData = [];
         $this->multipleData[] = array_filter($moduleData, function($elem) {
             return (is_array($elem)) ? true : false;
@@ -29,7 +24,7 @@ class Module
         $this->columnsData = [];
         $this->displayColumns = [];
         foreach ($moduleData as $column => $typeOptions) {
-            $data = new TypeResolver($moduleName, $column, $typeOptions);
+            $data = new TypeResolver($this->name, $column, $typeOptions);
             $type = $data->getLaragenType();
             $this->columnsData[$column] = $type;
             if($type->isDisplay())
@@ -39,8 +34,6 @@ class Module
         if(sizeof($this->displayColumns)==0){
             $this->displayColumns[] = array_values($this->columnsData)[0];
         }
-
-        $this->name = $moduleName;
     }
 
     public function getTabTitles()
@@ -159,76 +152,11 @@ class Module
         return $this->multipleData;
     }
 
-    public function getData()
-    {
-        $this->data['sort'] = 'integer';
-        $this->data['status'] = 'boolean';
-
-        return $this->data;
-    }
-
     public function getLastColumn()
     {
         $keyArray = array_keys($this->getColumns(true, true));
         $lastColumn = array_pop($keyArray);
         return $lastColumn;
-    }
-
-    public function getBackendColumnTitles()
-    {
-        $data = [];
-        foreach ($this->data as $column => $optionString) {
-            $optionArray = explode('|', $optionString);
-            if (in_array($optionArray[0], ['string', 'int']) && in_array($column, ['title', 'firstname', 'lastname', 'name'])) {
-                $data[$column] = ucwords($column);
-            }
-        }
-        return array_merge($data, ['updated_at' => 'Last Updated', 'status' => 'Status']);
-    }
-
-    public function getNativeColumns()
-    {
-        $data = [];
-        foreach ($this->data as $column => $optionString) {
-            if (is_array($optionString)) {
-                continue;
-            }
-            $optionArray = explode('|', $optionString);
-            if (in_array($optionArray[0], TypeResolver::$types)) {
-                $data[] = $column;
-            }
-        }
-        if ($this->getForeignColumns()) {
-            foreach ($this->getForeignColumns() as $relation => $tablename) {
-                $columnName = array_values($tablename)[0];
-                $data[] = str_singular($columnName).'_id';
-            }
-        }
-        return $data;
-    }
-
-    public function getNativeData()
-    {
-        $data = [];
-        foreach ($this->data as $column => $optionString) {
-            $optionArray = explode('|', $optionString);
-            if (in_array($optionArray[0], TypeResolver::$types)) {
-                $data[] = [$column => $optionArray[0]];
-            }
-        }
-        return $data;
-    }
-
-    public function getWritableColumns()
-    {
-        $data = [];
-        foreach ($this->data as $column => $optionString) {
-            $optionArray = explode('|', $optionString);
-            if (in_array($optionArray[0], TypeResolver::$types)) {
-                $data[] = [$column => $optionArray[0]];
-            }
-        }
-        return $data;
     }
     
     public function getModuleName()

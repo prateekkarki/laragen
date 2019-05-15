@@ -101,7 +101,7 @@ class View extends BaseGenerator implements GeneratorInterface
     {
         $displayColumn = $type->getRelatedModule() == 'users' ? 'name' : 'title';
         if (($type->hasPivot() || $type->isParent()) && $type->getRelatedModule() != 'users') {
-            $relatedModule = new Module($type->getRelatedModule(), config('laragen.modules.' . $type->getRelatedModule()));
+            $relatedModule = app('laragen')->getModule(Str::plural(strtolower(Str::snake($type->getRelatedModel()))));
             $displayColumn = $relatedModule->getDisplayColumns()[0]->getColumn();
         }
         $formElement = $this->buildTemplate('backend/views/formelements/' . $page . '/' . $type->getFormType(), [
@@ -121,7 +121,7 @@ class View extends BaseGenerator implements GeneratorInterface
     public function buildMultiple($page, $type)
     {
         $displayColumn = $type->getRelatedModule() == 'users' ? 'name' : 'title';
-        $relatedModule = new Module($type->getRelatedModule(), config('laragen.modules.' . $this->module->getModuleName().'.'.$type->getColumn()));
+        $relatedModule = app('laragen')->getModule($this->module->getModelNameLowercase()."_".$type->getColumn());
         $displayColumn = $relatedModule->getDisplayColumns()[0]->getColumn();
         $formElement = $this->buildTemplate('backend/views/formelements/' . $page . '/' . $type->getFormType(), [
             '{{key}}'                       => $type->getColumn(),
