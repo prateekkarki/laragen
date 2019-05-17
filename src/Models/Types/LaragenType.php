@@ -28,24 +28,14 @@ abstract class LaragenType
         $type = explode(':', $typePieces);
         $this->typeOption = is_array($type) && count($type) >= 2 ? $type[1] : false;
 
-        
-        foreach ($this->optionArray as $option) {
-            if ($option == TypeResolver::COLUMN_UNIQUE) {
-                $this->setUnique();
-                continue;
-            }
-            if ($option == TypeResolver::COLUMN_REQUIRED) {
-                $this->setRequired();
-                continue;
-            }
-            if ($option == "*") {
-                $this->setIsDisplay();
-                continue;
-            }
-            if (Str::contains($option, ':')) {
-                $optionPieces = explode(':', $option);
-                $this->setOptions($optionPieces[0], $optionPieces[1]);
-            }
+        if(in_array(TypeResolver::COLUMN_UNIQUE, $this->optionArray)){
+            $this->setUnique();
+        }
+        if(in_array(TypeResolver::COLUMN_REQUIRED, $this->optionArray)){
+            $this->setRequired();
+        }
+        if(in_array("*", $this->optionArray)){
+            $this->setIsDisplay();
         }
     }
     
