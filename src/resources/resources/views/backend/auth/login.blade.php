@@ -39,32 +39,23 @@
 
               <div class="form-group">
                 <div class="custom-control custom-checkbox">
-                  <input type="checkbox" name="remember" class="custom-control-input" tabindex="3" id="remember-me">
+                  <input type="checkbox" name="remember" class="custom-control-input" tabindex="3" id="remember-me" {{ old('remember') ? 'checked' : '' }}>
                   <label class="custom-control-label" for="remember-me">Remember Me</label>
                 </div>
               </div>
 
               <div class="form-group text-right">
-                <a href="#" class="float-left mt-3">
+                <a href="{{ route('password.request') }}" class="float-left mt-3">
                   Forgot Password?
                 </a>
                 <button type="submit" class="btn btn-primary btn-lg btn-icon icon-right" tabindex="4">
                   Login
                 </button>
               </div>
-
-              <!-- <div class="mt-5 text-center">
-                Don't have an account? <a href="#">Create new one</a>
-              </div> -->
             </form>
 
             <div class="text-center mt-5 text-small">
               Copyright &copy; {{ date('Y') }} | {{ config('app.name', 'Laragen Dashboard') }}
-              <div class="mt-2">
-                <a href="#">Privacy Policy</a>
-                <div class="bullet"></div>
-                <a href="#">Terms of Service</a>
-              </div>
             </div>
           </div>
         </div>
