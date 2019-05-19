@@ -13,6 +13,7 @@ class Model extends BaseGenerator implements GeneratorInterface
         $modelTemplate = $this->buildTemplate('common/Models/Model', [
             '{{modelName}}'       => $this->module->getModelName(),
             '{{massAssignables}}' => implode("', '", $this->module->getColumns(true, true)),
+            '{{usedModels}}'      => $this->getUsedModels(),
             '{{foreignMethods}}'  => $this->getForeignMethods()
         ]);
         
@@ -32,13 +33,15 @@ class Model extends BaseGenerator implements GeneratorInterface
         }
         
         foreach($this->module->getFilteredColumns(['hasModel', 'hasOptions']) as $type){
+            $pivotModel = Str::singular($type->getPivot());
             $typeTemplate = $this->buildTemplate('common/Models/Model', [
-                '{{modelName}}'       => Str::singular($type->getPivot()),
+                '{{modelName}}'       => $pivotModel,
                 '{{massAssignables}}' => implode("', '", $type->getTypeColumns()),
+                '{{usedModels}}'      => $this->getUsedModels($pivotModel),
                 '{{foreignMethods}}'  => $this->getTypeForeignMethods($type),
             ]);
             
-            $fullFilePath = $this->getPath("app/Models/").Str::singular($type->getPivot()).".php";
+            $fullFilePath = $this->getPath("app/Models/").$pivotModel.".php";
             file_put_contents($fullFilePath, $typeTemplate);
             $generatedFiles[] = $fullFilePath;
         }
@@ -54,9 +57,25 @@ class Model extends BaseGenerator implements GeneratorInterface
             '{{columnName}}'  => $type->getColumn(),
             '{{parent}}'      => $type->getParentModelLowercase(),
             '{{parentModel}}' => $type->getParentModel(),
+            '{{relatedModel}}' => $type->getRelatedModel(),
         ]);
 
         return $foreignMethods;
+    }
+
+    protected function getUsedModels($pivotModel = false) {
+        $usedModels = "";
+        $classes = [];
+        foreach($this->module->getFilteredColumns(['hasSingleRelation', 'hasPivot', 'hasModel']) as $type){
+            $model = $type->getRelatedModel();
+            $class = ($model == 'User') ? config('laragen.options.user_model') : "App\\Models\\".$model;
+            if(in_array($class, $classes) || $model == $this->module->getModelName() || $model == $pivotModel){
+                continue;
+            }
+            $classes[] = $class;
+            $usedModels .= PHP_EOL."use ".$class.";";
+        }
+        return $usedModels;
     }
 
     protected function getForeignMethods()
@@ -69,6 +88,7 @@ class Model extends BaseGenerator implements GeneratorInterface
                 '{{parent}}'       => $type->getParentModelLowercase(),
                 '{{relatedModel}}' => $type->getRelatedModel(),
                 '{{table}}'        => $type->getPivotTable(),
+                '{{parentModel}}' => $type->getParentModel(),
                 '{{parentId}}'     => $type->getParentModelLowercase() . "_id",
                 '{{childId}}'      => $type->getChildKey(),
             ]);
