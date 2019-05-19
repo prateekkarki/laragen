@@ -18,4 +18,10 @@ class SingleType extends RelationalType
     public function hasSelfParent(){
         return ($this->typeOption == $this->getParentModule() || $this->typeOption == "self");
     }
+
+    public function getColumnKey()
+    {
+        return $this->columnName . "_id";
+    }
+
 }

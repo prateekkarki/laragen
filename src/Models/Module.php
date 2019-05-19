@@ -122,9 +122,9 @@ class Module
                 continue;
             }
             if($columnsOnly){
-                $columns[] = $type->getColumn(); 
+                $columns[] = $type->getColumnKey(); 
             }else{
-                $columns[$type->getColumn()] = $type;
+                $columns[$type->getColumnKey()] = $type;
             }
         }
         return $columns;

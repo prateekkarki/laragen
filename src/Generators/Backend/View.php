@@ -105,7 +105,8 @@ class View extends BaseGenerator implements GeneratorInterface
             $displayColumn = $relatedModule->getDisplayColumns()[0]->getColumn();
         }
         $formElement = $this->buildTemplate('backend/views/formelements/' . $page . '/' . $type->getFormType(), [
-            '{{key}}'                       => $type->getColumn(),
+            '{{key}}'                       => $type->getColumnKey(),
+            '{{column}}'                    => $type->getColumn(),
             '{{label}}'                     => $type->getDisplay(),
             '{{options}}'                   => $type->getFormOptions(),
             '{{relatedModule}}'             => $type->getRelatedModule(),
