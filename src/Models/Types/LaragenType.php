@@ -75,6 +75,12 @@ abstract class LaragenType
         return $options;
     }
     
+    
+    public function getForeignKey()
+    {
+        return $this->columnName . "_id";
+    }
+
     public function getFilteredColumns($options = [], $columnsOnly = false)
     {
         $filteredTypes = [];
@@ -155,6 +161,11 @@ abstract class LaragenType
     }
 
     public function getColumn()
+    {
+        return $this->columnName;
+    }
+
+    public function getColumnKey()
     {
         return $this->columnName;
     }

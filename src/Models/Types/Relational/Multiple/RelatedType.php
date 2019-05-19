@@ -76,8 +76,8 @@ class RelatedType extends MultipleType
     {
         $columnModels = [];
         $columns = [
-            $this->getParentModelLowercase().'_id' => 'parent:'.$this->getParentModule(), 
-            $this->getChildKey() => 'parent:'.$this->typeOption, 
+            $this->getParentModelLowercase() => 'parent:'.$this->getParentModule(), 
+            Str::singular($this->columnName) => 'parent:'.$this->typeOption, 
         ];
         
         foreach ($columns as $column => $optionString) {
