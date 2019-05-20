@@ -13,6 +13,7 @@ return [
 		],
 		'Backend' => [
 			'Controller',
+			'Api',
 			'Request',
 			'View'
 		]

@@ -35,18 +35,21 @@ class LaragenRouteServiceProvider extends ServiceProvider
     public function map()
     {
         Route::middleware(['web', 'auth'])
-            ->namespace($this->namespace)
             ->prefix('admin')
             ->name('backend.')
             ->group(base_path('routes/backend/web.php'));
 
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->prefix('admin')
-            ->group(base_path('routes/backend/auth.php'));
+        Route::middleware(['api'])
+            ->prefix('admin/api')
+            ->name('backend.api.')
+            ->group(base_path('routes/backend/api.php'));
 
         Route::middleware('web')
-            ->namespace($this->namespace)
+                ->prefix('admin')
+                ->name('backend.')
+                ->group(base_path('routes/backend/auth.php'));
+
+        Route::middleware('web')
             ->group(base_path('routes/frontend/web.php'));
     }
 }
