@@ -54,6 +54,15 @@ class LaragenOptions
         return $this->configToGenerators($this->options['items_to_generate']);
     }
     
+    public function generatorExists($str) {
+        foreach ($this->getGenerators() as $generator) {
+            if (substr($generator, -strlen($str)) === $str) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     protected function configToGenerators($array) {
         $generators = [];
         foreach ($array as $ns => $items) {
