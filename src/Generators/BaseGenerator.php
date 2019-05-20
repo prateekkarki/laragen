@@ -56,8 +56,14 @@ class BaseGenerator
             $this->fileSystem->remove($fullFilePath);
         }
         $seederTemplate = ($initializeWithText === false) ? $this->buildTemplate($stub) : $initializeWithText;
-        $this->fileSystem->dumpFile($fullFilePath, $seederTemplate);
+
+        $cleanFilePath = $this->getCleanPath($fullFilePath);
+        $this->fileSystem->dumpFile($cleanFilePath, $seederTemplate);
         return $fullFilePath;
+    }
+
+    public function getCleanPath($file) {
+        return realpath(dirname($file)) . "/" . basename($file);
     }
 
     public function initializeFiles($fileMaps = []) {

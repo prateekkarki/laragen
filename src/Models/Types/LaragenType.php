@@ -6,16 +6,13 @@ use Prateekkarki\Laragen\Models\TypeResolver;
 
 abstract class LaragenType
 {
-	protected $relationalType = false;
-    protected $hasPivot = false;
-    protected $hasModel = false;
-	protected $size = 192;
-    protected $uniqueFlag = false;
-    protected $requiredFlag = false;
-    protected $isDisplay = false;
-	protected $dataType = 'string';
-	protected $formType = 'string';
+    protected $uniqueFlag;
+    protected $requiredFlag;
+    protected $isDisplay;
+	protected $dataType;
+	protected $formType;
 	protected $stubs = [];
+	protected $size = false;
 	protected $moduleName;
 	protected $columnName;
 	protected $optionString;
@@ -31,24 +28,14 @@ abstract class LaragenType
         $type = explode(':', $typePieces);
         $this->typeOption = is_array($type) && count($type) >= 2 ? $type[1] : false;
 
-        
-        foreach ($this->optionArray as $option) {
-            if ($option == TypeResolver::COLUMN_UNIQUE) {
-                $this->setUnique();
-                continue;
-            }
-            if ($option == TypeResolver::COLUMN_REQUIRED) {
-                $this->setRequired();
-                continue;
-            }
-            if ($option == "*") {
-                $this->setIsDisplay();
-                continue;
-            }
-            if (Str::contains($option, ':')) {
-                $optionPieces = explode(':', $option);
-                $this->setOptions($optionPieces[0], $optionPieces[1]);
-            }
+        if(in_array(TypeResolver::COLUMN_UNIQUE, $this->optionArray)){
+            $this->setUnique();
+        }
+        if(in_array(TypeResolver::COLUMN_REQUIRED, $this->optionArray)){
+            $this->setRequired();
+        }
+        if(in_array("*", $this->optionArray)){
+            $this->setIsDisplay();
         }
     }
     
@@ -66,21 +53,11 @@ abstract class LaragenType
         return property_exists($this, $method) ? $this->$method : "";
    }
 	
-   public function isRelational()
-   {
+    public function isRelational()
+    {
        return $this->relationalType;
-   }
-   
-   public function hasPivot()
-   {
-       return $this->hasPivot;
-   }
-   
-   public function hasModel()
-   {
-       return $this->hasModel;
-   }
-   
+    }
+
     public function getSchema()
     {
         $schema = '$table->'.$this->getDataType()."('{$this->getColumn()}'";
@@ -98,6 +75,12 @@ abstract class LaragenType
         return $options;
     }
     
+    
+    public function getForeignKey()
+    {
+        return $this->columnName . "_id";
+    }
+
     public function getFilteredColumns($options = [], $columnsOnly = false)
     {
         $filteredTypes = [];
@@ -172,16 +155,17 @@ abstract class LaragenType
         return $this->optionArray;
     }
 
-    public function getSize() {
-        return $this->size;
-    }
-
     public function getDisplay()
     {
         return Str::title(str_replace("_", " ", $this->columnName));
     }
 
     public function getColumn()
+    {
+        return $this->columnName;
+    }
+
+    public function getColumnKey()
     {
         return $this->columnName;
     }

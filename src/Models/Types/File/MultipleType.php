@@ -8,6 +8,7 @@ class MultipleType extends FileType
 {
     protected $hasModel = true;
     protected $relationalType = true;
+    protected $hasMultipleFiles = true;
     protected $formType = 'multipleFiles';
 
     public function getPivotSchema()
@@ -45,13 +46,7 @@ class MultipleType extends FileType
     public function getPivotColumns()
     {
         $columnModels = [];
-        $columns = [
-            $this->getParentModelLowercase().'_id' => 'parent:'.$this->getParentModule(), 
-            'filename' => 'string', 
-            'size' => 'integer'
-        ];
-        
-        foreach ($columns as $column => $optionString) {
+        foreach ($this->getLaragenColumns() as $column => $optionString) {
             $data = new TypeResolver($this->getPivotTable(), $column, $optionString);
             $columnModels[$column] = $data->getLaragenType();
         }

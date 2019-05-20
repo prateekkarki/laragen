@@ -1,18 +1,30 @@
 <?php
 namespace Prateekkarki\Laragen\Models;
-use Prateekkarki\Laragen\Models\TypeResolver;
-use Illuminate\Support\Str;
+use Prateekkarki\Laragen\Models\Module;
 
 class LaragenOptions
 {
     protected $modules;
-
     protected $options;
 
-    public function __construct($modules, $options)
+    private static $instance;
+
+    private function __construct()
     {
-        $this->modules = $modules;
-        $this->options = $options;
+        $this->options = config('laragen.options');
+
+        $this->modules = [];
+        foreach (config('laragen.modules') as $moduleName => $moduleData) {
+            $this->modules = array_merge($this->modules, $this->getModulesRecursive($moduleName, $moduleData));
+        }
+    }
+
+    public static function getInstance()
+    {
+        if (!isset(self::$instance)) {
+            self::$instance = new LaragenOptions();
+        }
+        return self::$instance;
     }
     
     public function getOptions() {
@@ -23,8 +35,32 @@ class LaragenOptions
         return $this->modules;
     }
     
+    public function getModule($name) {
+        return $this->modules[$name] ?: false;
+    }
+    
+    protected function getModulesRecursive($moduleName, $moduleData) {
+        $modules = [];
+        $module = new Module($moduleName, $moduleData);
+        $childColumns = $module->getFilteredColumns(['isMultipleType', 'hasMultipleFiles']);
+        $modules[$moduleName] = $module;
+        foreach ($childColumns as $childColumn) {
+            $modules = array_merge($modules, $this->getModulesRecursive($childColumn->getPivotTable(), $childColumn->getLaragenColumns()));
+        }
+        return $modules;
+    }
+    
     public function getGenerators() {
         return $this->configToGenerators($this->options['items_to_generate']);
+    }
+    
+    public function generatorExists($str) {
+        foreach ($this->getGenerators() as $generator) {
+            if (substr($generator, -strlen($str)) === $str) {
+                return true;
+            }
+        }
+        return false;
     }
     
     protected function configToGenerators($array) {

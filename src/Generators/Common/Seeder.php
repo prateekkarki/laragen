@@ -56,7 +56,7 @@ class Seeder extends BaseGenerator implements GeneratorInterface
         file_put_contents($fullFilePath, $factoryTemplate);
         $generatedFiles[] = $fullFilePath;
 
-        foreach($this->module->getFilteredColumns(['hasPivot', 'hasModel']) as $type){
+        foreach($this->module->getFilteredColumns(['hasPivot']) as $type){
             $typeTemplate = $this->buildTemplate('common/Factories/Factory', [
                 '{{modelName}}'      => $type->getPivot(),
                 '{{usedModels}}'     => $this->getUsedModels($type->getFilteredColumns('hasSingleRelation'), $type->getPivot()),
@@ -162,7 +162,7 @@ class Seeder extends BaseGenerator implements GeneratorInterface
             );
         }
 
-        foreach($this->module->getFilteredColumns(['hasModel', 'hasPivot']) as $type){
+        foreach($this->module->getFilteredColumns(['hasPivot']) as $type){
             
             $this->insertIntoFile(
                 $laragenSeederFile,

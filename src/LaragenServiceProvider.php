@@ -10,6 +10,7 @@ use Prateekkarki\Laragen\Commands\Seeder;
 use Prateekkarki\Laragen\Commands\Migrate;
 use Prateekkarki\Laragen\Commands\Execute;
 use Prateekkarki\Laragen\Commands\Initialize;
+use Prateekkarki\Laragen\Models\LaragenOptions;
 use Artisan;
 
 class LaragenServiceProvider extends ServiceProvider
@@ -43,6 +44,10 @@ class LaragenServiceProvider extends ServiceProvider
         $this->app->register(ImageServiceProvider::class);
         AliasLoader::getInstance()->alias('Image', Image::class);
 
+        $this->app->singleton('laragen', function () {
+            return LaragenOptions::getInstance();
+        });
+
         $this->app->bind('command.laragen:make', Generate::class);
         $this->app->bind('command.laragen:seed', Seeder::class);
         $this->app->bind('command.laragen:migrate', Migrate:: class);
@@ -55,7 +60,7 @@ class LaragenServiceProvider extends ServiceProvider
             'command.laragen:migrate',
             'command.laragen:exec',
             'command.laragen:init',
-            ]);
+        ]);
 
         $routeFile = app_path('Providers\LaragenRouteServiceProvider.php');
         if (file_exists($routeFile))

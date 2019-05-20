@@ -8,16 +8,12 @@ class OptionType extends SingleType
 {
     protected $needsTableInit = true;
     protected $hasOptions = true;
-    protected $stubs = [
-        'modelMethod' => 'common/Models/fragments/belongsTo',
-        'foreignMethod' => 'common/Models/fragments/hasOne'
-    ];
 
     public function getSchema()
     {
         $schema = "";
-        $schema .= "\$table->bigInteger('".$this->getColumn()."')->unsigned()->nullable();".PHP_EOL.$this->getTabs(3);
-        $schema .= "\$table->foreign('".$this->getColumn()."')->references('id')->on('".$this->getPivotTable()."')->onDelete('set null');".PHP_EOL;
+        $schema .= "\$table->bigInteger('".$this->getForeignKey()."')->unsigned()->nullable();".PHP_EOL.$this->getTabs(3);
+        $schema .= "\$table->foreign('".$this->getForeignKey()."')->references('id')->on('".$this->getPivotTable()."')->onDelete('set null');".PHP_EOL;
         return $schema;
     }
 

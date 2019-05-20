@@ -6,4 +6,5 @@ class MixedFileType extends SingleType
 {
 	protected $hasFile = true;
 	protected $extensions = '.zip,.doc,.txt,.pdf,.csv';
+	protected $formType = 'file';
 }

@@ -1,8 +1,6 @@
 <?php
 namespace Prateekkarki\Laragen\Commands;
 use Illuminate\Console\Command;
-use Prateekkarki\Laragen\Models\Module;
-use Prateekkarki\Laragen\Models\LaragenOptions;
 use Prateekkarki\Laragen\Models\FileSystem;
 
 class Generate extends Command
@@ -38,11 +36,11 @@ class Generate extends Command
      */
     public function handle()
     {
-        $laragen = new LaragenOptions(config('laragen.modules'), config('laragen.options'));
+        $laragen = app('laragen');
         $modules = $laragen->getModules();
-        $generatedFiles = [];
-
         $generators = $laragen->getGenerators();
+
+        $generatedFiles = [];
 
         $this->line("
 ██▓    ▄▄▄       ██▀███   ▄▄▄        ▄████ ▓█████  ███▄    █ 
@@ -65,8 +63,7 @@ class Generate extends Command
             $fs->clone($src, '\\');
         }
 
-        foreach ($modules as $moduleName => $moduleArray) {
-            $module = new Module($moduleName, $moduleArray);
+        foreach ($modules as $module) {
             
             foreach ($generators as $generator) {
                 $itemGenerator = new $generator($module);

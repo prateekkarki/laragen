@@ -45,7 +45,7 @@ class Request extends BaseGenerator implements GeneratorInterface
                 $uniqueValidation .= ':\''.TypeResolver::COLUMN_UNIQUE.':'.$this->module->getModulename().'\'';
                 $validation[]= $uniqueValidation;
             } else {
-                $validationLine = ($type == TypeResolver::TYPE_PARENT) ? "'" . $column->getColumn() . "' => 'integer" : "'" . $column->getColumn() . "' => '" . $type;
+                $validationLine = ($type == TypeResolver::TYPE_PARENT) ? "'" . $column->getColumnKey() . "' => 'integer" : "'" . $column->getColumnKey() . "' => '" . $type;
                 $validationLine .= empty($rules) ? "'" : "|" . implode('|', $rules) . "'";
                 $validation[]= $validationLine;
             }
