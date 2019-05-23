@@ -4,8 +4,12 @@
 <div class="d-flex flex-wrap align-items-stretch">
     <div class="col-lg-4 col-md-6 col-12 order-lg-1 min-vh-100 order-2 bg-white">
         <div class="p-4 m-3">
-            <img src="{{ asset('img/stisla-fill.svg') }}" title="Company Logo" alt="logo" width="80" class="shadow-light rounded-circle mb-5 mt-2">
-            <img src="{{ asset('img/stisla-fill.svg') }}" title="Client Logo" alt="logo" width="80" class="shadow-light rounded-circle mb-5 mt-2 mr-3"> 
+            <a href="{{ route('backend.login') }}" >
+                <img src="{{ asset('img/stisla-fill.svg') }}" title="Company Logo" alt="logo" width="80" class="shadow-light rounded-circle mb-5 mt-2">
+            </a>
+            <a href="{{ route('backend.login') }}">
+                <img src="{{ asset('img/stisla-fill.svg') }}" title="Client Logo" alt="logo" width="80" class="shadow-light rounded-circle mb-5 mt-2 mr-3">
+            </a>
             <h4 class="text-dark font-weight-normal">Welcome to <span class="font-weight-bold">{{ config('app.name', 'Laragen Dashboard') }}</span></h4>
             <p class="text-muted">@yield('heading')</p>
             @if ($errors->any())
@@ -31,7 +35,9 @@
         </div>
     </div>
 </div>
+@endsection
 
+@push('page-scripts')
 <script>
     var d = new Date();
     var h = d.getHours();
@@ -46,4 +52,4 @@
         greeting = 'Good night';
     document.getElementById("login-greeting").innerHTML = greeting;
 </script>
-@endsection
+@endpush
