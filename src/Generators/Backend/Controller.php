@@ -73,7 +73,15 @@ class Controller extends BaseGenerator implements GeneratorInterface
         $fileFields = $this->module->getFilteredColumns(['hasImage']);
         foreach ($fileFields as $fileField) {
             $fileUploads .= $this->getTabs(2).'if ($request->has("'.$fileField->getColumn().'")) {'.PHP_EOL;
-            $fileUploads .= $this->getTabs(3).'$this->uploader->processImage($request->input("'.$fileField->getColumn().'"), "'.$this->module->getModelNameLowercase().'");'.PHP_EOL;
+            if ($fileField->hasMultipleFiles()) {
+                $fileUploads .= $this->getTabs(3).'foreach($request->input("'.$fileField->getColumn().'") as $input){'.PHP_EOL;
+                $fileUploads .= $this->getTabs(4).'$this->uploader->processImage($input, "'.$this->module->getModelNameLowercase().'");'.PHP_EOL;
+                $fileUploads .= $this->getTabs(3).'}'.PHP_EOL;
+
+            }else{
+                $fileUploads .= $this->getTabs(3).'$this->uploader->processImage($request->input("'.$fileField->getColumn().'"), "'.$this->module->getModelNameLowercase().'");'.PHP_EOL;
+
+            }
             $fileUploads .= $this->getTabs(2).'}'.PHP_EOL;
         }
         return $fileUploads;
