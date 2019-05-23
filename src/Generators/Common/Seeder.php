@@ -112,7 +112,7 @@ class Seeder extends BaseGenerator implements GeneratorInterface
         foreach($types as $type){
             if($type->hasSelfParent()) continue;
             $foreignData .= $this->buildTemplate('common/Factories/fragments/options', [
-                '{{parent}}'      => $type->getcolumn(),
+                '{{parent}}'      => $type->getColumnKey(),
                 '{{parentModel}}' => $type->getRelatedModel()
             ]);
             $foreignData .= ",".PHP_EOL;
