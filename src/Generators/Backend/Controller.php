@@ -54,7 +54,7 @@ class Controller extends BaseGenerator implements GeneratorInterface
             ]);
         } else {
             $type = $relatedTypes[0];
-            $relatedUpdates .= 'if ($request->has("'.$type->getColumn().'")) {'.PHP_EOL;
+            $relatedUpdates .= $this->getTabs(2).'if ($request->has("'.$type->getColumn().'")) {'.PHP_EOL;
             $relatedUpdates .= $this->getTabs(3).'$'.$this->module->getModelNameLowercase().'->'.$type->getColumn().'()->sync($request->input("'.$type->getColumn().'"));'.PHP_EOL;
             $relatedUpdates .= $this->getTabs(2).'}'.PHP_EOL;
         }
@@ -64,16 +64,16 @@ class Controller extends BaseGenerator implements GeneratorInterface
     protected function getFileUploads() {
         $fileUploads = "";
         $fileFields = $this->module->getFilteredColumns(['hasFile']);
-        if (empty($fileFields)) return "";
-        if (count($fileFields) > 1) {
-            $fileUploads .= $this->buildTemplate('backend/fragments/upload-process', [
-                '{{modelNameLowercase}}' => $this->module->getModelNameLowercase(),
-                '{{fileFields}}'         => implode('", "', $this->module->getFilteredColumns(['hasFile'], true)),
-            ]);
-        } else {
-            $fileField = $fileFields[0];
-            $fileUploads .= 'if ($request->has("'.$fileField->getColumn().'")) {'.PHP_EOL;
-            $fileUploads .= $this->getTabs(3).'$this->uploader->process($request->input("'.$fileField->getColumn().'"), "category");'.PHP_EOL;
+        foreach ($fileFields as $fileField) {
+            $fileUploads .= $this->getTabs(2).'if ($request->has("'.$fileField->getColumn().'")) {'.PHP_EOL;
+            $fileUploads .= $this->getTabs(3).'$this->uploader->process($request->input("'.$fileField->getColumn().'"), "'.$this->module->getModelNameLowercase().'");'.PHP_EOL;
+            $fileUploads .= $this->getTabs(2).'}'.PHP_EOL;
+        }
+
+        $fileFields = $this->module->getFilteredColumns(['hasImage']);
+        foreach ($fileFields as $fileField) {
+            $fileUploads .= $this->getTabs(2).'if ($request->has("'.$fileField->getColumn().'")) {'.PHP_EOL;
+            $fileUploads .= $this->getTabs(3).'$this->uploader->processImage($request->input("'.$fileField->getColumn().'"), "'.$this->module->getModelNameLowercase().'");'.PHP_EOL;
             $fileUploads .= $this->getTabs(2).'}'.PHP_EOL;
         }
         return $fileUploads;

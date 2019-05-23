@@ -52,7 +52,9 @@ class {{modelName}}Controller extends Controller
      */
     public function create(): View
     {
-        return view('backend.{{moduleName}}.create', [{{foreignData}}]);
+        return view('backend.{{moduleName}}.create', [
+            {{foreignData}}
+        ]);
     }
 
     /**
@@ -60,7 +62,7 @@ class {{modelName}}Controller extends Controller
      */
     public function store({{modelName}}Request $request): RedirectResponse
     {
-        {{fileUploads}}
+{{fileUploads}}
 
         if (isset($errors)) {
             return redirect()->back()->withErrors($errors);    
@@ -76,12 +78,12 @@ class {{modelName}}Controller extends Controller
      */
     public function update({{modelName}}Request $request, {{modelName}} ${{modelNameLowercase}}): RedirectResponse
     {
-        {{fileUploads}}
+{{fileUploads}}
 
-        {{relatedUpdates}}
+{{relatedUpdates}}
 
         if (isset($errors)) {
-            return redirect()->back()->withErrors($errors);    
+            return redirect()->back()->withErrors($errors);
         }else{
             ${{modelNameLowercase}}->update($request->validated());
             return redirect()->route('backend.{{moduleName}}.edit', ${{modelNameLowercase}})->withSuccess(__('{{moduleName}}.created'));
