@@ -18,7 +18,7 @@
     @stack('page-styles')
     @stack('after-styles')
     <script type="text/javascript">
-        var APP_URL = {!! json_encode(url('/')) !!}
+        var APP_URL = '{!! url('/') !!}';
     </script>
 
 </head>
