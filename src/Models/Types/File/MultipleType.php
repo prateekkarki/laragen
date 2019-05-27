@@ -10,7 +10,11 @@ class MultipleType extends FileType
     protected $relationalType = true;
     protected $hasMultipleFiles = true;
     protected $formType = 'multipleFiles';
-
+    protected $stubs = [
+        'modelMethod' => 'common/Models/fragments/belongsTo',
+        'foreignMethod' => 'common/Models/fragments/hasMany'
+    ];
+    
     public function getPivotSchema()
     {
         $modelName = $this->getParentModelLowercase();
