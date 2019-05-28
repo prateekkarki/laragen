@@ -1,7 +1,7 @@
 @extends('backend.layouts.app')
 
 @push('page-styles')
-    <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/laragen.css') }}">
 @endpush
 
 @section('layout')
@@ -28,5 +28,5 @@
 @endsection
 
 @push('page-scripts')
-    <script src="{{ asset('js/custom.js') }}"></script>
+    <script src="{{ asset('js/laragen.js') }}"></script>
 @endpush

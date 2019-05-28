@@ -34,6 +34,22 @@ if (window.Chart) {
 if (window.Dropzone) {
     Dropzone.autoDiscover = false;
 }
+
+function getDzImage(folder, filename) {
+    var file = "";
+    if (filename==null) {
+        file = APP_URL + "/img/example-image.jpg";
+    } else {
+        var ext = fileName.substr(fileName.lastIndexOf('.') + 1);
+        if(jQuery.inArray("ext", ['png', 'jpg', 'jpeg', 'gif']) !== -1){
+            file = APP_URL + "/images/" + folder + '/xs/' + filename;
+        }else{
+            file = APP_URL + "/img/file-icon/" + ext + ".png";
+        }
+    }
+    return file;
+}
+
 function dropzoneupload(url, field, modelid, modelname, filetypes, multiple = true, data = false) {
     var uploadedDocumentMap = {};
     var successMethod = multiple ? 'successmultiple' : 'success';
@@ -53,8 +69,8 @@ function dropzoneupload(url, field, modelid, modelname, filetypes, multiple = tr
                 $.each($.parseJSON(data), function (key, value) {
                     var mockFile = { name: value.filename, size: value.size }; 
                     thisDz.options.addedfile.call(thisDz, mockFile);
-                    thisDz.options.thumbnail.call(thisDz, mockFile, APP_URL + "/images/" + modelname + '/xs/' + value.filename);
-
+                    thisDz.options.thumbnail.call(thisDz, mockFile, getDzImage(modelname, value.filename));
+                    // thisDz.options.thumbnail.call(thisDz, mockFile, APP_URL + "/images/" + modelname + '/xs/' + value.filename);
                 });
             }
 
@@ -73,7 +89,6 @@ function dropzoneupload(url, field, modelid, modelname, filetypes, multiple = tr
             });
             this.on(sendingMethod, function (file, xhr, formData) {
                 var csrf = $('meta[name="csrf-token"]').attr('content');
-                console.log(sendingMethod, csrf);
                 formData.append("_token", csrf);
                 formData.append('moduleName', modelname);
                 formData.append('module', modelid);
@@ -162,7 +177,6 @@ var deleteMultiple = function (moduleName, modelId, field) {
         data: data,
         dataType: "json",
         success: function (result) {
-            console.log(result);
             $('#' + field + '-del').parent().remove();
             iziToast.success({
                 title: 'Removed',
