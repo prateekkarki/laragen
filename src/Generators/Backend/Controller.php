@@ -76,7 +76,10 @@ class Controller extends BaseGenerator implements GeneratorInterface
                 $fileUploads .= $this->getTabs(3).'$'.$this->module->getModelNameLowercase().'->'.$fileField->getColumn().'()->saveMany($'.$fileField->getColumn().');'.PHP_EOL;
 
             }else{
-                $fileUploads .= $this->getTabs(3).'$this->uploader->'.$processMethod.'($request->input("'.$fileField->getColumn().'"), "'.$this->module->getModelNameLowercase().'");'.PHP_EOL;
+                $fileUploads .= $this->getTabs(3).'$uploadData = $this->uploader->'.$processMethod.'($request->input("'.$fileField->getColumn().'"), "'.$this->module->getModelNameLowercase().'");'.PHP_EOL;
+                $fileUploads .= $this->getTabs(3).'if (empty($uploadData["errors"])) {'.PHP_EOL;
+                $fileUploads .= $this->getTabs(4).'$updateData["'.$fileField->getColumn().'"] = $uploadData["filename"];'.PHP_EOL;
+                $fileUploads .= $this->getTabs(3).'}'.PHP_EOL;
             }
             $fileUploads .= $this->getTabs(2).'}'.PHP_EOL;
         }
