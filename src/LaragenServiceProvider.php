@@ -28,6 +28,10 @@ class LaragenServiceProvider extends ServiceProvider
         Artisan::call('vendor:publish', [
             '--provider' => 'Prateekkarki\Laragen\LaragenServiceProvider'
         ]);
+
+		Artisan::call('vendor:publish', [
+			'--provider' => 'Spatie\Permission\PermissionServiceProvider'
+        ]);
         
         $file = app_path('Http/Helpers/laragen_helpers.php');
         if (file_exists($file)) {
@@ -62,7 +66,7 @@ class LaragenServiceProvider extends ServiceProvider
             'command.laragen:init',
         ]);
 
-        $routeFile = app_path('Providers\LaragenRouteServiceProvider.php');
+        $routeFile = app_path('Providers/LaragenRouteServiceProvider.php');
         if (file_exists($routeFile))
             $this->app->register("\App\Providers\LaragenRouteServiceProvider");
     }
