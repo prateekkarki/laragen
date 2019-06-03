@@ -34,6 +34,22 @@ if (window.Chart) {
 if (window.Dropzone) {
     Dropzone.autoDiscover = false;
 }
+
+function getDzImage(folder, filename) {
+    var file = "";
+    if (filename==null) {
+        file = APP_URL + "/img/example-image.jpg";
+    } else {
+        var ext = fileName.substr(fileName.lastIndexOf('.') + 1);
+        if(jQuery.inArray("ext", ['png', 'jpg', 'jpeg', 'gif']) !== -1){
+            file = APP_URL + "/images/" + folder + '/xs/' + filename;
+        }else{
+            file = APP_URL + "/img/file-icon/" + ext + ".png";
+        }
+    }
+    return file;
+}
+
 function dropzoneupload(url, field, modelid, modelname, filetypes, multiple = true, data = false) {
     var uploadedDocumentMap = {};
     var successMethod = multiple ? 'successmultiple' : 'success';
@@ -48,43 +64,31 @@ function dropzoneupload(url, field, modelid, modelname, filetypes, multiple = tr
         maxFiles: multiple ? 20 : 1,
         addRemoveLinks: true,
         init: function () {
-
-            var thisDropzone = this;
+            var thisDz = this;
             if (data) {
-                $.each($.parseJSON(data), function (key, value) { //loop through it
-                    var mockFile = { name: value.name, size: value.size }; // here we get the file name and size as response 
-                    thisDropzone.options.addedfile.call(thisDropzone, mockFile);
-                    thisDropzone.options.thumbnail.call(thisDropzone, mockFile, APP_URL + "/storage/images/" + modelname + '/xs/' + value.name);//uploadsfolder is the folder where you have all those uploaded files
-
+                $.each($.parseJSON(data), function (key, value) {
+                    var mockFile = { name: value.filename, size: value.size }; 
+                    thisDz.options.addedfile.call(thisDz, mockFile);
+                    thisDz.options.thumbnail.call(thisDz, mockFile, getDzImage(modelname, value.filename));
+                    // thisDz.options.thumbnail.call(thisDz, mockFile, APP_URL + "/images/" + modelname + '/xs/' + value.filename);
                 });
             }
 
             this.on(successMethod, function (file, response) {
-                if (response.status == 200) {
-                    if (multiple) {
-                        var i = 0;
-                        response.filenames.forEach(function (item) {
-                            uploadedDocumentMap[file[i].name] = item;
-                            $('#' + field + 'Container').append('<input type="hidden" name="' + field + '[]" value="' + item + '">');
-                            i++;
-                        });
-                    } else {
-                        uploadedDocumentMap[file.name] = response.filename;
-                        $('#' + field + 'Container').append('<input type="hidden" name="' + field + '" value="' + response.filename + '">');
-                    }
-                }
-                else if (response.status == 415 || response.status == 500) {
-                    let error = '';
-                    response.message.forEach(function (e) {
-                        error = '<div class="alert alert-danger">' + e + '</div>';
-                        $('#' + field + 'Container .validation-errors').append(error);
+                if (multiple) {
+                    var i = 0;
+                    response.filenames.forEach(function (item) {
+                        uploadedDocumentMap[file[i].name] = item;
+                        $('#' + field + 'Container').append('<input type="hidden" name="' + field + '[]" value="' + item + '">');
+                        i++;
                     });
-                    this.removeFile(file); //remove file from preview in dz
+                } else {
+                    uploadedDocumentMap[file.name] = response.filename;
+                    $('#' + field + 'Container').append('<input type="hidden" name="' + field + '" value="' + response.filename + '">');
                 }
             });
             this.on(sendingMethod, function (file, xhr, formData) {
                 var csrf = $('meta[name="csrf-token"]').attr('content');
-                console.log(sendingMethod, csrf);
                 formData.append("_token", csrf);
                 formData.append('moduleName', modelname);
                 formData.append('module', modelid);
@@ -104,6 +108,9 @@ function dropzoneupload(url, field, modelid, modelname, filetypes, multiple = tr
                 while (this.files.length > this.options.maxFiles) {
                     this.removeFile(this.files[0]);
                 }
+            });
+            this.on('error', function(file, response) {
+                $(file.previewElement).find('.dz-error-message').text(response.message);
             });
         }
     });
@@ -170,7 +177,6 @@ var deleteMultiple = function (moduleName, modelId, field) {
         data: data,
         dataType: "json",
         success: function (result) {
-            console.log(result);
             $('#' + field + '-del').parent().remove();
             iziToast.success({
                 title: 'Removed',

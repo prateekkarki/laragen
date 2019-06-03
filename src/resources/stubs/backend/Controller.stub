@@ -62,12 +62,12 @@ class {{modelName}}Controller extends Controller
      */
     public function store({{modelName}}Request $request): RedirectResponse
     {
-{{fileUploads}}
 
         if (isset($errors)) {
             return redirect()->back()->withErrors($errors);    
         }else{
             ${{modelNameLowercase}} = {{modelName}}::create($request->all());
+{{fileUploads}}
             {{createRelated}}
             return redirect()->route('backend.{{moduleName}}.edit', ${{modelNameLowercase}})->withSuccess(__('{{moduleName}}.created'));
         }
@@ -78,14 +78,16 @@ class {{modelName}}Controller extends Controller
      */
     public function update({{modelName}}Request $request, {{modelName}} ${{modelNameLowercase}}): RedirectResponse
     {
+        $updateData = $request->validated();
+        $errors = [];
 {{fileUploads}}
 
 {{relatedUpdates}}
 
-        if (isset($errors)) {
+        if (!empty($errors)) {
             return redirect()->back()->withErrors($errors);
         }else{
-            ${{modelNameLowercase}}->update($request->validated());
+            ${{modelNameLowercase}}->update($updateData);
             return redirect()->route('backend.{{moduleName}}.edit', ${{modelNameLowercase}})->withSuccess(__('{{moduleName}}.created'));
         }
     }
