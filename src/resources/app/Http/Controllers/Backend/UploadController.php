@@ -202,21 +202,7 @@ class UploadController extends Controller
 
     protected function validateUpload($file, $moduleName, $field)
     {
-        $moduleData = config('laragen.modules')[str_plural($moduleName)];
-        $rules = $moduleData[$field];
-
-        $file = array($field => $file);
-
-        $validator = Validator::make($file, [
-            $field => $rules,
-        ]);
-
-        if ($validator->passes())
-        {
-            return true;
-        }
-
-        $this->validation_error = $validator->errors()->all();
-        return false;
+        // Needs revision
+        return true;
     }
 }
