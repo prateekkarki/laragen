@@ -45,6 +45,43 @@ class Seeder extends BaseGenerator implements GeneratorInterface
     public function generate()
     {
         $generatedFiles = [];
+
+        if($this::$initializeFlag == 0){
+            $laragen = app('laragen');
+            $modules = $laragen->getModules();
+            $permissions = [];
+            $editPermissions = [];
+            $viewPermissions = [];
+            foreach ($modules as $module) {
+                $permissions[] = 'create_'.$module->getModuleName();
+                $permissions[] = 'view_'.$module->getModuleName();
+                $permissions[] = 'edit_'.$module->getModuleName();
+                $permissions[] = 'delete_'.$module->getModuleName();
+                foreach ($module->getColumns() as $field) {
+                    $editPermissions[] = 'edit_'.$module->getModuleName().'_'.$field->getColumn();
+                    $viewPermissions[] = 'view_'.$module->getModuleName().'_'.$field->getColumn();
+                }
+            }
+            $allPermissions = [];
+            $allPermissions = array_merge($allPermissions, $permissions, $editPermissions, $viewPermissions);
+
+            $permissionsCode = '';
+            foreach ($allPermissions as $permission) {
+                $permissionsCode .= "Permission::create(['name' => '". $permission ."']);" . PHP_EOL. $this->getTabs(2);
+
+            }
+
+            $permissionSeederTemplate = $this->buildTemplate('common/permissionSeeder', [
+                '{{permissions}}'     => $permissionsCode,
+                '{{viewPermissions}}' => implode("', '", $viewPermissions),
+                '{{editPermissions}}' => implode("', '", $editPermissions),
+            ]);
+
+            $fullFilePath = $this->getPath("database/factories/")."RolesAndPermissionsSeeder.php";
+            file_put_contents($fullFilePath, $permissionSeederTemplate);
+            $generatedFiles[] = $fullFilePath;
+
+        }
         $factoryTemplate = $this->buildTemplate('common/Factories/Factory', [
             '{{modelName}}'      => $this->module->getModelName(),
             '{{usedModels}}'     => $this->getUsedModels($this->module->getFilteredColumns(['hasSingleRelation', 'hasPivot'])),

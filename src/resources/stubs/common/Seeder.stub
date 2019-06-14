@@ -12,5 +12,6 @@ class LaragenSeeder extends Seeder
     {
         factory(User::class, 25)->create();
         // End factories
+		$this->call(RolesAndPermissionsSeeder::class);
     }
 }
