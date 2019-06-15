@@ -1,10 +1,10 @@
 <?php
 
 namespace App\Providers;
-
+{{usedClasses}}
 use Illuminate\Support\ServiceProvider;
 
-class ObserverServiceProvider extends ServiceProvider
+class LaragenObserverServiceProvider extends ServiceProvider
 {
     /**
      * Register services.

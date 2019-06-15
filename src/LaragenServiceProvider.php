@@ -67,8 +67,11 @@ class LaragenServiceProvider extends ServiceProvider
         ]);
 
         $routeFile = app_path('Providers/LaragenRouteServiceProvider.php');
+        $observerFile = app_path('Providers/LaragenObserverServiceProvider.php');
         if (file_exists($routeFile))
             $this->app->register("\App\Providers\LaragenRouteServiceProvider");
+        if (file_exists($observerFile))
+            $this->app->register("\App\Providers\LaragenObserverServiceProvider");
     }
     /**
      * To register laragen as first level command. E.g. laragen:generate

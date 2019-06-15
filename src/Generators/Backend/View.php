@@ -113,7 +113,7 @@ class View extends BaseGenerator implements GeneratorInterface
             '{{relatedModelLowercase}}'     => $type->getRelatedModelLowercase(),
             '{{relatedModelDisplayColumn}}' => $displayColumn,
             '{{modelNameLowercase}}'        => $this->module->getModelNameLowercase(),
-            '{{modulename}}'                => $this->module->getModuleName(),
+            '{{moduleName}}'                => $this->module->getModuleName(),
         ]) . PHP_EOL;
         return $formElement;
     }

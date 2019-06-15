@@ -62,6 +62,11 @@ class {{modelName}}Controller extends Controller
      */
     public function store({{modelName}}Request $request): RedirectResponse
     {
+        foreach (array_keys($request->all()) as $inputField) {
+            if(!auth()->user()->can('edit_{{moduleName}}_'. $inputField)){
+                abort(403);
+            }
+        }
 
         if (isset($errors)) {
             return redirect()->back()->withErrors($errors);    
@@ -78,6 +83,11 @@ class {{modelName}}Controller extends Controller
      */
     public function update({{modelName}}Request $request, {{modelName}} ${{modelNameLowercase}}): RedirectResponse
     {
+        foreach (array_keys($request->all()) as $inputField) {
+            if(!auth()->user()->can('edit_{{moduleName}}_'. $inputField)){
+                abort(403);
+            }
+        }
         $updateData = $request->validated();
         $errors = [];
 {{fileUploads}}
