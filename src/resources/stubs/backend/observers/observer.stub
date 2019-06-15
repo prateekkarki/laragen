@@ -1,0 +1,31 @@
+<?php
+
+namespace App\Observers;
+
+use App\Notifications\{{modelName}}CreatedNotification;
+use App\Notifications\{{modelName}}UpdatedNotification;
+use App\Notifications\{{modelName}}DeletedNotification;
+
+class {{modelName}}Observer
+{
+    public function created({{modelName}} ${{modelNameLowercase}})
+    {
+        ${{modelNameLowercase}}->notify(new {{modelName}}CreatedNotification);
+    }
+
+    public function updated({{modelName}} ${{modelNameLowercase}})
+    {
+        ${{modelNameLowercase}}->notify(new {{modelName}}UpdatedNotification);
+    }
+
+    public function deleted({{modelName}} ${{modelNameLowercase}})
+    {
+        ${{modelNameLowercase}}->notify(new {{modelName}}DeletedNotification);
+    }
+
+    public function restored({{modelName}} ${{modelNameLowercase}})
+    {}
+
+    public function forceDeleted({{modelName}} ${{modelNameLowercase}})
+    {}
+}
