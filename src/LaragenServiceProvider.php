@@ -11,6 +11,7 @@ use Prateekkarki\Laragen\Commands\Migrate;
 use Prateekkarki\Laragen\Commands\Execute;
 use Prateekkarki\Laragen\Commands\Initialize;
 use Prateekkarki\Laragen\Models\LaragenOptions;
+use Spatie\Permission\PermissionServiceProvider;
 use Artisan;
 
 class LaragenServiceProvider extends ServiceProvider
@@ -30,8 +31,11 @@ class LaragenServiceProvider extends ServiceProvider
         ]);
 
 		Artisan::call('vendor:publish', [
-			'--provider' => 'Spatie\Permission\PermissionServiceProvider'
+            '--provider' => 'Spatie\Permission\PermissionServiceProvider'
         ]);
+
+        Artisan::call('notifications:table');
+        // dd(Artisan::output());
         
         $file = app_path('Http/Helpers/laragen_helpers.php');
         if (file_exists($file)) {
@@ -45,6 +49,7 @@ class LaragenServiceProvider extends ServiceProvider
     public function register()
     {
         // Register Intervention Provider and Facade
+        $this->app->register(PermissionServiceProvider::class);
         $this->app->register(ImageServiceProvider::class);
         AliasLoader::getInstance()->alias('Image', Image::class);
 

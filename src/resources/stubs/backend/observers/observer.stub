@@ -5,22 +5,27 @@ namespace App\Observers;
 use App\Notifications\{{modelName}}CreatedNotification;
 use App\Notifications\{{modelName}}UpdatedNotification;
 use App\Notifications\{{modelName}}DeletedNotification;
+use App\Models\{{modelName}};
+use App\User;
 
 class {{modelName}}Observer
 {
     public function created({{modelName}} ${{modelNameLowercase}})
     {
-        ${{modelNameLowercase}}->notify(new {{modelName}}CreatedNotification);
+        $users = User::all();
+        \Notification::send($users,new {{modelName}}CreatedNotification);
     }
 
     public function updated({{modelName}} ${{modelNameLowercase}})
     {
-        ${{modelNameLowercase}}->notify(new {{modelName}}UpdatedNotification);
+        $users = User::all();
+        \Notification::send($users,new {{modelName}}UpdatedNotification);
     }
 
     public function deleted({{modelName}} ${{modelNameLowercase}})
     {
-        ${{modelNameLowercase}}->notify(new {{modelName}}DeletedNotification);
+        $users = User::all();
+        \Notification::send($users,new {{modelName}}DeletedNotification);
     }
 
     public function restored({{modelName}} ${{modelNameLowercase}})

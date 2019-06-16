@@ -15,13 +15,18 @@ return [
 			'Controller',
 			'Api',
 			'Request',
-			'View'
+			'View',
+			'Notification',
+			'Observer'
 		]
 	],
 	'image_sizes' => [
 		'sm' => '500x500',
 		'md' => '800x800',
 		'xs' => '200x200',
+	],
+	'events'	=> [
+		'created','updated','deleted'
 	],
 	'seed_rows' => 25,
 	'listing_per_page' => 20,
