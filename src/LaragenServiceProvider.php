@@ -34,9 +34,6 @@ class LaragenServiceProvider extends ServiceProvider
             '--provider' => 'Spatie\Permission\PermissionServiceProvider'
         ]);
 
-        Artisan::call('notifications:table');
-        // dd(Artisan::output());
-        
         $file = app_path('Http/Helpers/laragen_helpers.php');
         if (file_exists($file)) {
             require_once($file);
