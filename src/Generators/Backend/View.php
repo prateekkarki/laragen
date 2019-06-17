@@ -115,7 +115,7 @@ class View extends BaseGenerator implements GeneratorInterface
             '{{modelNameLowercase}}'        => $this->module->getModelNameLowercase(),
             '{{moduleName}}'                => $this->module->getModuleName(),
         ]) . PHP_EOL;
-        return  "@can('edit_".$this->module->getModuleName()."_".$type->getColumnKey()."')" . PHP_EOL . $formElement . PHP_EOL . "@endcan";
+        return  "@can('edit_".$this->module->getModuleName()."_".$type->getColumnKey()."')" . PHP_EOL . $formElement . PHP_EOL . "@endcan" . PHP_EOL;
     }
 
 
