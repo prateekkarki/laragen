@@ -58,8 +58,8 @@ class Seeder extends BaseGenerator implements GeneratorInterface
                 $permissions[] = 'edit_'.$module->getModuleName();
                 $permissions[] = 'delete_'.$module->getModuleName();
                 foreach ($module->getColumns() as $field) {
-                    $editPermissions[] = 'edit_'.$module->getModuleName().'_'.$field->getColumn();
-                    $viewPermissions[] = 'view_'.$module->getModuleName().'_'.$field->getColumn();
+                    $editPermissions[] = 'edit_'.$module->getModuleName().'_'.$field->getColumnKey();
+                    $viewPermissions[] = 'view_'.$module->getModuleName().'_'.$field->getColumnKey();
                 }
             }
             $allPermissions = [];
