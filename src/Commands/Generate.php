@@ -60,7 +60,7 @@ class Generate extends Command
         $bar->start();
         $fs = new FileSystem();
         foreach ($this->filesToPublish as $src ) {
-            $fs->clone($src, '\\');
+            $fs->clone($src, '/');
         }
 
         foreach ($modules as $module) {
