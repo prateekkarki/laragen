@@ -12,19 +12,19 @@ class {{modelName}}Observer
 {
     public function created({{modelName}} ${{modelNameLowercase}})
     {
-        $users = User::all();
+        $users = [User::first()];
         \Notification::send($users,new {{modelName}}CreatedNotification);
     }
 
     public function updated({{modelName}} ${{modelNameLowercase}})
     {
-        $users = User::all();
+        $users =[User::first()];
         \Notification::send($users,new {{modelName}}UpdatedNotification);
     }
 
     public function deleted({{modelName}} ${{modelNameLowercase}})
     {
-        $users = User::all();
+        $users =[User::first()];
         \Notification::send($users,new {{modelName}}DeletedNotification);
     }
 
