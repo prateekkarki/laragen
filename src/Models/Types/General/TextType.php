@@ -8,13 +8,6 @@ class TextType extends GeneralType
     protected $formType = 'text';
 	protected $validationRule = 'string';
 
-    public function getSchema()
-    {
-        $schema = '$table->'.$this->getDataType()."('{$this->getColumn()}')";
-        $schema .= $this->isRequired() ? "" : "->nullable();";
-        return $schema;
-    }
-
     public function getFormOptions() {
         $options = "";
         $options .= $this->isRequired() ? 'required="required" ' : ''; 
