@@ -62,24 +62,10 @@ class {{modelName}}Controller extends Controller
      */
     public function store({{modelName}}Request $request): RedirectResponse
     {
-        $errors = [];
-        foreach (array_keys($request->except(['_token', '_method'])) as $inputField) {
-            if(!auth()->user()->can('edit_{{moduleName}}_'. $inputField)){
-                $errors[$inputField] = "You are not authorised to update " . $inputField;
-            }
-        }
-        if (!empty($errors)) {
-            return redirect()->back()->withErrors($errors);
-        }
-        
-        if (!empty($errors)) {
-            return redirect()->back()->withErrors($errors);    
-        }else{
             ${{modelNameLowercase}} = {{modelName}}::create($request->all());
 {{fileUploads}}
             {{createRelated}}
             return redirect()->route('backend.{{moduleName}}.edit', ${{modelNameLowercase}})->withSuccess(__('{{moduleName}}.created'));
-        }
     }
 
     /**
@@ -88,14 +74,6 @@ class {{modelName}}Controller extends Controller
     public function update({{modelName}}Request $request, {{modelName}} ${{modelNameLowercase}}): RedirectResponse
     {
         $errors = [];
-        foreach (array_keys($request->except(['_token', '_method'])) as $inputField) {
-            if(!auth()->user()->can('edit_{{moduleName}}_'. $inputField)){
-                $errors[$inputField] = "You are not authorised to update " . $inputField;
-            }
-        }
-        if (!empty($errors)) {
-            return redirect()->back()->withErrors($errors);
-        }
 
         $updateData = $request->validated();
 {{fileUploads}}
