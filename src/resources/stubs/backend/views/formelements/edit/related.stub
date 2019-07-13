@@ -3,8 +3,8 @@
   	<div class="col-sm-12 col-md-7">
 		<select multiple class="form-control select2 @if ($errors->has('{{key}}')) is-invalid @endif" id="{{key}}" name="{{key}}[]">
 			@foreach(${{relatedModule}} as $p_{{relatedModelLowercase}})
-				<option value="{{ $p_{{relatedModelLowercase}}->id }}" {{ 
-					(in_array($p_{{relatedModelLowercase}}->id, ${{modelNameLowercase}}->{{key}}->pluck('id')->toArray())) ? 'selected' : ''
+				<option value="{{ $p_{{relatedModelLowercase}}->id }}" {{
+					old('{{key}}') ? ((collect(old('{{key}}'))->contains($p_{{relatedModelLowercase}}->id)) ? 'selected' : '') : (in_array($p_{{relatedModelLowercase}}->id, ${{modelNameLowercase}}->{{key}}->pluck('id')->toArray())) ? 'selected' : ''
 				}}>{{ $p_{{relatedModelLowercase}}->title }}</option>
 			@endforeach
 		</select>
