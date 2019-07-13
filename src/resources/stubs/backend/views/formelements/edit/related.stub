@@ -2,10 +2,10 @@
   	<label class="col-form-label text-md-right col-12 col-md-3 col-lg-3" for="{{key}}[]">{{label}}</label>
   	<div class="col-sm-12 col-md-7">
 		<select multiple class="form-control select2 @if ($errors->has('{{key}}')) is-invalid @endif" id="{{key}}" name="{{key}}[]">
-			@foreach(${{relatedModule}} as ${{relatedModelLowercase}})
-				<option value="{{ ${{relatedModelLowercase}}->id }}" {{ 
-					(in_array(${{relatedModelLowercase}}->id, ${{modelNameLowercase}}->{{key}}->pluck('id')->toArray())) ? 'selected' : ''
-				}}>{{ ${{relatedModelLowercase}}->title }}</option>
+			@foreach(${{relatedModule}} as $p_{{relatedModelLowercase}})
+				<option value="{{ $p_{{relatedModelLowercase}}->id }}" {{ 
+					(in_array($p_{{relatedModelLowercase}}->id, ${{modelNameLowercase}}->{{key}}->pluck('id')->toArray())) ? 'selected' : ''
+				}}>{{ $p_{{relatedModelLowercase}}->title }}</option>
 			@endforeach
 		</select>
 		@if ($errors->has('{{key}}'))

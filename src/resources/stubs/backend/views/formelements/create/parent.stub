@@ -3,8 +3,10 @@
   	<div class="col-sm-12 col-md-7">
 		<select class="form-control select2 @if ($errors->has('{{key}}')) is-invalid @endif" id="{{key}}" name="{{key}}">
 			<option>Please select</option>
-			@foreach(${{relatedModule}} as ${{relatedModelLowercase}})
-				<option value="{{ ${{relatedModelLowercase}}->id }}">{{ ${{relatedModelLowercase}}->{{relatedModelDisplayColumn}} }}</option>
+			@foreach(${{relatedModule}} as $p_{{relatedModelLowercase}})
+				<option value="{{ $p_{{relatedModelLowercase}}->id }}"  {{ 
+						$p_{{relatedModelLowercase}}->id == old('{{key}}') ? ' checked' : ''
+				}}>{{ $p_{{relatedModelLowercase}}->{{relatedModelDisplayColumn}} }}</option>
 			@endforeach
 		</select>
 		@if ($errors->has('{{key}}'))
