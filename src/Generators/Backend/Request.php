@@ -26,7 +26,7 @@ class Request extends BaseGenerator implements GeneratorInterface
     {
         $validation = [];
         foreach($this->module->getColumns(true) as $column){
-            $validation[] =  "'{$column->getColumn()}'" . " => " .  $column->getValidationLine();
+            $validation[] =  "'{$column->getColumnKey()}'" . " => " .  $column->getValidationLine();
         }
         $delimiter = ",\n{$this->getTabs(3)}";
         return (implode($delimiter, $validation));
