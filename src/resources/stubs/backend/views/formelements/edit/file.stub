@@ -14,6 +14,9 @@
 </div>
 
 @push('after-scripts')
+@if(!auth()->user()->can('edit_{{moduleName}}_{{key}}'))
+    //disabled 
+@endif
 <script type="text/javascript">
     dropzoneupload('{{ route('backend.uploader') }}', '{{key}}', '','{{modelNameLowercase}}', ".pdf, .doc, .zip, .txt", false, '{!! json_encode([['filename' => ${{modelNameLowercase}}->{{key}}, 'size'=>null ]]) !!}');
 </script>
