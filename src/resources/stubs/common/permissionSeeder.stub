@@ -2,6 +2,8 @@
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use App\User;
+use Illuminate\Support\Str;
 
 class RolesAndPermissionsSeeder extends Seeder
 {
@@ -15,18 +17,29 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // create roles and assign created permissions
 
-        // this can be done as separate statements
-        $role = Role::create(['name' => 'demo_admin']);
+        $role = Role::create(['name' => 'demo-admin']);
         $role->givePermissionTo(['{{viewPermissions}}']);
 
-        // or may be done by chaining
+
         $role = Role::create(['name' => 'admin'])
             ->givePermissionTo(['{{editPermissions}}']);
 
         $role = Role::create(['name' => 'super-admin']);
         $role->givePermissionTo(Permission::all());
-        
-        $user = \App\User::first();
-        $user->assignRole('super-admin');
+
+        foreach (['demo-admin', 'admin', 'super-admin'] as $role) {
+            $email = $role."@example.com";
+            $user = User::where('email', '=', $email)->first();
+            if ($user === null) {
+                $user = new User();
+                $user->password = $role;
+                $user->email = $email;
+                $user->email_verified_at = now();
+                $user->remember_token = Str::random(10);
+                $user->name = Str::title(str_replace('-', ' ', $role));
+                $user->save();
+            }
+            $user->assignRole($role);
+        }
     }
 }
