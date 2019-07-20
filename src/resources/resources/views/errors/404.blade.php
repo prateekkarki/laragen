@@ -1,6 +1,6 @@
 @extends('backend.layouts.app')
 
-@push('page_styles')
+@push('page-styles')
 <style>
     body {
         background-color: #fff !important;
@@ -25,7 +25,7 @@
             <div class="col-md-12 text-center">
                 <h1> <code>&lt;error&gt;</code> 404 <code>&lt;/error&gt;</code> <h1>
                 <h3> The page you were looking for could not be found.</h3>
-                <a class="btn btn-primary btn-lg" href="{{url('/')}}">Return</a>
+                <a class="btn btn-primary btn-lg" href="{{ url()->previous() }}">Return</a>
             </div>
             <div class="col-md-12 text-center">
                 <div class="simple-footer mt-5">

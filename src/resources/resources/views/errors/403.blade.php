@@ -3,7 +3,7 @@
 @push('page-styles')
 <style>
     body {
-        background-color: #fff !important;
+        background-color: #ffffff !important;
     }
 </style>
 @endpush
@@ -14,18 +14,18 @@
             <div class="col-md-12 text-center">
                 <div class="page-error">
                     <div class="page-inner">
-                        <h3>Whoops... Looks like something went wrong.</h3>
+                        <h3>This area is forbidden</h3>
 
                         <div class="404-image">
-                            <img class="img-fluid" src="{{ asset('img/404.gif') }}" alt="" width="500">
+                            <img class="img-fluid" src="{{ asset('img/403.gif') }}" alt="" width="500">
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-12 text-center">
-                <h1> <code>&lt;error&gt;</code> 500 <code>&lt;/error&gt;</code> <h1>
-                <h3> Something Went Wrong Somewhere. </h3>
-                <a class="btn btn-primary btn-lg" href="{{url('/')}}">Return</a>
+                <h1> <code>&lt;error&gt;</code> 403 <code>&lt;/error&gt;</code> <h1>
+                <h3> You're not allowed to access this page.</h3>
+                <a class="btn btn-primary btn-lg" href="{{ url()->previous() }}">Return</a>
             </div>
             <div class="col-md-12 text-center">
                 <div class="simple-footer mt-5">
