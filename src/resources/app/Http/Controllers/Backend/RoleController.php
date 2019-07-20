@@ -9,66 +9,79 @@ use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
-	public function __construct(){
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            if(!auth()->user()->getRoleNames()->contains('super-admin'))
+                abort(403, 'Access denied');
+            return $next($request);
+        });
 
-	}
+    }
 
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * Show the application roles index.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $roles = Role::all();
-        $permissions = Permission::all();
+        $sortDirection = $request->input('sort_dir') ?: 'asc';
+        $sortColumn = $request->input('sort') ?: 'created_at';
+        return view('backend.roles.index', [
+            'roles' => Role::orderBy($sortColumn, $sortDirection)->paginate(10)
+        ]);
+    }
 
-        return view('backend.roles.index', compact('roles', 'permissions'));
+    /**
+     * Display the specified resource edit form.
+     */
+    public function edit(Role $role)
+    {
+        return view('backend.roles.edit', [
+            'role' => $role, 
+            'permissions' => Permission::all(),
+        ]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        return view('backend.roles.create', [
+            'permissions' => Permission::all(),
+            
+        ]);
     }
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        $this->validate($request, ['name' => 'required|unique:roles']);
+            $role = Role::create($request->all());
 
-        if( Role::create($request->only('name')) ) {
-            // flash('Role Added');
-        }
-
-        return redirect()->back();
+            return redirect()->route('backend.roles.edit', $role)->withSuccess(__('roles.created'));
     }
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Role $role)
     {
-        if($role = Role::findOrFail($id)) {
-            // admin role has everything
-            if($role->name === 'Admin') {
-                $role->syncPermissions(Permission::all());
-                return redirect()->route('roles.index');
-            }
-
-            $permissions = $request->get('permissions', []);
-
-            $role->syncPermissions($permissions);
-
-            // flash( $role->name . ' permissions has been updated.');
-        } else {
-            // flash()->error( 'Role with id '. $id .' note found.');
+        if ($request->has("permissions")) {
+            $role->permissions()->sync($request->input("permissions"));
         }
+        $role->update(['name' => $request->name]);
+        return redirect()->route('backend.roles.edit', $role)->withSuccess(__('Role successfully updated.'));
+    }
 
-        return redirect()->route('backend.roles.index');
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Role  $role)
+    {
+        $role->delete();
+
+        return redirect()->route('backend.roles.index')->withSuccess(__('roles.deleted'));
     }
 }
-
