@@ -80,8 +80,8 @@ abstract class LaragenType
         $rules = implode('|', $validationSegments);
 
         if ($this->isUnique()) {
-            $validationLine = '($this->route()->'.$modelname.') ? \'';
-            $validationLine .= $rules . '|unique:'.$this->moduleName.','.$this->getColumn().','.'\''.'.$this->route()->'.$modelname.'->id : \'';
+            $validationLine = '($this->'.$modelname.') ? \'';
+            $validationLine .= $rules . '|unique:'.$this->moduleName.','.$this->getColumn().','.'\''.'.$this->'.$modelname.'->id : \'';
             $validationLine .= $rules . '|unique:'.$this->moduleName.'\'';
         } else{
             $validationLine = "'{$rules}'";

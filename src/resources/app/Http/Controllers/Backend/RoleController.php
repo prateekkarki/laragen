@@ -23,7 +23,7 @@ class RoleController extends Controller
         $roles = Role::all();
         $permissions = Permission::all();
 
-        return view('backend.role.index', compact('roles', 'permissions'));
+        return view('backend.roles.index', compact('roles', 'permissions'));
     }
 
     /**
