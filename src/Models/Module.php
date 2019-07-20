@@ -39,7 +39,7 @@ class Module
     public function getTabTitles()
     {
         $tabs = ['General'];
-        if (sizeof($this->getFilteredColumns('isParent'))) {
+        if (sizeof($this->getFilteredColumns(['isParent', 'hasPivot']))) {
             $tabs[] = 'Relations';
         }
         if (sizeof($this->getFilteredColumns('hasFile'))) {
