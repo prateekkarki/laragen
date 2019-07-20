@@ -40,11 +40,11 @@ function getDzImage(folder, filename) {
     if (filename==null) {
         file = APP_URL + "/img/example-image.jpg";
     } else {
-        var ext = fileName.substr(fileName.lastIndexOf('.') + 1);
-        if(jQuery.inArray("ext", ['png', 'jpg', 'jpeg', 'gif']) !== -1){
+        var ext = filename.substr(filename.lastIndexOf('.') + 1);
+        if(jQuery.inArray(ext, ["png", "jpg", "jpeg", "gif"]) !== -1){
             file = APP_URL + "/images/" + folder + '/xs/' + filename;
         }else{
-            file = APP_URL + "/img/file-icon/" + ext + ".png";
+            file = APP_URL + "/img/file-icons/" + ext + ".png";
         }
     }
     return file;
@@ -67,10 +67,12 @@ function dropzoneupload(url, field, modelid, modelname, filetypes, multiple = tr
             var thisDz = this;
             if (data) {
                 $.each($.parseJSON(data), function (key, value) {
+                    console.log(key, value);
+                    console.log(getDzImage(modelname, value.filename));
                     var mockFile = { name: value.filename, size: value.size }; 
                     thisDz.options.addedfile.call(thisDz, mockFile);
                     thisDz.options.thumbnail.call(thisDz, mockFile, getDzImage(modelname, value.filename));
-                    // thisDz.options.thumbnail.call(thisDz, mockFile, APP_URL + "/images/" + modelname + '/xs/' + value.filename);
+                    thisDz.options.complete.call(thisDz, mockFile);
                 });
             }
 
@@ -128,36 +130,38 @@ var throttle = function(fn, wait) {
 
 // Sticky
 $(document).ready(function () {
-    var sidebar = $(".main-sidebar");
-    var screenwidth = $(window).width();
-    var width = '';
-    var div_top = $('.section-header').offset().top;
+    if ($('.section-header').length) {
+        var sidebar = $(".main-sidebar");
+        var screenwidth = $(window).width();
+        var width = '';
+        var div_top = $('.section-header').offset().top;
 
-    $('.section-header-placeholder').height($('.section-header').outerHeight());
-    function getCurrentSidebarWidth() {
-        return sidebar.width();
-    }
-
-    function newStickyWidth() {
-        width = screenwidth - getCurrentSidebarWidth() - 70;
-        return width;
-    }
-
-    $(window).on('scroll', throttle(function () {
-        var window_top = $(window).scrollTop();
-        $('.section-header').width(newStickyWidth());
-
-        if (window_top > div_top) {
-            if (!$('.section-header').is('.sticky')) {
-                $('.section-header').addClass('sticky');
-                $('.section-header-placeholder').show();
-            }
-        } else {
-            $('.section-header').removeClass('sticky');
-            $('.section-header-placeholder').hide();
-            $('.section-header').removeAttr('style');
+        $('.section-header-placeholder').height($('.section-header').outerHeight());
+        function getCurrentSidebarWidth() {
+            return sidebar.width();
         }
-    }, 20));
+
+        function newStickyWidth() {
+            width = screenwidth - getCurrentSidebarWidth() - 70;
+            return width;
+        }
+
+        $(window).on('scroll', throttle(function () {
+            var window_top = $(window).scrollTop();
+            $('.section-header').width(newStickyWidth());
+
+            if (window_top > div_top) {
+                if (!$('.section-header').is('.sticky')) {
+                    $('.section-header').addClass('sticky');
+                    $('.section-header-placeholder').show();
+                }
+            } else {
+                $('.section-header').removeClass('sticky');
+                $('.section-header-placeholder').hide();
+                $('.section-header').removeAttr('style');
+            }
+        }, 20));
+    }
 });
 
 
