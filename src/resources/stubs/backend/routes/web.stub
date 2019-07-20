@@ -6,6 +6,7 @@ use App\Http\Controllers\Backend\UploadController;
 	/* Insert your routes here */
 	Route::resource('roles', RoleController::class);
 	Route::get('/', [DashboardController::class, 'index']);
+	Route::get('roles', [RoleController::class, 'index'])->name('role');
 	Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 	Route::post('galleryupload', [UploadController::class, 'uploadGallery'])->name('gallery.uploader');
 	Route::post('fileuploads', [UploadController::class, 'upload'])->name('uploader');

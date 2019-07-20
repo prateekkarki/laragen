@@ -14,7 +14,7 @@ class {{modelName}}Request extends FormRequest
     {
         $errors = [];
 
-        if(!isset($this->route()->{{modelNameLowercase}}) && !auth()->user()->can('create_{{moduleName}}')){
+        if(!isset($this->{{modelNameLowercase}}) && !auth()->user()->can('create_{{moduleName}}')){
             $errors[] = "You are not authorised to create {{moduleName}}";
         }
 
