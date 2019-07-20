@@ -37,6 +37,10 @@ class LaragenOptions
         return $this->options;
     }
     
+    public function getOption($option) {
+        return $this->options[$option] ?? null;
+    }
+    
     public function getModules() {
         return $this->modules;
     }

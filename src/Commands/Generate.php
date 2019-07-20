@@ -22,12 +22,7 @@ class Generate extends Command
      *
      * @var array
      */
-    protected $filesToPublish = [
-        'public',
-        'app',
-        'database',
-        'resources',
-    ];
+
 
     /**
      * Execute the console command.
@@ -39,7 +34,7 @@ class Generate extends Command
         $laragen = app('laragen');
         $modules = $laragen->getModules();
         $generators = $laragen->getGenerators();
-
+        $this->filesToPublish = $laragen->getOption('files_to_publish') ?: [];
         $generatedFiles = [];
 
         $this->line("
