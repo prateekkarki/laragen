@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class RoleController extends Controller
 {
@@ -38,7 +39,15 @@ class RoleController extends Controller
     {
         return view('backend.roles.edit', [
             'role' => $role, 
-            'permissions' => Permission::all(),
+            'groupedPermissions' => Permission::all()->map(function ($perm) {
+                $perm->name = str_replace('_', ' ', $perm->name);
+                return $perm;
+            })->groupBy(function ($perm) { 
+                foreach (array_keys(app('laragen')->getModules()) as $module) {
+                    if(Str::contains($perm->name, str_replace('_', ' ', $module)))
+                        return Str::title(str_replace('_', ' ', $module));
+                }
+            }),
         ]);
     }
 
