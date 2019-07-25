@@ -36,5 +36,6 @@ return [
 	],
 	'seed_rows' => 25,
 	'listing_per_page' => 20,
+	'generic_fields' => true, 
 	'user_model' => 'App\User'
 ];

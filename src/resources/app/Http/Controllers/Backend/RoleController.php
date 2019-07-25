@@ -39,7 +39,7 @@ class RoleController extends Controller
     {
         return view('backend.roles.edit', [
             'role' => $role, 
-            'groupedPermissions' => Permission::all()->map(function ($perm) {
+            'groupedPermissions' => Permission::all('name', 'id')->map(function ($perm) {
                 $perm->name = str_replace('_', ' ', $perm->name);
                 return $perm;
             })->groupBy(function ($perm) { 
@@ -47,6 +47,7 @@ class RoleController extends Controller
                     if(Str::contains($perm->name, str_replace('_', ' ', $module)))
                         return Str::title(str_replace('_', ' ', $module));
                 }
+                return "Others";
             }),
         ]);
     }
@@ -57,8 +58,16 @@ class RoleController extends Controller
     public function create()
     {
         return view('backend.roles.create', [
-            'permissions' => Permission::all(),
-            
+            'groupedPermissions' => Permission::all('name', 'id')->map(function ($perm) {
+                $perm->name = str_replace('_', ' ', $perm->name);
+                return $perm;
+            })->groupBy(function ($perm) { 
+                foreach (array_keys(app('laragen')->getModules()) as $module) {
+                    if(Str::contains($perm->name, str_replace('_', ' ', $module)))
+                        return Str::title(str_replace('_', ' ', $module));
+                }
+                return "Others";
+            }),
         ]);
     }
 
@@ -67,9 +76,12 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-            $role = Role::create($request->all());
+        if (!$request->name)
+            return redirect()->back()->withErrors(['name' => 'Name cannot be empty.']);
 
-            return redirect()->route('backend.roles.edit', $role)->withSuccess(__('roles.created'));
+        $role = Role::create(['name' => $request->name]);
+        $role->permissions()->attach($request->permissions);
+        return redirect()->route('backend.roles.index')->withSuccess(__('Role successfully created.'));
     }
 
     /**
@@ -81,7 +93,7 @@ class RoleController extends Controller
             $role->permissions()->sync($request->input("permissions"));
         }
         $role->update(['name' => $request->name]);
-        return redirect()->route('backend.roles.edit', $role)->withSuccess(__('Role successfully updated.'));
+        return redirect()->route('backend.roles.index')->withSuccess(__('Role successfully updated.'));
     }
 
     /**

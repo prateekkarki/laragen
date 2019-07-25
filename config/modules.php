@@ -45,19 +45,21 @@ return [
     // ],
 
     'designations' => [
-        'title'             => 'string|max:128'
     ],
 
     'leave_types' => [
-        'title'             => 'string|max:128'
+        'data'=>[
+            'Male', 'Female', 
+        ]
     ],
 
     'skills' => [
-        'title'             => 'string|max:128'
     ],
 
     'genders' => [
-        'title'             => 'string|max:128'
+        'data'=>[
+            'Male', 'Female', 
+        ]
     ],
 
     'leaves' => [
@@ -80,33 +82,42 @@ return [
     ],
 
     'projects'  => [
-        'title'         => 'string|max:128',
-        'description'   => 'string|max:512',
-        'client'        => 'parent:clients',
-        'gallery'        => 'gallery',
+        'structure' => [
+            'title'         => 'string|max:128',
+            'description'   => 'string|max:512',
+            'client'        => 'parent:clients',
+            'gallery'        => 'gallery',
+        ],
+        'data'=>[
+            'Web project X', 'Web project Y', 'App project Z', 
+        ],
+        'seo_enabled' => true;
     ],
 
     'employees' => [
-        'name'              => 'string|max:128',
-        'gender'            => 'parent:genders',
-        'phone'             => 'string|max:256',
-        'mobile'            => 'string|max:256',
-        'email'             => 'string|max:256',
-        'permanent_address' => 'string|max:512',
-        'temporary_address' => 'string|max:512',
-        'description'       => 'string|max:512',
-        'position'          => 'parent:designations',
-        'department'        => 'parent:departments',
-        'date_joined'       => 'date',
-        'date_of_birth'     => 'date',
-        'salary'            => 'integer',
-        'profile_image'     => 'image',
-        'leaves'            => 'related:leaves',
-        'is_active'         => 'boolean',
-        'skills'            => 'related:skills',
-        'password'          => 'string|max:512',
-        'remember_token'    => 'string|max:128',
-        'projects'          => 'related:projects'
+        'structure' => [
+            'name'              => 'string|max:128',
+            'gender'            => 'parent:genders',
+            'phone'             => 'string|max:256',
+            'mobile'            => 'string|max:256',
+            'email'             => 'string|max:256',
+            'permanent_address' => 'string|max:512',
+            'temporary_address' => 'string|max:512',
+            'description'       => 'string|max:512',
+            'position'          => 'parent:designations',
+            'department'        => 'parent:departments',
+            'date_joined'       => 'date',
+            'date_of_birth'     => 'date',
+            'salary'            => 'integer',
+            'profile_image'     => 'image',
+            'leaves'            => 'related:leaves',
+            'is_active'         => 'boolean',
+            'skills'            => 'related:skills',
+            'password'          => 'string|max:512',
+            'remember_token'    => 'string|max:128',
+            'projects'          => 'related:projects'
+        ],
+        'seo_enabled' => true;
     ],
 
 ];

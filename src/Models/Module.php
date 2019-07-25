@@ -9,21 +9,34 @@ class Module
 
     public function __construct($moduleName, $moduleData)
     {
-        $this->laragenData = $moduleData;
+
+        // $this->laragenData = $moduleData;
+
+        $moduleStructure = $moduleData['structure'] ?? ['title' => 'string|max:128'];
+        $this->seoEnabled = $moduleData['seo_enabled'] ?? false;
         $this->name = $moduleName;
 
 
         $this->multipleData = [];
-        $this->multipleData[] = array_filter($moduleData, function($elem) {
+        $this->multipleData[] = array_filter($moduleStructure, function($elem) {
             return (is_array($elem)) ? true : false;
         });
 
-        $moduleData['sort'] = 'integer';
-        $moduleData['status'] = 'boolean';
+        if (app('laragen')->getOption('generic_fields')) {
+            $moduleStructure['sort'] = 'integer';
+            $moduleStructure['status'] = 'boolean';
+        }
+
+        if ($this->seoEnabled) {
+            $moduleStructure['seo_title'] = 'string|max:192';
+            $moduleStructure['seo_keywords'] = 'string|max:256';
+            $moduleStructure['seo_description'] = 'string|max:500';
+        }
 
         $this->columnsData = [];
+        $this->seedData = $moduleData['data'] ?? null;
         $this->displayColumns = [];
-        foreach ($moduleData as $column => $typeOptions) {
+        foreach ($moduleStructure as $column => $typeOptions) {
             $data = new TypeResolver($this->name, $column, $typeOptions);
             $type = $data->getLaragenType();
             $this->columnsData[$column] = $type;
@@ -34,6 +47,8 @@ class Module
         if(sizeof($this->displayColumns)==0){
             $this->displayColumns[] = array_values($this->columnsData)[0];
         }
+
+
     }
 
     public function getTabTitles()
