@@ -8,17 +8,13 @@ use Illuminate\View\View;
 
 class {{modelName}}Controller extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request)
     {
-        return view('{{moduleName}}.index', [
-            '{{moduleName}}' => {{modelName}}::latest()->paginate(20)
-        ]);
+        return {{modelName}}::latest()->paginate(10);
     }
 
-    public function show(Request $request, {{modelName}} ${{modelNameSingularLowerCase}}): View
+    public function show(Request $request, {{modelName}} ${{modelNameSingularLowerCase}})
     {
-        return view('{{moduleName}}.show', [
-            '{{modelNameSingularLowerCase}}' => ${{modelNameSingularLowerCase}}
-        ]);
+        return ${{modelNameSingularLowerCase}};
     }
 }
