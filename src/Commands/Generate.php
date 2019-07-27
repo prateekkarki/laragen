@@ -76,10 +76,10 @@ class Generate extends Command
         
         $this->line("\n");
 
-        foreach ($generatedFiles as $file) {
-            $this->info("Generated file: " . str_replace(base_path() . "\\", "", $file));
+        foreach ($generatedFiles as $key => $file) {
+            \Log::info("Generated file: " . str_replace(base_path() . "\\", "", $file));
         }
-
+        $this->info( (isset($key) ? ++$key : 0) . " files generated. Check log for details.");
         $this->info("Cheers!!!");
     }
 }
