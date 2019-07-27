@@ -2,8 +2,8 @@
 namespace Prateekkarki\Laragen\Generators\Common;
 
 use Prateekkarki\Laragen\Generators\BaseGenerator;
-use Prateekkarki\Laragen\Models\Module;
 use Prateekkarki\Laragen\Generators\GeneratorInterface;
+use Illuminate\Support\Str;
 
 class Model extends BaseGenerator implements GeneratorInterface
 {
@@ -12,7 +12,8 @@ class Model extends BaseGenerator implements GeneratorInterface
         $generatedFiles = [];
         $modelTemplate = $this->buildTemplate('common/Models/Model', [
             '{{modelName}}'       => $this->module->getModelName(),
-            '{{massAssignables}}' => $this->getMassAssignables(),
+            '{{massAssignables}}' => implode("', '", $this->module->getColumns(true, true)),
+            '{{usedModels}}'      => $this->getUsedModels(),
             '{{foreignMethods}}'  => $this->getForeignMethods()
         ]);
         
@@ -20,85 +21,78 @@ class Model extends BaseGenerator implements GeneratorInterface
         file_put_contents($fullFilePath, $modelTemplate);
         $generatedFiles[] = $fullFilePath;
         
-        foreach ($this->module->getMultipleColumns() as $multipleModules) {
-            foreach ($multipleModules as $multiple => $multipleData) {
-
-                $multipleModule = new Module($multiple, $multipleData);
-                
-                $multiModelTemplate = $this->buildTemplate('common/Models/MultiModel', [
-                    '{{modelName}}'       => $this->module->getPivotName($multiple),
-                    '{{massAssignables}}' => $this->getMultipleMassAssignables($multipleModule),
-                    '{{foreignMethods}}'  => $this->getMultipleForeignMethods()
-                ]);
-
-                $fullFilePath = $this->getPath("app/Models/").$this->module->getPivotName($multiple).".php";
-                file_put_contents($fullFilePath, $multiModelTemplate);
-                $generatedFiles[] = $fullFilePath;
-            }
+        foreach($this->module->getFilteredColumns('hasPivot') as $type){
+            $typeTemplate = $this->buildTemplate('common/Models/Pivot', [
+                '{{pivotName}}'       => $type->getPivot(),
+                '{{massAssignables}}' => implode("', '", $type->getTypeColumns()),
+                '{{foreignMethods}}'  => $this->getTypeForeignMethods($type),
+            ]);
+            $fullFilePath = $this->getPath("app/Models/").$type->getPivot().".php";
+            file_put_contents($fullFilePath, $typeTemplate);
+            $generatedFiles[] = $fullFilePath;
+        }
+        
+        foreach($this->module->getFilteredColumns(['hasModel', 'hasOptions']) as $type){
+            $pivotModel = Str::singular($type->getPivot());
+            $typeTemplate = $this->buildTemplate('common/Models/Model', [
+                '{{modelName}}'       => $pivotModel,
+                '{{massAssignables}}' => implode("', '", $type->getTypeColumns()),
+                '{{usedModels}}'      => $this->getUsedModels($pivotModel),
+                '{{foreignMethods}}'  => $this->getTypeForeignMethods($type),
+            ]);
+            
+            $fullFilePath = $this->getPath("app/Models/").$pivotModel.".php";
+            file_put_contents($fullFilePath, $typeTemplate);
+            $generatedFiles[] = $fullFilePath;
         }
 
         return $generatedFiles;
     }
 
-    protected function getMassAssignables()
-    {
-        $columns = array_merge($this->module->getNativeColumns(), $this->module->getFileColumns(), $this->module->getParentColumns());
-        return "'".implode("', '", $columns)."'";
-    }
-
-    protected function getMultipleMassAssignables($multipleModule)
-    {
-        $columns = array_merge($multipleModule->getNativeColumns(), $multipleModule->getFileColumns(), $multipleModule->getParentColumns());
-        return "'".implode("', '", $columns)."'";
-    }
-
-    protected function getMultipleForeignMethods()
+    protected function getTypeForeignMethods($type)
     {
         $foreignMethods = "";
-
-        $foreignMethods .= $this->buildTemplate('common/Models/fragments/multiple', [
-            '{{parent}}'      => $this->module->getModelNameLowercase(),
-            '{{parentModel}}' => $this->module->getModelName()
+        $stub = $type->getStub('modelMethod') ?: 'common/Models/fragments/belongsTo';
+        $foreignMethods .= $this->buildTemplate($stub, [
+            '{{columnName}}'  => $type->getColumn(),
+            '{{parent}}'      => $type->getParentModelLowercase(),
+            '{{parentModel}}' => $type->getParentModel(),
+            '{{relatedModel}}' => $type->getRelatedModel(),
         ]);
 
         return $foreignMethods;
     }
 
+    protected function getUsedModels($pivotModel = false) {
+        $usedModels = "";
+        $classes = [];
+        foreach($this->module->getFilteredColumns(['hasSingleRelation', 'hasPivot', 'hasModel']) as $type){
+            $model = $type->getRelatedModel();
+            $class = ($model == 'User') ? config('laragen.options.user_model') : "App\\Models\\".$model;
+            if(in_array($class, $classes) || $model == $this->module->getModelName() || $model == $pivotModel){
+                continue;
+            }
+            $classes[] = $class;
+            $usedModels .= PHP_EOL."use ".$class.";";
+        }
+        return $usedModels;
+    }
+
     protected function getForeignMethods()
     {
         $foreignMethods = "";
-
-        foreach ($this->module->getForeignColumns('parent') as $parents) {
-            foreach ($parents as $column => $parent) {
-                $foreignMethods .= $this->buildTemplate('common/Models/fragments/parent', [
-                    '{{parent}}'      => str_singular($parent),
-                    '{{columnName}}'  => $column,
-                    '{{parentModel}}' => ($parent == 'users' && class_exists('\\App\\User')) ? "\\App\\User" : ucfirst(camel_case(str_singular($parent)))
-                ]);
-            }
+        foreach($this->module->getFilteredColumns(['hasPivot', 'hasSingleRelation', 'hasModel']) as $type){
+            $stub = $type->getStub('foreignMethod') ?: 'common/Models/fragments/hasOne';
+            $foreignMethods .= $this->buildTemplate($stub, [
+                '{{columnName}}'   => $type->getColumn(),
+                '{{parent}}'       => $type->getParentModelLowercase(),
+                '{{relatedModel}}' => $type->getRelatedModel(),
+                '{{table}}'        => $type->getPivotTable(),
+                '{{parentModel}}' => $type->getParentModel(),
+                '{{parentId}}'     => $type->getParentModelLowercase() . "_id",
+                '{{childId}}'      => $type->getChildKey(),
+            ]);
         }
-
-        foreach ($this->module->getForeignColumns('related') as $relatedModels) {
-            foreach ($relatedModels as $column => $relatedModel) {
-                $foreignMethods .= $this->buildTemplate('common/Models/fragments/related', [
-                    '{{related}}'      => str_singular($relatedModel),
-                    '{{columnName}}'  => $column,
-                    '{{relatedModel}}' => ($relatedModel == 'users' && class_exists('\\App\\User')) ? "\\App\\User" : ucfirst(camel_case(str_singular($relatedModel)))
-                ]);
-            }
-        }
-
-
-        foreach ($this->module->getMultipleColumns() as $multipleModules) {
-            foreach ($multipleModules as $multiple => $multipleData) {
-                $foreignMethods .= $this->buildTemplate('common/Models/fragments/multiple_relation', [
-                    '{{related}}'      => str_singular($multiple),
-                    '{{columnName}}'  => str_plural($multiple),
-                    '{{relatedModel}}' => $this->module->getPivotName($multiple)
-                ]);
-            }
-        }
-
         return $foreignMethods;
     }
 }

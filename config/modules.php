@@ -16,28 +16,83 @@
 //      related: requires name of a module, creates many to many relation with current module
 
 return [
-    'categories' => [
+
+    'departments' => [
+        'structure' => [
+            'title'             => 'string|max:128',
+            'slug'              => 'string|max:128|unique|required',
+            'image'             => 'image',
+            'short_description' => 'string'            
+        ]
+    ],
+
+    'skills' => [],
+
+    'genders' => [
+        'data'=>[
+            'Male', 'Female', 
+        ]
+    ],
+
+    'clients' => [
         'title'             => 'string|max:128',
-        'slug'              => 'string|max:128|unique|required',
-        'short_description' => 'string',
-        'show_in_menu'      => 'boolean',
-        'banners'           => 'gallery',
-        'image'             => 'image|mimes:jpeg',
-        'brochure'          => 'file|mimes:pdf|max:500000'
-    ],
-
-    'tags' => [
-        'title'             => 'string:128'
-    ],
-
-    'posts' => [
-        'author'            => 'parent:users',
-        'title'             => 'string|max:128|required',
-        'slug'              => 'string|max:128|unique',
+        'image'             => 'image',
         'short_description' => 'string|max:512',
-        'full_description'  => 'text',
-        'category'          => 'parent:categories',
-        'posted_at'         => 'datetime',
-        'tags'              => 'related:tags'
+        'address'           => 'string|max:250',
+        'phone'             => 'string|max:128',
+        'mobile'            => 'string|max:128',
+        'email'             => 'string|max:128',
     ],
+
+
+    'employees' => [
+        'structure' => [
+            'name'              => 'string|max:128',
+            'gender'            => 'parent:genders',
+            'phone'             => 'string|max:256',
+            'mobile'            => 'string|max:256',
+            'permanent_address' => 'string|max:512',
+            'temporary_address' => 'string|max:512',
+            'description'       => 'string|max:512',
+            'department'        => 'parent:departments',
+            'date_joined'       => 'date',
+            'date_of_birth'     => 'date',
+            'salary'            => 'integer',
+            'profile_image'     => 'image',
+            'is_active'         => 'boolean',
+            'skills'            => 'related:skills',
+        ],
+        'additional_fields' => [
+            'generic' => false,
+            'seo' => false
+        ]
+    ],
+
+    'teams'  => [
+        'structure' => [
+            'title'     => 'string|max:128',
+            'members'   => 'related:employees',
+        ],
+        'additional_fields' => [
+            'seo' => false
+        ]
+    ],
+    
+    'projects'  => [
+        'structure' => [
+            'title'         => 'string|max:128',
+            'description'   => 'string|max:512',
+            'client'        => 'parent:clients',
+            'team'          => 'parent:teams',
+            'gallery'       => 'gallery',
+        ],
+        'data'=>[
+            'Web project X', 'Web project Y', 'App project Z', 
+        ],
+        'additional_fields' => [
+            'generic' => false,
+            'seo' => true
+        ]
+    ],
+
 ];

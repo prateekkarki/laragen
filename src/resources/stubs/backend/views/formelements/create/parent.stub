@@ -1,0 +1,16 @@
+<div class="form-group row mb-4">
+  	<label class="col-form-label text-md-right col-12 col-md-3 col-lg-3" for="{{key}}">{{label}}</label>
+  	<div class="col-sm-12 col-md-7">
+		<select class="form-control select2 @if ($errors->has('{{key}}')) is-invalid @endif" id="{{key}}" name="{{key}}">
+			<option value="">Please select</option>
+			@foreach(${{relatedModule}} as $p_{{relatedModelLowercase}})
+				<option value="{{ $p_{{relatedModelLowercase}}->id }}"  {{ 
+						$p_{{relatedModelLowercase}}->id == old('{{key}}') ? ' checked' : ''
+				}}>{{ $p_{{relatedModelLowercase}}->{{relatedModelDisplayColumn}} }}</option>
+			@endforeach
+		</select>
+		@if ($errors->has('{{key}}'))
+			<span class="invalid-feedback">{{ $errors->first('{{key}}') }}</span>
+		@endif
+  	</div>
+</div>

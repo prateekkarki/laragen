@@ -3,7 +3,7 @@ namespace Prateekkarki\Laragen\Generators\Backend;
 
 use Prateekkarki\Laragen\Generators\BaseGenerator;
 use Prateekkarki\Laragen\Generators\GeneratorInterface;
-use Prateekkarki\Laragen\Models\DataOption;
+use Prateekkarki\Laragen\Models\TypeResolver;
 
 
 class Request extends BaseGenerator implements GeneratorInterface
@@ -12,8 +12,9 @@ class Request extends BaseGenerator implements GeneratorInterface
     {
         $controllerTemplate = $this->buildTemplate('backend/Request', [
             '{{modelName}}'     => $this->module->getModelName(),
-            '{{authorization}}' => "true",
-            '{{rules}}' 		=> $this->getRules()
+            '{{moduleName}}'    => $this->module->getModuleName(),
+            '{{modelNameLowercase}}' => $this->module->getModelNameLowercase(),
+            '{{rules}}' 		=> $this->getRules(),
         ]);
         
         $fullFilePath = $this->getPath("app/Http/Requests/Backend/").$this->module->getModelName()."Request".".php";
@@ -24,34 +25,10 @@ class Request extends BaseGenerator implements GeneratorInterface
     protected function getRules()
     {
         $validation = [];
-        $moduleData =$this->module->getData();
-        $modelname = $this->module->getModelNameLowercase();
-
-        foreach($moduleData as $column => $options){
-            $columnOptions = new DataOption($column, $options);
-            $type = $columnOptions->getType();
-            $rules = $columnOptions->optionArray();
-
-            $valid_types = ['text' => 'string',
-                            'datetime'=> 'date_format:Y-m-d H:i:s',
-            ];
-            if(array_key_exists($type, $valid_types)){
-                $type = $valid_types[$type];
-            }
-
-            if(in_array($type, DataOption::$fileTypes) || in_array($type, DataOption::$specialTypes)) continue;
-
-            $uniqueValidation = '\''.$column.'\' => ($this->route()->'.$modelname.') ? ';
-            $uniqueValidation .= '\''.DataOption::COLUMN_UNIQUE.':'.$this->module->getModulename().','.$column.','.'\''.'.$this->route()->'.$modelname.'->id';
-            $uniqueValidation .= ':\''.DataOption::COLUMN_UNIQUE.':'.$this->module->getModulename().'\'';
-
-            if ($columnOptions->isUnique()) {
-                $validation[]= $uniqueValidation;
-            } else {
-                $validation[]= empty($rules) ? "'".$column."' => '".$type."'": "'".$column."' => '".$type."|".implode('|',$rules)."'";
-            }
+        foreach($this->module->getColumns(true) as $column){
+            $validation[] =  "'{$column->getColumnKey()}'" . " => " .  $column->getValidationLine();
         }
-        $delimiter = ",\n{$columnOptions->getTabs(3)}";
+        $delimiter = ",\n{$this->getTabs(3)}";
         return (implode($delimiter, $validation));
 	}
 }

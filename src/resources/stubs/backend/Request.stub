@@ -12,7 +12,19 @@ class {{modelName}}Request extends FormRequest
      */
     public function authorize()
     {
-        return {{authorization}};
+        $errors = [];
+
+        if(!isset($this->{{modelNameLowercase}}) && !auth()->user()->can('create_{{moduleName}}')){
+            $errors[] = "You are not authorised to create {{moduleName}}";
+        }
+
+        foreach (array_keys($this->except(['_token', '_method'])) as $inputField) {
+            if(!auth()->user()->can('edit_{{moduleName}}_'. $inputField)){
+                $errors[$inputField] = "You are not authorised to update " . $inputField;
+            }
+        }
+        
+        return empty($errors) ?: redirect()->back()->withErrors($errors);
     }
 
     /**

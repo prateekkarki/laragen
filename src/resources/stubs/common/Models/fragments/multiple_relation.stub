@@ -1,5 +1,5 @@
 
-    public function {{related}}(): hasMany
+    public function {{related}}()
     {
         return $this->hasMany(\App\Models\{{relatedModel}}::class, 'id');
     }

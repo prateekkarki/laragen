@@ -3,7 +3,6 @@ namespace Prateekkarki\Laragen\Generators\Backend;
 
 use Prateekkarki\Laragen\Generators\BaseGenerator;
 use Prateekkarki\Laragen\Generators\GeneratorInterface;
-use Prateekkarki\Laragen\Models\DataOption;
 
 class Controller extends BaseGenerator implements GeneratorInterface
 {
@@ -14,9 +13,11 @@ class Controller extends BaseGenerator implements GeneratorInterface
             '{{moduleName}}'         => $this->module->getModuleName(),
             '{{modelNameLowercase}}' => $this->module->getModelNameLowercase(),
             '{{fileUploads}}'        => $this->getFileUploads(),
+            '{{relatedUpdates}}'     => $this->getRelatedUpdates(),
+            '{{createRelated}}'      => $this->getCreateRelated(),
             '{{foreignData}}'        => $this->getForeignData(),
             '{{usedModels}}'         => $this->getUsedModels(),
-            '{{fileExtentions}}'     => $this->getFileExtentionData()
+            '{{perPage}}'            => config("laragen.options.listing_per_page")
         ]);
         
         $fullFilePath = $this->getPath("app/Http/Controllers/Backend/").$this->module->getModelName()."Controller".".php";
@@ -24,56 +25,95 @@ class Controller extends BaseGenerator implements GeneratorInterface
         return $fullFilePath;
     }
 
-    protected function getFileUploads(){
-        $fileUploads = "";
-        $fileFields = $this->module->getFileColumns();
-        if(empty($fileFields)) return "";
-        if(count($fileFields)>1){
-            $fileUploads .= $this->buildTemplate('backend/fragments/upload-process', [
+    protected function getCreateRelated() {
+        $relatedUpdates = "";
+        $relatedTypes = $this->module->getFilteredColumns(['hasPivot']);
+        if (empty($relatedTypes)) return "";
+        if (count($relatedTypes) > 1) {
+            $relatedUpdates .= $this->buildTemplate('backend/fragments/related-create', [
                 '{{modelNameLowercase}}' => $this->module->getModelNameLowercase(),
-                '{{fileFields}}'         => implode('", "', $fileFields),
+                '{{relatedTypes}}'         => implode('", "', $this->module->getFilteredColumns(['hasPivot', 'hasModel'], true)),
             ]);
-        }else{
-            $fileField = $fileFields[0];
-            $fileUploads .= 'if ($request->has("'.$fileField.'")) {'.PHP_EOL;
-            $fileUploads .= $this->getTabs(3).'$this->uploader->process($request->input("'.$fileField.'"), "category");'.PHP_EOL;
+        } else {
+            $type = $relatedTypes[0];
+            $relatedUpdates .= 'if ($request->has("'.$type->getColumn().'")) {'.PHP_EOL;
+            $relatedUpdates .= $this->getTabs(3).'$'.$this->module->getModelNameLowercase().'->'.$type->getColumn().'()->attach($request->input("'.$type->getColumn().'"));'.PHP_EOL;
+            $relatedUpdates .= $this->getTabs(2).'}'.PHP_EOL;
+        }
+        return $relatedUpdates;
+    }
+
+    protected function getRelatedUpdates() {
+        $relatedUpdates = "";
+        $relatedTypes = $this->module->getFilteredColumns(['hasPivot']);
+        if (empty($relatedTypes)) return "";
+        if (count($relatedTypes) > 1) {
+            $relatedUpdates .= $this->buildTemplate('backend/fragments/related-process', [
+                '{{modelNameLowercase}}' => $this->module->getModelNameLowercase(),
+                '{{relatedTypes}}'         => implode('", "', $this->module->getFilteredColumns(['hasPivot'], true)),
+            ]);
+        } else {
+            $type = $relatedTypes[0];
+            $relatedUpdates .= $this->getTabs(2).'if ($request->has("'.$type->getColumn().'")) {'.PHP_EOL;
+            $relatedUpdates .= $this->getTabs(3).'$'.$this->module->getModelNameLowercase().'->'.$type->getColumn().'()->sync($request->input("'.$type->getColumn().'"));'.PHP_EOL;
+            $relatedUpdates .= $this->getTabs(2).'}'.PHP_EOL;
+        }
+        return $relatedUpdates;
+    }
+
+    protected function getFileUploads() {
+        $fileUploads = "";
+        $fileFields = $this->module->getFilteredColumns(['hasImage', 'hasFile']);
+        foreach ($fileFields as $fileField) {
+            $processMethod = $fileField->hasFile() ? 'process' : 'processImage';
+            $fileUploads .= $this->getTabs(2).'if ($request->has("'.$fileField->getColumn().'")) {'.PHP_EOL;
+            if ($fileField->hasMultipleFiles()) {
+                $fileUploads .= $this->getTabs(3).'$'.$fileField->getColumn().'=[];'.PHP_EOL;
+                $fileUploads .= $this->getTabs(3).'foreach($request->input("'.$fileField->getColumn().'") as $input){'.PHP_EOL;
+                $fileUploads .= $this->getTabs(4).'$uploadData = $this->uploader->'.$processMethod.'($input, "'.$this->module->getModelNameLowercase().'");'.PHP_EOL;
+                $fileUploads .= $this->getTabs(4).'$'.$fileField->getColumn().'[] = new '.$fileField->getRelatedModel().'($uploadData);'.PHP_EOL;
+                $fileUploads .= $this->getTabs(3).'}'.PHP_EOL;
+                $fileUploads .= $this->getTabs(3).'$'.$this->module->getModelNameLowercase().'->'.$fileField->getColumn().'()->saveMany($'.$fileField->getColumn().');'.PHP_EOL;
+
+            }else{
+                $fileUploads .= $this->getTabs(3).'$uploadData = $this->uploader->'.$processMethod.'($request->input("'.$fileField->getColumn().'"), "'.$this->module->getModelNameLowercase().'");'.PHP_EOL;
+                $fileUploads .= $this->getTabs(3).'if (empty($uploadData["errors"])) {'.PHP_EOL;
+                $fileUploads .= $this->getTabs(4).'$updateData["'.$fileField->getColumn().'"] = $uploadData["filename"];'.PHP_EOL;
+                $fileUploads .= $this->getTabs(3).'}'.PHP_EOL;
+            }
             $fileUploads .= $this->getTabs(2).'}'.PHP_EOL;
         }
         return $fileUploads;
     }
 
-    protected function getForeignData(){
+    protected function getForeignData() {
         $foreignData = "";
-        $parents = $this->module->getForeignData();
-        foreach($parents as $parent){
-            $foreignData .= "'".$parent['parentModule']."' => ".$parent['parentModel']."::all()";
-            $foreignData .= ($parent==last($parents)) ? '' : ', ';
+        $parents = $this->module->getFilteredColumns(['hasPivot','hasSingleRelation']);
+        $columns = [];
+        foreach ($parents as $type) {
+            $column = $type->getRelatedModule();
+            if(!in_array($column, $columns)){
+                $foreignData .= "'".$column."' => ".$type->getRelatedModel()."::all(),".PHP_EOL.$this->getTabs(3);
+                $columns[] = $column;
+            }
         }
         return $foreignData;
     }
 
     protected function getUsedModels() {
-        $foreignModels = $this->module->getForeignColumns();
         $namespace = "App\\Models\\";
         $usedModels = "use ".$namespace.$this->module->getModelName().";";
 
-        foreach ($foreignModels as $models) {
-            foreach ($models as $column => $module) {
-                $namespace = ($module == 'users' && class_exists('App\\User')) ? "App\\" : "App\\Models\\";
-                $class = $namespace.$this->moduleToModelName($module);
-                $usedModels .= PHP_EOL."use ".$class.";";
+        $classes = [$namespace.$this->module->getModelName()];
+        foreach($this->module->getFilteredColumns(['hasSingleRelation', 'hasPivot', 'hasModel']) as $type){
+            $model = $type->getRelatedModel();
+            $class = ($model == 'User') ? config('laragen.options.user_model') : "App\\Models\\".$model;
+            if(in_array($class, $classes)){
+                continue;
             }
+            $classes[] = $class;
+            $usedModels .= PHP_EOL."use ".$class.";";
         }
         return $usedModels;
     }
-
-    public function getFileExtentionData()
-    {
-        $controller_ = '';
-        foreach($this->module->getFileColumns('file') as $column){
-            $controller_ = "$".$this->module->getModelNameLowercase()."['".$column."_extention'] =".' getFileExtention($'.$this->module->getModelNameLowercase()."->".$column.");";
-        }
-        return $controller_;
-    }
-    
 }

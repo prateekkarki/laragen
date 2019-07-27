@@ -1,8 +1,8 @@
 <?php
 namespace Prateekkarki\Laragen\Commands;
 use Illuminate\Console\Command;
-use Prateekkarki\Laragen\Models\Module;
 use Prateekkarki\Laragen\Models\FileSystem;
+
 class Generate extends Command
 {
     /**
@@ -22,13 +22,8 @@ class Generate extends Command
      *
      * @var array
      */
-    protected $filesToPublish = [
-        'public' => '/',
-        'views' => 'resources',
-        'Controllers'   => 'app/Http',
-        'Middleware'   => 'app/Http',
-        'Helpers'   => 'app/Http',
-    ];
+
+
     /**
      * Execute the console command.
      *
@@ -36,22 +31,36 @@ class Generate extends Command
      */
     public function handle()
     {
-        $options = config('laragen.options');
-        $modules = config('laragen.modules');
+        $laragen = app('laragen');
+        $modules = $laragen->getModules();
+        $generators = $laragen->getGenerators();
+        $this->filesToPublish = $laragen->getOption('files_to_publish') ?: [];
         $generatedFiles = [];
-        $itemsToGenerate = $this->configToGenerators($options['items_to_generate']);
-        $bar = $this->output->createProgressBar(count($modules) * (count($itemsToGenerate) + count($this->filesToPublish)));
+
+        $this->line("
+██▓    ▄▄▄       ██▀███   ▄▄▄        ▄████ ▓█████  ███▄    █ 
+▓██▒   ▒████▄    ▓██ ▒ ██▒▒████▄     ██▒ ▀█▒▓█   ▀  ██ ▀█   █ 
+▒██░   ▒██  ▀█▄  ▓██ ░▄█ ▒▒██  ▀█▄  ▒██░▄▄▄░▒███   ▓██  ▀█ ██▒
+▒██░   ░██▄▄▄▄██ ▒██▀▀█▄  ░██▄▄▄▄██ ░▓█  ██▓▒▓█  ▄ ▓██▒  ▐▌██▒
+░██████▒▓█   ▓██▒░██▓ ▒██▒ ▓█   ▓██▒░▒▓███▀▒░▒████▒▒██░   ▓██░
+░ ▒░▓  ░▒▒   ▓▒█░░ ▒▓ ░▒▓░ ▒▒   ▓▒█░ ░▒   ▒ ░░ ▒░ ░░ ▒░   ▒ ▒ 
+░ ░ ▒  ░ ▒   ▒▒ ░  ░▒ ░ ▒░  ▒   ▒▒ ░  ░   ░  ░ ░  ░░ ░░   ░ ▒░
+    ░ ░    ░   ▒     ░░   ░   ░   ▒   ░ ░   ░    ░      ░   ░ ░ 
+    ░  ░     ░  ░   ░           ░  ░      ░    ░  ░         ░ 
+                                                                ");
+
+        $this->line("Generating code...");
+        $bar = $this->output->createProgressBar(count($modules) * (count($generators) + count($this->filesToPublish)));
         $bar->setOverwrite(true);
         $bar->start();
         $fs = new FileSystem();
-        foreach ($this->filesToPublish as $src => $dest) {
-            $fs->clone($src, $dest);
+        foreach ($this->filesToPublish as $src ) {
+            $fs->clone($src, '/');
         }
 
-        foreach ($modules as $moduleName => $moduleArray) {
-            $module = new Module($moduleName, $moduleArray);
+        foreach ($modules as $module) {
             
-            foreach ($itemsToGenerate as $generator) {
+            foreach ($generators as $generator) {
                 $itemGenerator = new $generator($module);
                 $returnedFiles = $itemGenerator->generate();
 
@@ -66,19 +75,11 @@ class Generate extends Command
         $bar->finish();
         
         $this->line("\n");
-        
-        foreach ($generatedFiles as $file) {
-            $this->info("Generated file: ".str_replace(base_path()."\\", "", $file));
-        }
-    }
 
-    protected function configToGenerators($array){
-        $generators = [];
-        foreach ($array as $ns => $items) {
-            foreach ($items as $item) {
-                $generators[] = "\\Prateekkarki\\Laragen\\Generators\\".$ns."\\".$item;
-            }
+        foreach ($generatedFiles as $key => $file) {
+            \Log::info("Generated file: " . str_replace(base_path() . "\\", "", $file));
         }
-        return $generators;
+        $this->info( (isset($key) ? ++$key : 0) . " files generated. Check log for details.");
+        $this->info("Cheers!!!");
     }
 }

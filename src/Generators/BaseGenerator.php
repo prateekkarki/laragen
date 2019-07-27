@@ -27,7 +27,7 @@ class BaseGenerator
 
     public function getStub($type)
     {
-        return $this->sanitize(file_get_contents(realpath(__DIR__."/../resources/stubs/")."/".$type.".stub"));
+        return $this->sanitize(file_get_contents(realpath(__DIR__.DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."resources".DIRECTORY_SEPARATOR."stubs").DIRECTORY_SEPARATOR.$type.".stub"));
     }
 
     public function sanitize($string)
@@ -39,24 +39,31 @@ class BaseGenerator
     {
         $dir = base_path($path);
 
-        if (!is_dir($dir))
+        if (!is_dir($dir)) {
             $this->fileSystem->mkdir($dir, 0755);
+        }
 
         return $dir;
     }
 
     public function moduleToModelName($moduleName)
     {
-        return ucfirst(camel_case(str_singular($moduleName)));
+        return ucfirst(Str::camel(str_singular($moduleName)));
     }
 
     public function initializeFile($fullFilePath, $stub, $initializeWithText = false) {
-        if(file_exists($fullFilePath)){
+        if (file_exists($fullFilePath)) {
             $this->fileSystem->remove($fullFilePath);
         }
-        $seederTemplate = ($initializeWithText===false) ? $this->buildTemplate($stub) : $initializeWithText;
-        $this->fileSystem->dumpFile($fullFilePath, $seederTemplate);
+        $seederTemplate = ($initializeWithText === false) ? $this->buildTemplate($stub) : $initializeWithText;
+
+        $cleanFilePath = $this->getCleanPath($fullFilePath);
+        $this->fileSystem->dumpFile($cleanFilePath, $seederTemplate);
         return $fullFilePath;
+    }
+
+    public function getCleanPath($file) {
+        return realpath(dirname($file)) . DIRECTORY_SEPARATOR . basename($file);
     }
 
     public function initializeFiles($fileMaps = []) {
@@ -76,7 +83,7 @@ class BaseGenerator
     }
 
     public function insertIntoFile($file_path, $insert_marker, $text, $after = true) {
-        $contents = str_replace("\r",'', file_get_contents($file_path));
+        $contents = str_replace("\r", '', file_get_contents($file_path));
         $new_contents = ($after) ? str_replace($insert_marker, $insert_marker.$text, $contents) : str_replace($insert_marker, $text.$insert_marker, $contents); 
         $this->fileSystem->dumpFile($file_path, $new_contents);
     }

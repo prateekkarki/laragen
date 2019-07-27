@@ -3,27 +3,162 @@ namespace Prateekkarki\Laragen\Generators\Common;
 
 use Prateekkarki\Laragen\Generators\BaseGenerator;
 use Prateekkarki\Laragen\Generators\GeneratorInterface;
+use Illuminate\Support\Str;
 
 class Seeder extends BaseGenerator implements GeneratorInterface
 {
     protected static $initializeFlag = 0;
 
+    protected $specialTypesToDefinition = [
+        'title'             => 'realText(20)',
+        'firstname'         => 'firstname',
+        'lastname'          => 'lastname',
+        'name'              => 'name',
+        'company'           => 'company',
+        'email'             => 'email',
+        'streetName'        => 'streetName',
+        'streetAddress'     => 'streetAddress',
+        'postcode'          => 'postcode',
+        'address'           => 'address',
+        'country'           => 'country',
+        'dateTime'          => 'dateTime',
+        'month'             => 'month',
+        'year'              => 'year',
+        'url'               => 'url',
+        'slug'              => 'slug',
+        'sort'              => 'numberBetween(0,20)',
+        'short_description' => 'realText(150)',
+        'long_description'  => 'realText(192)',
+        'description'       => 'realText(120)',
+        'content'           => 'realText(192)',
+    ];
+
+    protected $typeToDefinition = [
+        'string'    => 'sentence',
+        'integer'   => 'randomNumber()',
+        'text'      => 'realText(250)',
+        'boolean'   => 'numberBetween(0,1)',
+        'date'      => 'date',
+        'datetime'  => 'dateTime',
+    ];
+
     public function generate()
     {
-
         $generatedFiles = [];
+
+        if($this::$initializeFlag == 0){
+            $laragen = app('laragen');
+            $modules = $laragen->getModules();
+            $permissions = [];
+            $editPermissions = [];
+            $viewPermissions = [];
+            foreach ($modules as $module) {
+                $permissions[] = 'create_'.$module->getModuleName();
+                $permissions[] = 'view_'.$module->getModuleName();
+                $permissions[] = 'edit_'.$module->getModuleName();
+                $permissions[] = 'delete_'.$module->getModuleName();
+                foreach ($module->getColumns() as $field) {
+                    $editPermissions[] = 'edit_'.$module->getModuleName().'_'.$field->getColumnKey();
+                    $viewPermissions[] = 'view_'.$module->getModuleName().'_'.$field->getColumnKey();
+                }
+            }
+            $allPermissions = [];
+            $allPermissions = array_merge($allPermissions, $permissions, $editPermissions, $viewPermissions);
+
+            $permissionsCode = '';
+            foreach ($allPermissions as $permission) {
+                $permissionsCode .= "Permission::create(['name' => '". $permission ."']);" . PHP_EOL. $this->getTabs(2);
+
+            }
+
+            $permissionSeederTemplate = $this->buildTemplate('common/permissionSeeder', [
+                '{{permissions}}'     => $permissionsCode,
+                '{{viewPermissions}}' => implode("', '", $viewPermissions),
+                '{{editPermissions}}' => implode("', '", $editPermissions),
+            ]);
+
+            $fullFilePath = $this->getPath("database/factories/")."RolesAndPermissionsSeeder.php";
+            file_put_contents($fullFilePath, $permissionSeederTemplate);
+            $generatedFiles[] = $fullFilePath;
+
+        }
         $factoryTemplate = $this->buildTemplate('common/Factories/Factory', [
             '{{modelName}}'      => $this->module->getModelName(),
-            '{{usedModels}}'     => $this->getUsedModels(),
-            '{{dataDefinition}}' => $this->getDataDefinition(),
-            '{{foreignData}}'    => $this->getForeignData()
+            '{{usedModels}}'     => $this->getUsedModels($this->module->getFilteredColumns(['hasSingleRelation', 'hasPivot'])),
+            '{{dataDefinition}}' => $this->getDataDefinition($this->module->getFilteredColumns(['general'])),
+            '{{foreignData}}'    => $this->getForeignData($this->module->getFilteredColumns(['hasSingleRelation']))
         ]);
 
         $fullFilePath = $this->getPath("database/factories/").$this->module->getModelName()."Factory.php";
         file_put_contents($fullFilePath, $factoryTemplate);
         $generatedFiles[] = $fullFilePath;
+
+        foreach($this->module->getFilteredColumns(['hasPivot']) as $type){
+            $typeTemplate = $this->buildTemplate('common/Factories/Factory', [
+                '{{modelName}}'      => $type->getPivot(),
+                '{{usedModels}}'     => $this->getUsedModels($type->getFilteredColumns('hasSingleRelation'), $type->getPivot()),
+                '{{dataDefinition}}' => $this->getDataDefinition($type->getFilteredColumns('general')),
+                '{{foreignData}}'    => $this->getForeignData($type->getFilteredColumns('hasSingleRelation'))
+            ]);
+            
+            $fullFilePath = $this->getPath("database/factories/").Str::singular($type->getPivot())."Factory.php";
+            file_put_contents($fullFilePath, $typeTemplate);
+            $generatedFiles[] = $fullFilePath;
+        }
         
-        $laragenSeederFile = (self::$initializeFlag++ == 0) ? $this->initializeFile($this->getPath("database/seeds/")."LaragenSeeder.php", 'common/Seeder') :  $this->getPath("database/seeds/")."LaragenSeeder.php";
+        $generatedFiles[] = $this->updateSeeder();
+        
+        return $generatedFiles;         
+    }
+
+    protected function getUsedModels($types = false, $model = false) {
+        $namespace = "App\\Models\\";
+        $model = $model ? $namespace.$model : $namespace.$this->module->getModelName();
+        $usedModels = "use ".$model.";";
+
+        $classes = [$model];
+
+        foreach($types as $type){
+            $model = $type->getRelatedModel();
+            $class = ($model == 'User') ? config('laragen.options.user_model') : "App\\Models\\".$model;
+            if(in_array($class, $classes)){
+                continue;
+            }
+            $classes[] = $class;
+            $usedModels .= PHP_EOL."use ".$class.";";
+        }
+        return $usedModels;
+    }
+
+    protected function getDataDefinition($columns) {
+        $dataDefinition = "";
+
+        foreach ($columns as $type) {
+            $specialTypes = array_keys($this->specialTypesToDefinition);
+            $dataDefinition .= in_array($type->getColumn(), $specialTypes) ? 
+                $this->getTabs(2)."'{$type->getColumn()}'"." => ".'$faker->'.$this->specialTypesToDefinition[$type->getColumn()] : 
+                $this->getTabs(2)."'{$type->getColumn()}'"." => ".'$faker->'.$this->typeToDefinition[$type->getDataType()];
+            $dataDefinition .= ",".PHP_EOL;
+        }
+        return $dataDefinition;
+    }
+
+    protected function getForeignData($types) {
+        $foreignData = "";
+
+        foreach($types as $type){
+            if($type->hasSelfParent()) continue;
+            $foreignData .= $this->buildTemplate('common/Factories/fragments/options', [
+                '{{parent}}'      => $type->getColumnKey(),
+                '{{parentModel}}' => $type->getRelatedModel()
+            ]);
+            $foreignData .= ",".PHP_EOL;
+        }
+        return $foreignData;
+    }
+
+    protected function updateSeeder() {
+        $laragenSeederFile = (self::$initializeFlag++ == 0) ? $this->initializeFile($this->getPath("database/seeds/")."LaragenSeeder.php", 'common/Seeder') : $this->getPath("database/seeds/")."LaragenSeeder.php";
 
         $this->insertIntoFile(
             $laragenSeederFile,
@@ -34,99 +169,53 @@ class Seeder extends BaseGenerator implements GeneratorInterface
 
         $this->insertIntoFile(
             $laragenSeederFile,
-            $this->getStub('fragments/DatabaseSeederRun'),
-            "\n".$this->getTabs(2)."factory(".$this->module->getModelName()."::class, 5)->create();"
+            "\n        // End factories",
+            "\n".$this->getTabs(2)."factory(".$this->module->getModelName()."::class, ".config('laragen.options.seed_rows').")->create();",
+            false
         );
 
-        $generatedFiles[] = $laragenSeederFile;
-        
-        return $generatedFiles;         
-    }
+        foreach($this->module->getFilteredColumns(['needsTableInit']) as $type){
+            
+            $this->insertIntoFile(
+                $laragenSeederFile,
+                "use Illuminate\Database\Seeder;",
+                "use App\Models\\".$type->getPivot().";\n",
+                false
+            );
 
-    protected function getUsedModels() {
-        $foreignModels = $this->module->getForeignColumns();
-        $namespace = "App\\Models\\";
-        $usedModels = "use ".$namespace.$this->module->getModelName().";";
-
-        foreach ($foreignModels as $models) {
-            foreach ($models as $column => $module) {
-                $namespace = ($module == 'users' && class_exists('App\\User')) ? "App\\" : "App\\Models\\";
-                $class = $namespace.$this->moduleToModelName($module);
-                $usedModels .= PHP_EOL."use ".$class.";";
+            $seedData = PHP_EOL.$this->getTabs(2). "if(".$type->getPivot()."::all()->count()==0){";
+            $seedData .= PHP_EOL.$this->getTabs(3). "DB::table('".$type->getPivotTable()."')->insert([";
+            foreach($type->getDbData() as $title){
+                $seedData .= PHP_EOL.$this->getTabs(4);
+                $seedData .= "['title' => '" . $title . "'],";
             }
-        }
-        return $usedModels;
-    }
+            $seedData .=  PHP_EOL.$this->getTabs(3). "]);";
+            $seedData .=  PHP_EOL.$this->getTabs(2). "}";
 
-    protected function getDataDefinition() {
-        $specialTypesToDefinition = [
-            'title'             => 'realText(50)',
-            'firstname'         => 'firstname',
-            'lastname'          => 'lastname',
-            'name'              => 'name',
-            'company'           => 'company',
-            'email'             => 'email',
-            'streetName'        => 'streetName',
-            'streetAddress'     => 'streetAddress',
-            'postcode'          => 'postcode',
-            'address'           => 'address',
-            'country'           => 'country',
-            'dateTime'          => 'dateTime',
-            'month'             => 'month',
-            'year'              => 'year',
-            'url'               => 'url',
-            'slug'              => 'slug',
-            'short_description' => 'realText(150)',
-            'long_description'  => 'realText(500)',
-            'description'       => 'realText(500)',
-            'content'           => 'realText(500)',
-        ];
-
-        $typeToDefinition = [
-            'string'    => 'sentence',
-            'integer'   => 'randomNumber()',
-            'text'      => 'realText(500)',
-            'boolean'   => 'numberBetween(0,1)',
-            'date'      => 'date',
-            'datetime'  => 'dateTime',
-        ];
-
-        $dataDefinition = "";
-        foreach ($this->module->getWritableColumns() as $columns) {
-            foreach($columns as $column => $type){
-                $specialTypes = array_keys($specialTypesToDefinition);
-                if(in_array($column,$specialTypes)){
-                    $dataDefinition .= $this->getTabs(2) . "'{$column}'" . " => " . '$faker->' . $specialTypesToDefinition[$column];
-                } else {
-                    $dataDefinition .= $this->getTabs(2) . "'{$column}'" . " => " . '$faker->' . $typeToDefinition[$type];
-                }
-
-                if($column != last($columns)) {
-                    $dataDefinition .= "," . PHP_EOL;
-                }
-            }
-        }
-        return $dataDefinition;
-    }
-
-    protected function getForeignData(){
-        $columns = $this->module->getForeignColumns('parent');
-
-        $foreignData = "";
-
-        foreach ($columns as $parents) {
-            foreach ($parents as $column => $parent) {
-                $foreignData .= $this->buildTemplate('common/Factories/fragments/parent', [
-                    '{{parent}}'      => str_singular($parent),
-                    '{{parentModel}}' => ucfirst(camel_case(str_singular($parent)))
-                ]);
-                
-                if($column != last($columns)) {
-                    $foreignData .= "," . PHP_EOL;
-                }
-            }
+            $this->insertIntoFile(
+                $laragenSeederFile,
+                $this->getStub('fragments/DatabaseSeederRun'),
+                $seedData
+            );
         }
 
-        return $foreignData;
+        foreach($this->module->getFilteredColumns(['hasPivot']) as $type){
+            
+            $this->insertIntoFile(
+                $laragenSeederFile,
+                "use Illuminate\Database\Seeder;",
+                "use App\Models\\".$type->getPivot().";\n",
+                false
+            );
+
+            $this->insertIntoFile(
+                $laragenSeederFile,
+                "\n        // End factories",
+                "\n".$this->getTabs(2)."factory(".$type->getPivot()."::class, ".(int)config('laragen.options.seed_rows') * 2 .")->create();",
+                false
+            );
+        }
+
+        return $laragenSeederFile;
     }
 }

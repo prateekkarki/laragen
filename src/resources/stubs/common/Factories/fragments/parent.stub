@@ -1,3 +1,3 @@
-        '{{parent}}_id' => function () {
+        '{{parent}}' => function () {
             return factory({{parentModel}}::class)->create()->id;
         }
