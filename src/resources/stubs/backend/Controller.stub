@@ -93,8 +93,11 @@ class {{modelName}}Controller extends Controller
      */
     public function destroy({{modelName}}  ${{modelNameLowercase}})
     {
-        ${{modelNameLowercase}}->delete();
-
-        return redirect()->route('backend.{{moduleName}}.index')->withSuccess(__('{{moduleName}}.deleted'));
+        if(auth()->user()->can('delete_{{moduleName}}')){
+            ${{modelNameLowercase}}->delete();
+            return redirect()->route('backend.{{moduleName}}.index')->withSuccess(__('{{moduleName}}.deleted'));
+        }else{
+            return redirect()->back()->withErrors(["You are not allowed to delete {{moduleName}}."]);
+        }
     }
 }

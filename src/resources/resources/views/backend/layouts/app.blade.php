@@ -25,24 +25,24 @@
 
 <body class="@yield('body_classes')">
     <div id="app">
-        <div class="main-wrapper main-wrapper-1">
-        
+        <div class="main-wrapper main-wrapper-1">        
             @yield('layout')
-
-            <!-- Scripts -->
-            <!-- General JS Scripts -->
-            <script src="{{ asset('js/jquery-3.3.1.min.js') }}" ></script>
-            <script src="{{ asset('js/popper.min.js') }}" ></script>
-            <script src="{{ asset('js/bootstrap.min.js') }}"></script>
-            <script src="{{ asset('js/jquery.nicescroll.min.js') }}"></script>
-            <script src="{{ asset('js/moment.min.js') }}"></script>
-            <script src="{{ asset('js/stisla.js') }}"></script>
-
-            <!-- JS Libraries -->
-            @stack('page-scripts')
-            @stack('after-scripts')
-
         </div>
     </div>
+    
+    <!-- Scripts -->
+    <!-- General JS Scripts -->
+    {{-- <script src="{{ asset('js/app.js') }}" ></script> --}}
+    <script src="{{ asset('js/jquery-3.3.1.min.js') }}" ></script>
+    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('js/popper.min.js') }}" ></script>
+    <script src="{{ asset('js/iziToast.min.js') }}" ></script>
+    <script src="{{ asset('js/jquery.nicescroll.min.js') }}"></script>
+    <script src="{{ asset('js/moment.min.js') }}"></script>
+    <script src="{{ asset('js/stisla.js') }}"></script>
+
+    <!-- JS Libraries -->
+    @stack('page-scripts')
+    @stack('after-scripts')
 </body>
 </html>
