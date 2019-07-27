@@ -58,7 +58,7 @@
 
 								<button class="btn btn-danger" type="button" 
 									data-confirm="Delete {{label}}|Are you sure?"
-									data-confirm-yes="deleteMultiple('{{relatedModelLowercase}}', '{{ ${{relatedModelLowercase}}->id }}', '{{key}}');">
+									data-confirm-yes="deleteMultiple('{{relatedModelLowercase}}', '{{ ${{relatedModelLowercase}}->id }}', '{{key}}'); $('.modal.show').modal('toggle');">
 									<i class="fa fa-trash" aria-hidden="true"></i>
 								</button>
 

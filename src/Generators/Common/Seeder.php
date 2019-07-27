@@ -28,15 +28,15 @@ class Seeder extends BaseGenerator implements GeneratorInterface
         'slug'              => 'slug',
         'sort'              => 'numberBetween(0,20)',
         'short_description' => 'realText(150)',
-        'long_description'  => 'realText(500)',
-        'description'       => 'realText(500)',
-        'content'           => 'realText(500)',
+        'long_description'  => 'realText(192)',
+        'description'       => 'realText(120)',
+        'content'           => 'realText(192)',
     ];
 
     protected $typeToDefinition = [
         'string'    => 'sentence',
         'integer'   => 'randomNumber()',
-        'text'      => 'realText(500)',
+        'text'      => 'realText(250)',
         'boolean'   => 'numberBetween(0,1)',
         'date'      => 'date',
         'datetime'  => 'dateTime',
