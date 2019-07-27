@@ -44,10 +44,10 @@ class View extends BaseGenerator implements GeneratorInterface
             $mainMenuFile,
             '{{-- Main Menu --}}',
 			"\n".'<li class="nav-item dropdown">
-                    <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span> '.str_plural($this->module->getModelName()).' </span></a>
+                    <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span> '.Str::plural($this->module->getModelName()).' </span></a>
                     <ul class="dropdown-menu">
-                        <li><a class="nav-link" href="{{ route("backend.'.$this->module->getModuleName().'.create") }}"> Add new '.str_plural($this->module->getModelName()).'</a></li>
-                        <li><a class="nav-link" href="{{ route("backend.'.$this->module->getModuleName().'.index") }}">All '.str_plural($this->module->getModelName()).'</a></li>
+                        <li><a class="nav-link" href="{{ route("backend.'.$this->module->getModuleName().'.create") }}"> Add new '.Str::plural($this->module->getModelName()).'</a></li>
+                        <li><a class="nav-link" href="{{ route("backend.'.$this->module->getModuleName().'.index") }}">All '.Str::plural($this->module->getModelName()).'</a></li>
                     </ul>
                 </li>'
 		);

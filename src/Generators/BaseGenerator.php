@@ -48,7 +48,7 @@ class BaseGenerator
 
     public function moduleToModelName($moduleName)
     {
-        return ucfirst(Str::camel(str_singular($moduleName)));
+        return ucfirst(Str::camel(Str::singular($moduleName)));
     }
 
     public function initializeFile($fullFilePath, $stub, $initializeWithText = false) {

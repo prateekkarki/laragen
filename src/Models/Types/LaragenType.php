@@ -4,6 +4,9 @@ namespace Prateekkarki\Laragen\Models\Types;
 use Illuminate\Support\Str;
 use Prateekkarki\Laragen\Models\TypeResolver;
 
+ /**
+  * @method integer getSize()
+  */
 abstract class LaragenType
 {
     protected $uniqueFlag;
@@ -40,7 +43,7 @@ abstract class LaragenType
         }
     }
     
-    function __call($method, $params) {
+    public function __call($method, $params) {
         $var = lcfirst(substr($method, 3));
         
         if (strncasecmp($method, "get", 3) === 0) {
@@ -73,7 +76,7 @@ abstract class LaragenType
     public function getValidationLine()
     {
         $validationSegments = [];
-        $modelname = strtolower(Str::camel(str_singular($this->moduleName)));
+        $modelname = strtolower(Str::camel(Str::singular($this->moduleName)));
 
         $validationSegments[] = $this->isRequired() ? 'required' : 'nullable';
         $validationSegments[] = $this->getValidationRule() ?? $this->getDataType();
@@ -101,21 +104,6 @@ abstract class LaragenType
         return $this->columnName . "_id";
     }
 
-    public function getFilteredColumns($options = [], $columnsOnly = false)
-    {
-        $filteredTypes = [];
-        $options = is_array($options) ? $options : [$options];
-        foreach($this->getPivotColumns() as $type){
-            foreach ($options as $option) {
-                if($type->$option()){
-                    $filteredTypes[] = $columnsOnly ? $type->getColumn() : $type;
-                    break;
-                }
-            }
-        }
-        return $filteredTypes;
-    }
-
     public function getRelatedModel()
     {
         return $this->getChildModel();
@@ -133,7 +121,7 @@ abstract class LaragenType
 
     public function getChildModel()
     {
-        return ucfirst(Str::camel(Str::singular($this->typeOption ?: $this->columnName )));
+        return ucfirst(Str::camel(Str::singular($this->typeOption ?? $this->columnName )));
     }
     
     public function getParentModel()

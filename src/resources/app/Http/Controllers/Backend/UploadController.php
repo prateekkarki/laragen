@@ -45,7 +45,7 @@ class UploadController extends Controller
         $valid = $this->validateUpload($file, $moduleName, $field);
 
         if ($valid) {
-            $imagename = $this->getWritableFilename(str_slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)).'.'.$file->getClientOriginalExtension(), $moduleName, true);
+            $imagename = $this->getWritableFilename(Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)).'.'.$file->getClientOriginalExtension(), $moduleName, true);
     
             $destinationPath = $this->temp_path.$moduleName;
             $file->move($destinationPath, $imagename);
@@ -63,7 +63,7 @@ class UploadController extends Controller
         $files = [];
 
         foreach ($request->file('file') as $file) {
-            $imagename = $this->getWritableFilename(str_slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)).'.'.$file->getClientOriginalExtension(), $moduleName, true); ;
+            $imagename = $this->getWritableFilename(Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)).'.'.$file->getClientOriginalExtension(), $moduleName, true); ;
             $destinationPath = $this->temp_path.$moduleName;
             try {
                 $file->move($destinationPath, $imagename);
