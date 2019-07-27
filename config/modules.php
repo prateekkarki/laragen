@@ -18,43 +18,15 @@
 return [
 
     'departments' => [
-        'title'             => 'string|max:128',
-        'slug'              => 'string|max:128|unique|required',
-        'image'             => 'image',
-        'short_description' => 'string'
-    ],
-
-    // 'categories' => [
-    //     'title'             => 'string|max:128',
-    //     'slug'              => 'string|max:128|unique|required',
-    //     'short_description' => 'string',
-    //     'show_in_menu'      => 'boolean',
-    //     'image'             => 'image|mimes:jpeg',
-    //     'banner'            => 'image|mimes:jpeg,png,gif',
-    //     'brochure'          => 'file|mimes:pdf|max:333',
-    //     'images'            =>  [
-    //         'caption' =>'string|max:123',
-    //         'file'    =>'image'  
-    //     ],
-    //     'reviews'          => [
-    //         'name'      => 'string|max:128',
-    //         'reviews'   => 'text|max:5000',
-    //         'rating'    => 'date',
-    //         'show_in_home'      => 'boolean',
-    //     ]
-    // ],
-
-    'designations' => [
-    ],
-
-    'leave_types' => [
-        'data'=>[
-            'Male', 'Female', 
+        'structure' => [
+            'title'             => 'string|max:128',
+            'slug'              => 'string|max:128|unique|required',
+            'image'             => 'image',
+            'short_description' => 'string'            
         ]
     ],
 
-    'skills' => [
-    ],
+    'skills' => [],
 
     'genders' => [
         'data'=>[
@@ -62,14 +34,6 @@ return [
         ]
     ],
 
-    'leaves' => [
-        'title' => 'string|max:128',
-        'start_date' => 'date',
-        'end_date' => 'date',
-        'reason' => 'string|max:128',
-        'leave_type' => 'parent:leave_types|required',
-        'title' => 'string|max:128'
-    ],
     'clients' => [
         'title'             => 'string|max:128',
         'image'             => 'image',
@@ -78,21 +42,8 @@ return [
         'phone'             => 'string|max:128',
         'mobile'            => 'string|max:128',
         'email'             => 'string|max:128',
-
     ],
 
-    'projects'  => [
-        'structure' => [
-            'title'         => 'string|max:128',
-            'description'   => 'string|max:512',
-            'client'        => 'parent:clients',
-            'gallery'        => 'gallery',
-        ],
-        'data'=>[
-            'Web project X', 'Web project Y', 'App project Z', 
-        ],
-        'seo_enabled' => true;
-    ],
 
     'employees' => [
         'structure' => [
@@ -100,24 +51,48 @@ return [
             'gender'            => 'parent:genders',
             'phone'             => 'string|max:256',
             'mobile'            => 'string|max:256',
-            'email'             => 'string|max:256',
             'permanent_address' => 'string|max:512',
             'temporary_address' => 'string|max:512',
             'description'       => 'string|max:512',
-            'position'          => 'parent:designations',
             'department'        => 'parent:departments',
             'date_joined'       => 'date',
             'date_of_birth'     => 'date',
             'salary'            => 'integer',
             'profile_image'     => 'image',
-            'leaves'            => 'related:leaves',
             'is_active'         => 'boolean',
             'skills'            => 'related:skills',
-            'password'          => 'string|max:512',
-            'remember_token'    => 'string|max:128',
-            'projects'          => 'related:projects'
         ],
-        'seo_enabled' => true;
+        'additional_fields' => [
+            'generic' => false,
+            'seo' => false
+        ]
+    ],
+
+    'teams'  => [
+        'structure' => [
+            'title'     => 'string|max:128',
+            'members'   => 'related:employees',
+        ],
+        'additional_fields' => [
+            'seo' => false
+        ]
+    ],
+    
+    'projects'  => [
+        'structure' => [
+            'title'         => 'string|max:128',
+            'description'   => 'string|max:512',
+            'client'        => 'parent:clients',
+            'team'          => 'parent:teams',
+            'gallery'       => 'gallery',
+        ],
+        'data'=>[
+            'Web project X', 'Web project Y', 'App project Z', 
+        ],
+        'additional_fields' => [
+            'generic' => false,
+            'seo' => true
+        ]
     ],
 
 ];

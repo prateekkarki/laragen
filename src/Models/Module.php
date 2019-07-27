@@ -7,27 +7,32 @@ class Module
 {
     protected $name;
 
+
     public function __construct($moduleName, $moduleData)
     {
-
-        // $this->laragenData = $moduleData;
-
-        $moduleStructure = $moduleData['structure'] ?? ['title' => 'string|max:128'];
-        $this->seoEnabled = $moduleData['seo_enabled'] ?? false;
         $this->name = $moduleName;
 
+        $this->seoFields = $moduleData['additional_fields']['seo'] ?? config('laragen.options.seo_fields');
+        $this->genericFields = $moduleData['additional_fields']['generic'] ?? config('laragen.options.generic_fields');
+        unset($moduleData['additional_fields']);
 
-        $this->multipleData = [];
-        $this->multipleData[] = array_filter($moduleStructure, function($elem) {
+        $this->seedableData = $moduleData['data'] ?? false;
+        unset($moduleData['data']);
+
+        $moduleStructure = $moduleData['structure'] ?? (!empty($moduleData) ? $moduleData : ['title' => 'string|max:128']);
+        unset($moduleData['structure']);
+
+        // $this->multipleData = [];
+        $this->multipleData = array_filter($moduleStructure, function($elem) {
             return (is_array($elem)) ? true : false;
         });
-
-        if (app('laragen')->getOption('generic_fields')) {
+        
+        if ($this->genericFields) {
             $moduleStructure['sort'] = 'integer';
             $moduleStructure['status'] = 'boolean';
         }
 
-        if ($this->seoEnabled) {
+        if ($this->seoFields) {
             $moduleStructure['seo_title'] = 'string|max:192';
             $moduleStructure['seo_keywords'] = 'string|max:256';
             $moduleStructure['seo_description'] = 'string|max:500';
