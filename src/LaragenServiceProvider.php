@@ -11,6 +11,7 @@ use Prateekkarki\Laragen\Commands\Migrate;
 use Prateekkarki\Laragen\Commands\Execute;
 use Prateekkarki\Laragen\Commands\Initialize;
 use Prateekkarki\Laragen\Models\LaragenOptions;
+use Spatie\Permission\PermissionServiceProvider;
 use Artisan;
 
 class LaragenServiceProvider extends ServiceProvider
@@ -28,7 +29,11 @@ class LaragenServiceProvider extends ServiceProvider
         Artisan::call('vendor:publish', [
             '--provider' => 'Prateekkarki\Laragen\LaragenServiceProvider'
         ]);
-        
+
+		Artisan::call('vendor:publish', [
+            '--provider' => 'Spatie\Permission\PermissionServiceProvider'
+        ]);
+
         $file = app_path('Http/Helpers/laragen_helpers.php');
         if (file_exists($file)) {
             require_once($file);
@@ -41,6 +46,7 @@ class LaragenServiceProvider extends ServiceProvider
     public function register()
     {
         // Register Intervention Provider and Facade
+        $this->app->register(PermissionServiceProvider::class);
         $this->app->register(ImageServiceProvider::class);
         AliasLoader::getInstance()->alias('Image', Image::class);
 
@@ -62,9 +68,12 @@ class LaragenServiceProvider extends ServiceProvider
             'command.laragen:init',
         ]);
 
-        $routeFile = app_path('Providers\LaragenRouteServiceProvider.php');
+        $routeFile = app_path('Providers/LaragenRouteServiceProvider.php');
+        $observerFile = app_path('Providers/LaragenObserverServiceProvider.php');
         if (file_exists($routeFile))
             $this->app->register("\App\Providers\LaragenRouteServiceProvider");
+        if (file_exists($observerFile))
+            $this->app->register("\App\Providers\LaragenObserverServiceProvider");
     }
     /**
      * To register laragen as first level command. E.g. laragen:generate

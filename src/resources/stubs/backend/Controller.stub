@@ -52,7 +52,9 @@ class {{modelName}}Controller extends Controller
      */
     public function create(): View
     {
-        return view('backend.{{moduleName}}.create', [{{foreignData}}]);
+        return view('backend.{{moduleName}}.create', [
+            {{foreignData}}
+        ]);
     }
 
     /**
@@ -60,15 +62,10 @@ class {{modelName}}Controller extends Controller
      */
     public function store({{modelName}}Request $request): RedirectResponse
     {
-        {{fileUploads}}
-
-        if (isset($errors)) {
-            return redirect()->back()->withErrors($errors);    
-        }else{
             ${{modelNameLowercase}} = {{modelName}}::create($request->all());
+{{fileUploads}}
             {{createRelated}}
             return redirect()->route('backend.{{moduleName}}.edit', ${{modelNameLowercase}})->withSuccess(__('{{moduleName}}.created'));
-        }
     }
 
     /**
@@ -76,14 +73,17 @@ class {{modelName}}Controller extends Controller
      */
     public function update({{modelName}}Request $request, {{modelName}} ${{modelNameLowercase}}): RedirectResponse
     {
-        {{fileUploads}}
+        $errors = [];
 
-        {{relatedUpdates}}
+        $updateData = $request->validated();
+{{fileUploads}}
 
-        if (isset($errors)) {
-            return redirect()->back()->withErrors($errors);    
+{{relatedUpdates}}
+
+        if (!empty($errors)) {
+            return redirect()->back()->withErrors($errors);
         }else{
-            ${{modelNameLowercase}}->update($request->validated());
+            ${{modelNameLowercase}}->update($updateData);
             return redirect()->route('backend.{{moduleName}}.edit', ${{modelNameLowercase}})->withSuccess(__('{{moduleName}}.created'));
         }
     }
@@ -93,8 +93,11 @@ class {{modelName}}Controller extends Controller
      */
     public function destroy({{modelName}}  ${{modelNameLowercase}})
     {
-        ${{modelNameLowercase}}->delete();
-
-        return redirect()->route('backend.{{moduleName}}.index')->withSuccess(__('{{moduleName}}.deleted'));
+        if(auth()->user()->can('delete_{{moduleName}}')){
+            ${{modelNameLowercase}}->delete();
+            return redirect()->route('backend.{{moduleName}}.index')->withSuccess(__('{{moduleName}}.deleted'));
+        }else{
+            return redirect()->back()->withErrors(["You are not allowed to delete {{moduleName}}."]);
+        }
     }
 }

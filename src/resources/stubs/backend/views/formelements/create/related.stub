@@ -1,10 +1,15 @@
 <div class="form-group row mb-4">
   	<label class="col-form-label text-md-right col-12 col-md-3 col-lg-3" for="{{key}}[]">{{label}}</label>
   	<div class="col-sm-12 col-md-7">
-		<select multiple class="form-control select2" id="{{key}}" name="{{key}}[]">
-			@foreach(${{relatedModule}} as ${{relatedModelLowercase}})
-			<option value="{{ ${{relatedModelLowercase}}->id }}">{{ ${{relatedModelLowercase}}->title }}</option>
+		<select multiple class="form-control select2 @if ($errors->has('{{key}}')) is-invalid @endif" id="{{key}}" name="{{key}}[]">
+			@foreach(${{relatedModule}} as $p_{{relatedModelLowercase}})
+				<option value="{{ $p_{{relatedModelLowercase}}->id }}" {{ 
+					(collect(old('{{key}}'))->contains($p_{{relatedModelLowercase}}->id)) ? 'selected' : ''
+				}}>{{ $p_{{relatedModelLowercase}}->title }}</option>
 			@endforeach
 		</select>
+		@if ($errors->has('{{key}}'))
+			<span class="invalid-feedback">{{ $errors->first('{{key}}') }}</span>
+		@endif
   	</div>
 </div>

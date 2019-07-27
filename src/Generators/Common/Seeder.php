@@ -28,15 +28,15 @@ class Seeder extends BaseGenerator implements GeneratorInterface
         'slug'              => 'slug',
         'sort'              => 'numberBetween(0,20)',
         'short_description' => 'realText(150)',
-        'long_description'  => 'realText(500)',
-        'description'       => 'realText(500)',
-        'content'           => 'realText(500)',
+        'long_description'  => 'realText(192)',
+        'description'       => 'realText(120)',
+        'content'           => 'realText(192)',
     ];
 
     protected $typeToDefinition = [
         'string'    => 'sentence',
         'integer'   => 'randomNumber()',
-        'text'      => 'realText(500)',
+        'text'      => 'realText(250)',
         'boolean'   => 'numberBetween(0,1)',
         'date'      => 'date',
         'datetime'  => 'dateTime',
@@ -45,6 +45,43 @@ class Seeder extends BaseGenerator implements GeneratorInterface
     public function generate()
     {
         $generatedFiles = [];
+
+        if($this::$initializeFlag == 0){
+            $laragen = app('laragen');
+            $modules = $laragen->getModules();
+            $permissions = [];
+            $editPermissions = [];
+            $viewPermissions = [];
+            foreach ($modules as $module) {
+                $permissions[] = 'create_'.$module->getModuleName();
+                $permissions[] = 'view_'.$module->getModuleName();
+                $permissions[] = 'edit_'.$module->getModuleName();
+                $permissions[] = 'delete_'.$module->getModuleName();
+                foreach ($module->getColumns() as $field) {
+                    $editPermissions[] = 'edit_'.$module->getModuleName().'_'.$field->getColumnKey();
+                    $viewPermissions[] = 'view_'.$module->getModuleName().'_'.$field->getColumnKey();
+                }
+            }
+            $allPermissions = [];
+            $allPermissions = array_merge($allPermissions, $permissions, $editPermissions, $viewPermissions);
+
+            $permissionsCode = '';
+            foreach ($allPermissions as $permission) {
+                $permissionsCode .= "Permission::create(['name' => '". $permission ."']);" . PHP_EOL. $this->getTabs(2);
+
+            }
+
+            $permissionSeederTemplate = $this->buildTemplate('common/permissionSeeder', [
+                '{{permissions}}'     => $permissionsCode,
+                '{{viewPermissions}}' => implode("', '", $viewPermissions),
+                '{{editPermissions}}' => implode("', '", $editPermissions),
+            ]);
+
+            $fullFilePath = $this->getPath("database/factories/")."RolesAndPermissionsSeeder.php";
+            file_put_contents($fullFilePath, $permissionSeederTemplate);
+            $generatedFiles[] = $fullFilePath;
+
+        }
         $factoryTemplate = $this->buildTemplate('common/Factories/Factory', [
             '{{modelName}}'      => $this->module->getModelName(),
             '{{usedModels}}'     => $this->getUsedModels($this->module->getFilteredColumns(['hasSingleRelation', 'hasPivot'])),
@@ -112,7 +149,7 @@ class Seeder extends BaseGenerator implements GeneratorInterface
         foreach($types as $type){
             if($type->hasSelfParent()) continue;
             $foreignData .= $this->buildTemplate('common/Factories/fragments/options', [
-                '{{parent}}'      => $type->getcolumn(),
+                '{{parent}}'      => $type->getColumnKey(),
                 '{{parentModel}}' => $type->getRelatedModel()
             ]);
             $foreignData .= ",".PHP_EOL;

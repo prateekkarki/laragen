@@ -15,6 +15,6 @@
 
 @push('after-scripts')
 <script type="text/javascript">
-    dropzoneupload('{{ route('backend.uploader') }}', '{{key}}', '','{{modelNameLowercase}}', ".pdf, .doc, .zip, .txt", true)
+    dropzoneupload('{{ route('backend.gallery.uploader') }}', '{{key}}', '','{{modelNameLowercase}}', ".pdf, .doc, .zip, .txt", true, '{!! json_encode(${{modelNameLowercase}}->{{key}}->toArray()) !!}')
 </script>
 @endpush

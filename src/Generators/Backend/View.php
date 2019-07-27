@@ -113,9 +113,9 @@ class View extends BaseGenerator implements GeneratorInterface
             '{{relatedModelLowercase}}'     => $type->getRelatedModelLowercase(),
             '{{relatedModelDisplayColumn}}' => $displayColumn,
             '{{modelNameLowercase}}'        => $this->module->getModelNameLowercase(),
-            '{{modulename}}'                => $this->module->getModuleName(),
-        ]) . PHP_EOL;
-        return $formElement;
+            '{{moduleName}}'                => $this->module->getModuleName(),
+        ]);
+        return  "@if(auth()->user()->can('view_".$this->module->getModuleName()."_".$type->getColumnKey()."') || auth()->user()->can('edit_".$this->module->getModuleName()."_".$type->getColumnKey()."') )" . PHP_EOL . $formElement . PHP_EOL . "@endif" . PHP_EOL . PHP_EOL;
     }
 
 
@@ -154,7 +154,7 @@ class View extends BaseGenerator implements GeneratorInterface
             $typeTemplate = "";
             if(is_string($tab)&&!in_array($tab, ['hasFile', 'hasImage', 'Seo'])){
                 $types = $this->module->getColumnsData();
-                $type = $types[Str::plural(Str::snake(strtolower($tab)))];
+                $type = $types[Str::plural(strtolower(Str::snake($tab)))];
                 $typeTemplate .= $this->buildMultiple($page, $type);
             }else{
                 foreach ($this->module->getFilteredColumns($tab) as $type) {

@@ -1,8 +1,11 @@
 <div class="form-group row mb-4">
     <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3" for="{{key}}">{{label}}</label>
     <div class="col-sm-12 col-md-7">
-        <textarea class="form-control summernote-simple" id="{{key}}" name="{{key}}" {{options}}>
-        	{{ ${{modelNameLowercase}}->{{key}} }}
+        <textarea @if(!auth()->user()->can('edit_{{moduleName}}_{{key}}')) disabled @endif class="form-control summernote-simple @if ($errors->has('{{key}}')) is-invalid @endif" id="{{key}}" name="{{key}}" {{options}}>
+            {{ old('{{key}}') ?? ${{modelNameLowercase}}->{{key}} }}
         </textarea>
+        @if ($errors->has('{{key}}'))
+            <span class="invalid-feedback">{{ $errors->first('{{key}}') }}</span>
+        @endif
     </div>
 </div>

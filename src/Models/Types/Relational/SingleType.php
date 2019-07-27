@@ -4,7 +4,7 @@ use Prateekkarki\Laragen\Models\Types\RelationalType;
 
 class SingleType extends RelationalType
 {
-    protected $dataType = 'integer';    
+    protected $dataType = 'integer';
     protected $hasSingleRelation = true;
     protected $size = false;
     protected $relationalType = false;
@@ -14,6 +14,11 @@ class SingleType extends RelationalType
         'modelMethod' => 'common/Models/fragments/hasOne',
         'foreignMethod' => 'common/Models/fragments/belongsTo'
     ];
+
+    
+    public function getValidationRule() {
+        return 'exists:'.$this->getRelatedModule().',id';
+    }
 
     public function hasSelfParent(){
         return ($this->typeOption == $this->getParentModule() || $this->typeOption == "self");

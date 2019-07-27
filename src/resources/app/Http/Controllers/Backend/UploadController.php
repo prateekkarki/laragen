@@ -6,13 +6,17 @@ use Illuminate\Http\Request;
 use Symfony\Component\Filesystem\Filesystem;
 use Validator;
 use Image;
-use Storage;
 
 /**
  * Class UploadController.
  */
 class UploadController extends Controller
 {
+    private $thumbnail_sizes;
+    private $temp_path;
+    private $image_path;
+    private $file_path;
+
     function __construct()
     {
         $this->thumbnail_sizes = [
@@ -20,6 +24,10 @@ class UploadController extends Controller
             'md' => config('laragen.options.image_sizes.md'),
             'xs' => config('laragen.options.image_sizes.xs'),
         ];
+
+        $this->temp_path = storage_path('temp/');
+        $this->image_path = public_path('images/');
+        $this->file_path = public_path('files/');
     }
 
     /**
@@ -39,17 +47,13 @@ class UploadController extends Controller
         if ($valid) {
             $imagename = $this->getWritableFilename(str_slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)).'.'.$file->getClientOriginalExtension(), $moduleName, true);
     
-            $destinationPath = storage_path('temp/'.$moduleName);
-    
+            $destinationPath = $this->temp_path.$moduleName;
             $file->move($destinationPath, $imagename);
-            
-            // Storage::put('/public/'.$moduleName .'/'. $imagename, $file );
-
     
-            return response()->json(['message' => 'File successfully uploaded', 'filename' => $imagename, 'status' => 200], 200);
+            return response()->json(['message' => 'File successfully uploaded', 'filename' => $imagename], 200);
         }
 
-        return response()->json(['message' => $this->validation_error, 'filename' => false, 'status' => 500], 200);
+        return response()->json(['message' => $this->validation_error, 'filename' => false], 500);
     }
     
     public function uploadGallery(Request $request)
@@ -60,7 +64,7 @@ class UploadController extends Controller
 
         foreach ($request->file('file') as $file) {
             $imagename = $this->getWritableFilename(str_slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)).'.'.$file->getClientOriginalExtension(), $moduleName, true); ;
-            $destinationPath = storage_path('temp/'.$moduleName);
+            $destinationPath = $this->temp_path.$moduleName;
             try {
                 $file->move($destinationPath, $imagename);
                 $files[] = $imagename;
@@ -70,10 +74,10 @@ class UploadController extends Controller
         }
 
         if (!isset($error)) {
-            return response()->json(['message' => 'File successfully uploaded', 'filenames' => $files, 'status' => 200], 200);
+            return response()->json(['message' => 'File successfully uploaded', 'filenames' => $files], 200);
         }
 
-        return response()->json(['message' => $error, 'filename' => false, 'status' => 500], 200);
+        return response()->json(['message' => $error, 'filename' => false], 500);
     }
 
     public function delete(Request $request)
@@ -102,33 +106,56 @@ class UploadController extends Controller
      */
     public function process($filename, $moduleName)
     {
-        
         $messages = ['errors'=>[]];
-        $filePath = storage_path('temp/'.$moduleName.'/'.$filename);
+        $filePath = $this->temp_path.$moduleName.'/'.$filename;
         $filenameToStore=$this->getFilenameToStore($filename);
+        $fileToStore = $this->file_path.$moduleName.'/'. $filenameToStore;
+
+        try {
+            move_uploaded_file($filePath, $fileToStore);
+            dump($filePath, $fileToStore);
+            $messages['filename'] = $filenameToStore;
+        } catch (\Exception $ex) {
+            $messages['errors'][] = ['fileError' => $ex->getMessage()];
+        }
+        return $messages;
+    }
+
+    /**
+     * @return string
+     */
+    public function processImage($filename, $moduleName)
+    {
+        $messages = ['errors'=>[]];
+        $filePath = $this->temp_path.$moduleName.'/'.$filename;
+        $filenameToStore=$this->getFilenameToStore($filename);
+        $img = Image::make($filePath);
+        $imgSize = $img->filesize();
         
         foreach ($this->thumbnail_sizes as $thumbType => $thumbSizes)
         {
             $thumbDir          = $thumbType;
             [$width, $height]  = explode('x', $thumbSizes);
+            
+            $dir = $this->image_path.$moduleName.'/'.$thumbDir;
 
-            $img = Image::make($filePath)->resize($width, $height, function($constraint) {
+            $img->resize($width, $height, function($constraint) {
                 $constraint->aspectRatio();
             });
 
-            if (! is_dir(storage_path("app/public/images/".$moduleName.'/'.$thumbDir))) {
-                @mkdir(storage_path("app/public/images/".$moduleName.'/'.$thumbDir), 0777, true);
+            if (!is_dir($dir)) {
+                @mkdir($dir, 0777, true);
             }
 
-            $thumbnailpath = storage_path(("app/public/images/".$moduleName.'/'.$thumbDir.'/'.$filenameToStore));
-
+            $thumbnailpath = $dir.'/'.$filenameToStore;
             try {
                 $img->save($thumbnailpath);
-                $messages['filename'] = $filenameToStore;
             } catch (\Exception $ex) {
                 $messages['errors'][] = ['fileError' => $ex->getMessage()];
             }
         }
+        $messages['filename'] = $filenameToStore;
+        $messages['size'] = $imgSize;
         return $messages;
     }
 
@@ -175,21 +202,7 @@ class UploadController extends Controller
 
     protected function validateUpload($file, $moduleName, $field)
     {
-
-        $moduleData = config('laragen.modules')[str_plural($moduleName)];
-        $rules = $moduleData[$field];
-
-        $file = array($field => $file);
-
-        $validator = Validator::make($file, [
-            $field => $rules,
-        ]);
-
-        if ($validator->passes())
-        {
-            return true; 
-        }
-        $this->validation_error = $validator->errors()->all();
-        return false;
+        // Needs revision
+        return true;
     }
 }

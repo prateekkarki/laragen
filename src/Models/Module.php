@@ -7,23 +7,41 @@ class Module
 {
     protected $name;
 
+
     public function __construct($moduleName, $moduleData)
     {
-        $this->laragenData = $moduleData;
         $this->name = $moduleName;
 
+        $this->seoFields = $moduleData['additional_fields']['seo'] ?? config('laragen.options.seo_fields');
+        $this->genericFields = $moduleData['additional_fields']['generic'] ?? config('laragen.options.generic_fields');
+        unset($moduleData['additional_fields']);
 
-        $this->multipleData = [];
-        $this->multipleData[] = array_filter($moduleData, function($elem) {
+        $this->seedableData = $moduleData['data'] ?? false;
+        unset($moduleData['data']);
+
+        $moduleStructure = $moduleData['structure'] ?? (!empty($moduleData) ? $moduleData : ['title' => 'string|max:128']);
+        unset($moduleData['structure']);
+
+        // $this->multipleData = [];
+        $this->multipleData = array_filter($moduleStructure, function($elem) {
             return (is_array($elem)) ? true : false;
         });
+        
+        if ($this->genericFields) {
+            $moduleStructure['sort'] = 'integer';
+            $moduleStructure['status'] = 'boolean';
+        }
 
-        $moduleData['sort'] = 'integer';
-        $moduleData['status'] = 'boolean';
+        if ($this->seoFields) {
+            $moduleStructure['seo_title'] = 'string|max:192';
+            $moduleStructure['seo_keywords'] = 'string|max:256';
+            $moduleStructure['seo_description'] = 'string|max:500';
+        }
 
         $this->columnsData = [];
+        $this->seedData = $moduleData['data'] ?? null;
         $this->displayColumns = [];
-        foreach ($moduleData as $column => $typeOptions) {
+        foreach ($moduleStructure as $column => $typeOptions) {
             $data = new TypeResolver($this->name, $column, $typeOptions);
             $type = $data->getLaragenType();
             $this->columnsData[$column] = $type;
@@ -34,12 +52,14 @@ class Module
         if(sizeof($this->displayColumns)==0){
             $this->displayColumns[] = array_values($this->columnsData)[0];
         }
+
+
     }
 
     public function getTabTitles()
     {
         $tabs = ['General'];
-        if (sizeof($this->getFilteredColumns('isParent'))) {
+        if (sizeof($this->getFilteredColumns(['isParent', 'hasPivot']))) {
             $tabs[] = 'Relations';
         }
         if (sizeof($this->getFilteredColumns('hasFile'))) {

@@ -1,0 +1,46 @@
+<?php
+use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+use App\User;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
+
+class RolesAndPermissionsSeeder extends Seeder
+{
+    public function run()
+    {
+        // Reset cached roles and permissions
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+
+        // create permissions
+        {{permissions}}
+
+        // create roles and assign created permissions
+
+        $role = Role::create(['name' => 'demo-admin']);
+        $role->givePermissionTo(['{{viewPermissions}}']);
+
+
+        $role = Role::create(['name' => 'admin'])
+            ->givePermissionTo(['{{editPermissions}}']);
+
+        $role = Role::create(['name' => 'super-admin']);
+        $role->givePermissionTo(Permission::all());
+
+        foreach (['demo-admin', 'admin', 'super-admin'] as $role) {
+            $email = $role."@example.com";
+            $user = User::where('email', '=', $email)->first();
+            if ($user === null) {
+                $user = new User();
+                $user->password = Hash::make($role);
+                $user->email = $email;
+                $user->email_verified_at = now();
+                $user->remember_token = Str::random(10);
+                $user->name = Str::title(str_replace('-', ' ', $role));
+                $user->save();
+            }
+            $user->assignRole($role);
+        }
+    }
+}

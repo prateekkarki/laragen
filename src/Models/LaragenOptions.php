@@ -14,9 +14,15 @@ class LaragenOptions
         $this->options = config('laragen.options');
 
         $this->modules = [];
-        foreach (config('laragen.modules') as $moduleName => $moduleData) {
+        foreach ($this->getValidatedModules() as $moduleName => $moduleData) {
             $this->modules = array_merge($this->modules, $this->getModulesRecursive($moduleName, $moduleData));
         }
+    }
+    
+    private function getValidatedModules()
+    {
+        // Validate laragen.modules
+        return config('laragen.modules');
     }
 
     public static function getInstance()
@@ -31,12 +37,16 @@ class LaragenOptions
         return $this->options;
     }
     
+    public function getOption($option) {
+        return $this->options[$option] ?? null;
+    }
+    
     public function getModules() {
         return $this->modules;
     }
     
     public function getModule($name) {
-        return $this->modules[$name] ?: false;
+        return isset($this->modules[$name]) ? $this->modules[$name] : false;
     }
     
     protected function getModulesRecursive($moduleName, $moduleData) {

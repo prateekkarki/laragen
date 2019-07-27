@@ -1,7 +1,8 @@
 @extends('backend.layouts.app')
 
 @push('page-styles')
-    <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/laragen.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/iziToast.min.css') }}" >
 @endpush
 
 @section('layout')
@@ -28,5 +29,23 @@
 @endsection
 
 @push('page-scripts')
-    <script src="{{ asset('js/custom.js') }}"></script>
+    <script src="{{ asset('js/laragen.js') }}"></script>
+    
+    <script type="text/javascript">
+        @if ($errors->any())
+            @foreach ($errors->all() as $error)
+                iziToast.error({
+                    title: 'Error',
+                    message: '{{ $error }}'
+                });
+            @endforeach
+        @endif
+        
+        @if(session('success'))
+            iziToast.success({
+                title: 'Success',
+                message: '{{ session("success") }}'
+            });
+        @endif        
+    </script>
 @endpush

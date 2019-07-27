@@ -22,12 +22,7 @@ class Generate extends Command
      *
      * @var array
      */
-    protected $filesToPublish = [
-        'public',
-        'app',
-        'database',
-        'resources',
-    ];
+
 
     /**
      * Execute the console command.
@@ -39,7 +34,7 @@ class Generate extends Command
         $laragen = app('laragen');
         $modules = $laragen->getModules();
         $generators = $laragen->getGenerators();
-
+        $this->filesToPublish = $laragen->getOption('files_to_publish') ?: [];
         $generatedFiles = [];
 
         $this->line("
@@ -60,7 +55,7 @@ class Generate extends Command
         $bar->start();
         $fs = new FileSystem();
         foreach ($this->filesToPublish as $src ) {
-            $fs->clone($src, '\\');
+            $fs->clone($src, '/');
         }
 
         foreach ($modules as $module) {
@@ -81,10 +76,10 @@ class Generate extends Command
         
         $this->line("\n");
 
-        foreach ($generatedFiles as $file) {
-            $this->info("Generated file: " . str_replace(base_path() . "\\", "", $file));
+        foreach ($generatedFiles as $key => $file) {
+            \Log::info("Generated file: " . str_replace(base_path() . "\\", "", $file));
         }
-
+        $this->info( (isset($key) ? ++$key : 0) . " files generated. Check log for details.");
         $this->info("Cheers!!!");
     }
 }

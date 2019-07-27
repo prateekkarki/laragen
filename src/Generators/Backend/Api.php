@@ -28,6 +28,7 @@ class Api extends BaseGenerator implements GeneratorInterface
     protected function getCreateRelated() {
         $relatedUpdates = "";
         $relatedTypes = $this->module->getFilteredColumns(['hasPivot']);
+        
         if (empty($relatedTypes)) return "";
         if (count($relatedTypes) > 1) {
             $relatedUpdates .= $this->buildTemplate('backend/fragments/related-create', [

@@ -13,6 +13,7 @@ abstract class LaragenType
 	protected $formType;
 	protected $stubs = [];
 	protected $size = false;
+	protected $validationRule = null;
 	protected $moduleName;
 	protected $columnName;
 	protected $optionString;
@@ -68,6 +69,25 @@ abstract class LaragenType
 
         return $schema;
 	}
+
+    public function getValidationLine()
+    {
+        $validationSegments = [];
+        $modelname = strtolower(Str::camel(str_singular($this->moduleName)));
+
+        $validationSegments[] = $this->isRequired() ? 'required' : 'nullable';
+        $validationSegments[] = $this->getValidationRule() ?? $this->getDataType();
+        $rules = implode('|', $validationSegments);
+
+        if ($this->isUnique()) {
+            $validationLine = '($this->'.$modelname.') ? \'';
+            $validationLine .= $rules . '|unique:'.$this->moduleName.','.$this->getColumn().','.'\''.'.$this->'.$modelname.'->id : \'';
+            $validationLine .= $rules . '|unique:'.$this->moduleName.'\'';
+        } else{
+            $validationLine = "'{$rules}'";
+        }
+        return $validationLine;
+    }
 
     public function getFormOptions() {
         $options = "";
@@ -172,6 +192,10 @@ abstract class LaragenType
     
     public function getDataType() {
         return $this->dataType;
+    }
+    
+    public function getValidationRule() {
+        return $this->validationRule;
     }
 
     protected function setUnique($set = true) {

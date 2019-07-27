@@ -14,6 +14,24 @@
                 <h4>All {{moduleName}} </h4>
             </div>
             <div class="card-body">
+                @if ($errors->any())
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="alert alert-danger">
+                                @foreach ($errors->all() as $error)
+                                <p>{{ $error }}</p>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                @endif
+                
+                @if(session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                @endif
+                
                 @if(${{moduleName}}->count())
                     <div class="table-responsive">
                         <table class="table table-striped" id="table-2">
@@ -75,10 +93,12 @@
                                         <a href="{{ route('backend.{{moduleName}}.edit', ${{modelNameLowercase}}) }}" class="btn btn-primary">
                                             <i class="fa fa-edit" aria-hidden="true"></i>
                                         </a>
-                                        <form action="{{ route('backend.{{moduleName}}.destroy', ${{modelNameLowercase}}) }}" method="post" class="btn-group">
+                                        <form action="{{ route('backend.{{moduleName}}.destroy', ${{modelNameLowercase}}) }}" method="post" id="delete-form-{{ ${{modelNameLowercase}}->id }}" class="btn-group">
                                             @csrf
                                             @method('DELETE')
-                                            <button class="btn btn-danger" type="submit">
+                                            <button class="btn btn-danger" type="button"
+                                                data-confirm="Delete {{modelNameLowercase}}|Are you sure?"
+                                                data-confirm-yes="$('#delete-form-{{ ${{modelNameLowercase}}->id }}').submit();">
                                                 <i class="fa fa-trash" aria-hidden="true"></i>
                                             </button>
                                         </form>

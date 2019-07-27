@@ -27,7 +27,7 @@ class BaseGenerator
 
     public function getStub($type)
     {
-        return $this->sanitize(file_get_contents(realpath(__DIR__."/../resources/stubs/")."/".$type.".stub"));
+        return $this->sanitize(file_get_contents(realpath(__DIR__.DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."resources".DIRECTORY_SEPARATOR."stubs").DIRECTORY_SEPARATOR.$type.".stub"));
     }
 
     public function sanitize($string)
@@ -63,7 +63,7 @@ class BaseGenerator
     }
 
     public function getCleanPath($file) {
-        return realpath(dirname($file)) . "/" . basename($file);
+        return realpath(dirname($file)) . DIRECTORY_SEPARATOR . basename($file);
     }
 
     public function initializeFiles($fileMaps = []) {

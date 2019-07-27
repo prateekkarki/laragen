@@ -1,6 +1,6 @@
 @extends('backend.layouts.app')
 
-@push('page_styles')
+@push('page-styles')
 <style>
     body {
         background-color: #fff !important;
@@ -14,7 +14,7 @@
             <div class="col-md-12 text-center">
                 <div class="page-error">
                     <div class="page-inner">
-                        <h3>HuH? ... How did you get here?</h3>
+                        <h3>Whoops... Looks like something went wrong.</h3>
 
                         <div class="404-image">
                             <img class="img-fluid" src="{{ asset('img/404.gif') }}" alt="" width="500">
