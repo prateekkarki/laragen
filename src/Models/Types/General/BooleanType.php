@@ -4,6 +4,6 @@ use Prateekkarki\Laragen\Models\Types\GeneralType;
 
 class BooleanType extends GeneralType
 {
-	protected $dataType = 'boolean';
-	protected $formType = 'boolean';
+    protected $dataType = 'boolean';
+    protected $formType = 'boolean';
 }

@@ -28,7 +28,9 @@ class Controller extends BaseGenerator implements GeneratorInterface
     protected function getCreateRelated() {
         $relatedUpdates = "";
         $relatedTypes = $this->module->getFilteredColumns(['hasPivot']);
-        if (empty($relatedTypes)) return "";
+        if (empty($relatedTypes)) {
+            return "";
+        }
         if (count($relatedTypes) > 1) {
             $relatedUpdates .= $this->buildTemplate('backend/fragments/related-create', [
                 '{{modelNameLowercase}}' => $this->module->getModelNameLowercase(),
@@ -46,7 +48,9 @@ class Controller extends BaseGenerator implements GeneratorInterface
     protected function getRelatedUpdates() {
         $relatedUpdates = "";
         $relatedTypes = $this->module->getFilteredColumns(['hasPivot']);
-        if (empty($relatedTypes)) return "";
+        if (empty($relatedTypes)) {
+            return "";
+        }
         if (count($relatedTypes) > 1) {
             $relatedUpdates .= $this->buildTemplate('backend/fragments/related-process', [
                 '{{modelNameLowercase}}' => $this->module->getModelNameLowercase(),
@@ -75,7 +79,7 @@ class Controller extends BaseGenerator implements GeneratorInterface
                 $fileUploads .= $this->getTabs(3).'}'.PHP_EOL;
                 $fileUploads .= $this->getTabs(3).'$'.$this->module->getModelNameLowercase().'->'.$fileField->getColumn().'()->saveMany($'.$fileField->getColumn().');'.PHP_EOL;
 
-            }else{
+            } else {
                 $fileUploads .= $this->getTabs(3).'$uploadData = $this->uploader->'.$processMethod.'($request->input("'.$fileField->getColumn().'"), "'.$this->module->getModelNameLowercase().'");'.PHP_EOL;
                 $fileUploads .= $this->getTabs(3).'if (empty($uploadData["errors"])) {'.PHP_EOL;
                 $fileUploads .= $this->getTabs(4).'$updateData["'.$fileField->getColumn().'"] = $uploadData["filename"];'.PHP_EOL;
@@ -88,11 +92,11 @@ class Controller extends BaseGenerator implements GeneratorInterface
 
     protected function getForeignData() {
         $foreignData = "";
-        $parents = $this->module->getFilteredColumns(['hasPivot','hasSingleRelation']);
+        $parents = $this->module->getFilteredColumns(['hasPivot', 'hasSingleRelation']);
         $columns = [];
         foreach ($parents as $type) {
             $column = $type->getRelatedModule();
-            if(!in_array($column, $columns)){
+            if (!in_array($column, $columns)) {
                 $foreignData .= "'".$column."' => ".$type->getRelatedModel()."::all(),".PHP_EOL.$this->getTabs(3);
                 $columns[] = $column;
             }
@@ -105,10 +109,10 @@ class Controller extends BaseGenerator implements GeneratorInterface
         $usedModels = "use ".$namespace.$this->module->getModelName().";";
 
         $classes = [$namespace.$this->module->getModelName()];
-        foreach($this->module->getFilteredColumns(['hasSingleRelation', 'hasPivot', 'hasModel']) as $type){
+        foreach ($this->module->getFilteredColumns(['hasSingleRelation', 'hasPivot', 'hasModel']) as $type) {
             $model = $type->getRelatedModel();
             $class = ($model == 'User') ? config('laragen.options.user_model') : "App\\Models\\".$model;
-            if(in_array($class, $classes)){
+            if (in_array($class, $classes)) {
                 continue;
             }
             $classes[] = $class;

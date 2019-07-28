@@ -54,7 +54,7 @@ class Generate extends Command
         $bar->setOverwrite(true);
         $bar->start();
         $fs = new FileSystem();
-        foreach ($this->filesToPublish as $src ) {
+        foreach ($this->filesToPublish as $src) {
             $fs->clone($src, '/');
         }
 
@@ -77,9 +77,9 @@ class Generate extends Command
         $this->line("\n");
 
         foreach ($generatedFiles as $key => $file) {
-            \Log::info("Generated file: " . str_replace(base_path() . "\\", "", $file));
+            \Log::info("Generated file: ".str_replace(base_path()."\\", "", $file));
         }
-        $this->info( (isset($key) ? ++$key : 0) . " files generated. Check log for details.");
+        $this->info((isset($key) ? ++$key : 0)." files generated. Check log for details.");
         $this->info("Cheers!!!");
     }
 }

@@ -12,12 +12,12 @@ class FileSystem extends SymphonyFilesystem
 
         if (is_dir($src)) {
             $this->mirror($src, $dest."/".basename($src));
-        }else{
+        } else {
             $this->copy($src, $dest);
         }
     }
 
-    public function getFullSourcePath($path){
-        return realpath(__DIR__ . "/../resources/" . $path);
+    public function getFullSourcePath($path) {
+        return realpath(__DIR__."/../resources/".$path);
     }
 }

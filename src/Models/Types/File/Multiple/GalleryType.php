@@ -5,7 +5,7 @@ use Prateekkarki\Laragen\Models\Types\File\MultipleType;
 class GalleryType extends MultipleType
 {
     protected $hasImage = true;
-	protected $formType = 'gallery';
+    protected $formType = 'gallery';
 
     public function getLaragenColumns()
     {

@@ -46,7 +46,7 @@ class Seeder extends BaseGenerator implements GeneratorInterface
     {
         $generatedFiles = [];
 
-        if($this::$initializeFlag == 0){
+        if ($this::$initializeFlag == 0) {
             $laragen = app('laragen');
             $modules = $laragen->getModules();
             $permissions = [];
@@ -67,7 +67,7 @@ class Seeder extends BaseGenerator implements GeneratorInterface
 
             $permissionsCode = '';
             foreach ($allPermissions as $permission) {
-                $permissionsCode .= "Permission::create(['name' => '". $permission ."']);" . PHP_EOL. $this->getTabs(2);
+                $permissionsCode .= "Permission::create(['name' => '".$permission."']);".PHP_EOL.$this->getTabs(2);
 
             }
 
@@ -93,7 +93,7 @@ class Seeder extends BaseGenerator implements GeneratorInterface
         file_put_contents($fullFilePath, $factoryTemplate);
         $generatedFiles[] = $fullFilePath;
 
-        foreach($this->module->getFilteredColumns(['hasPivot']) as $type){
+        foreach ($this->module->getFilteredColumns(['hasPivot']) as $type) {
             $typeTemplate = $this->buildTemplate('common/Factories/Factory', [
                 '{{modelName}}'      => $type->getPivot(),
                 '{{usedModels}}'     => $this->getUsedModels($type->getFilteredColumns('hasSingleRelation'), $type->getPivot()),
@@ -118,10 +118,10 @@ class Seeder extends BaseGenerator implements GeneratorInterface
 
         $classes = [$model];
 
-        foreach($types as $type){
+        foreach ($types as $type) {
             $model = $type->getRelatedModel();
             $class = ($model == 'User') ? config('laragen.options.user_model') : "App\\Models\\".$model;
-            if(in_array($class, $classes)){
+            if (in_array($class, $classes)) {
                 continue;
             }
             $classes[] = $class;
@@ -136,8 +136,7 @@ class Seeder extends BaseGenerator implements GeneratorInterface
         foreach ($columns as $type) {
             $specialTypes = array_keys($this->specialTypesToDefinition);
             $dataDefinition .= in_array($type->getColumn(), $specialTypes) ? 
-                $this->getTabs(2)."'{$type->getColumn()}'"." => ".'$faker->'.$this->specialTypesToDefinition[$type->getColumn()] : 
-                $this->getTabs(2)."'{$type->getColumn()}'"." => ".'$faker->'.$this->typeToDefinition[$type->getDataType()];
+                $this->getTabs(2)."'{$type->getColumn()}'"." => ".'$faker->'.$this->specialTypesToDefinition[$type->getColumn()] : $this->getTabs(2)."'{$type->getColumn()}'"." => ".'$faker->'.$this->typeToDefinition[$type->getDataType()];
             $dataDefinition .= ",".PHP_EOL;
         }
         return $dataDefinition;
@@ -146,8 +145,8 @@ class Seeder extends BaseGenerator implements GeneratorInterface
     protected function getForeignData($types) {
         $foreignData = "";
 
-        foreach($types as $type){
-            if($type->hasSelfParent()) continue;
+        foreach ($types as $type) {
+            if ($type->hasSelfParent()) continue;
             $foreignData .= $this->buildTemplate('common/Factories/fragments/options', [
                 '{{parent}}'      => $type->getColumnKey(),
                 '{{parentModel}}' => $type->getRelatedModel()
@@ -174,7 +173,7 @@ class Seeder extends BaseGenerator implements GeneratorInterface
             false
         );
 
-        foreach($this->module->getFilteredColumns(['needsTableInit']) as $type){
+        foreach ($this->module->getFilteredColumns(['needsTableInit']) as $type) {
             
             $this->insertIntoFile(
                 $laragenSeederFile,
@@ -183,14 +182,14 @@ class Seeder extends BaseGenerator implements GeneratorInterface
                 false
             );
 
-            $seedData = PHP_EOL.$this->getTabs(2). "if(".$type->getPivot()."::all()->count()==0){";
-            $seedData .= PHP_EOL.$this->getTabs(3). "DB::table('".$type->getPivotTable()."')->insert([";
-            foreach($type->getDbData() as $title){
+            $seedData = PHP_EOL.$this->getTabs(2)."if(".$type->getPivot()."::all()->count()==0){";
+            $seedData .= PHP_EOL.$this->getTabs(3)."DB::table('".$type->getPivotTable()."')->insert([";
+            foreach ($type->getDbData() as $title) {
                 $seedData .= PHP_EOL.$this->getTabs(4);
-                $seedData .= "['title' => '" . $title . "'],";
+                $seedData .= "['title' => '".$title."'],";
             }
-            $seedData .=  PHP_EOL.$this->getTabs(3). "]);";
-            $seedData .=  PHP_EOL.$this->getTabs(2). "}";
+            $seedData .= PHP_EOL.$this->getTabs(3)."]);";
+            $seedData .= PHP_EOL.$this->getTabs(2)."}";
 
             $this->insertIntoFile(
                 $laragenSeederFile,
@@ -199,7 +198,7 @@ class Seeder extends BaseGenerator implements GeneratorInterface
             );
         }
 
-        foreach($this->module->getFilteredColumns(['hasPivot']) as $type){
+        foreach ($this->module->getFilteredColumns(['hasPivot']) as $type) {
             
             $this->insertIntoFile(
                 $laragenSeederFile,
@@ -211,7 +210,7 @@ class Seeder extends BaseGenerator implements GeneratorInterface
             $this->insertIntoFile(
                 $laragenSeederFile,
                 "\n        // End factories",
-                "\n".$this->getTabs(2)."factory(".$type->getPivot()."::class, ".(int)config('laragen.options.seed_rows') * 2 .")->create();",
+                "\n".$this->getTabs(2)."factory(".$type->getPivot()."::class, ".(int) config('laragen.options.seed_rows') * 2.")->create();",
                 false
             );
         }

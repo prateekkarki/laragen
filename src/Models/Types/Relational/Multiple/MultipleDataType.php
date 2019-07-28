@@ -36,17 +36,17 @@ class MultipleDataType extends MultipleType
 
     public function getPivot()
     {
-        return $this->getParentModel() . $this->getChildModel();
+        return $this->getParentModel().$this->getChildModel();
     }
 
     public function getMigrationPivot()
     {
-        return $this->getParentModel() . Str::plural($this->getChildModel());
+        return $this->getParentModel().Str::plural($this->getChildModel());
     }
 
     public function getPivotTable()
     {
-        return $this->getParentModelLowercase(). "_" . strtolower(Str::plural($this->columnName));
+        return $this->getParentModelLowercase()."_".strtolower(Str::plural($this->columnName));
     }
 
     public function getPivotColumns()

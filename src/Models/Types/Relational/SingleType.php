@@ -8,7 +8,7 @@ class SingleType extends RelationalType
     protected $hasSingleRelation = true;
     protected $size = false;
     protected $relationalType = false;
-	protected $formType = 'parent';
+    protected $formType = 'parent';
     
     protected $stubs = [
         'modelMethod' => 'common/Models/fragments/hasOne',
@@ -20,13 +20,13 @@ class SingleType extends RelationalType
         return 'exists:'.$this->getRelatedModule().',id';
     }
 
-    public function hasSelfParent(){
+    public function hasSelfParent() {
         return ($this->typeOption == $this->getParentModule() || $this->typeOption == "self");
     }
 
     public function getColumnKey()
     {
-        return $this->columnName . "_id";
+        return $this->columnName."_id";
     }
 
 }

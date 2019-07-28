@@ -63,7 +63,7 @@ class BaseGenerator
     }
 
     public function getCleanPath($file) {
-        return realpath(dirname($file)) . DIRECTORY_SEPARATOR . basename($file);
+        return realpath(dirname($file)).DIRECTORY_SEPARATOR.basename($file);
     }
 
     public function initializeFiles($fileMaps = []) {

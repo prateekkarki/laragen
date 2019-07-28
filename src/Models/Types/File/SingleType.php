@@ -4,5 +4,5 @@ use Prateekkarki\Laragen\Models\Types\FileType;
 
 class SingleType extends FileType
 {
-	protected $dataType = 'string';
+    protected $dataType = 'string';
 }

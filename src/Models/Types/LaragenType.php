@@ -12,14 +12,14 @@ abstract class LaragenType
     protected $uniqueFlag;
     protected $requiredFlag;
     protected $isDisplay;
-	protected $dataType;
-	protected $formType;
-	protected $stubs = [];
-	protected $size = false;
-	protected $validationRule = null;
-	protected $moduleName;
-	protected $columnName;
-	protected $optionString;
+    protected $dataType;
+    protected $formType;
+    protected $stubs = [];
+    protected $size = false;
+    protected $validationRule = null;
+    protected $moduleName;
+    protected $columnName;
+    protected $optionString;
 	
     public function __construct($moduleName, $columnName, $optionString)
     {
@@ -32,13 +32,13 @@ abstract class LaragenType
         $type = explode(':', $typePieces);
         $this->typeOption = is_array($type) && count($type) >= 2 ? $type[1] : false;
 
-        if(in_array(TypeResolver::COLUMN_UNIQUE, $this->optionArray)){
+        if (in_array(TypeResolver::COLUMN_UNIQUE, $this->optionArray)) {
             $this->setUnique();
         }
-        if(in_array(TypeResolver::COLUMN_REQUIRED, $this->optionArray)){
+        if (in_array(TypeResolver::COLUMN_REQUIRED, $this->optionArray)) {
             $this->setRequired();
         }
-        if(in_array("*", $this->optionArray)){
+        if (in_array("*", $this->optionArray)) {
             $this->setIsDisplay();
         }
     }
@@ -55,11 +55,11 @@ abstract class LaragenType
         }
 
         return property_exists($this, $method) ? $this->$method : "";
-   }
+    }
 	
     public function isRelational()
     {
-       return $this->relationalType;
+        return $this->relationalType;
     }
 
     public function getSchema()
@@ -71,7 +71,7 @@ abstract class LaragenType
         $schema .= ";";
 
         return $schema;
-	}
+    }
 
     public function getValidationLine()
     {
@@ -84,9 +84,9 @@ abstract class LaragenType
 
         if ($this->isUnique()) {
             $validationLine = '($this->'.$modelname.') ? \'';
-            $validationLine .= $rules . '|unique:'.$this->moduleName.','.$this->getColumn().','.'\''.'.$this->'.$modelname.'->id : \'';
-            $validationLine .= $rules . '|unique:'.$this->moduleName.'\'';
-        } else{
+            $validationLine .= $rules.'|unique:'.$this->moduleName.','.$this->getColumn().','.'\''.'.$this->'.$modelname.'->id : \'';
+            $validationLine .= $rules.'|unique:'.$this->moduleName.'\'';
+        } else {
             $validationLine = "'{$rules}'";
         }
         return $validationLine;
@@ -146,8 +146,9 @@ abstract class LaragenType
 
 
     public function getTextRows() {
-        if (!$this->size)
-            return 4;
+        if (!$this->size) {
+                    return 4;
+        }
         
         return floor($this->getsize() / 120);
     }

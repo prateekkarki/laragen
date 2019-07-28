@@ -21,7 +21,7 @@ class Model extends BaseGenerator implements GeneratorInterface
         file_put_contents($fullFilePath, $modelTemplate);
         $generatedFiles[] = $fullFilePath;
         
-        foreach($this->module->getFilteredColumns('hasPivot') as $type){
+        foreach ($this->module->getFilteredColumns('hasPivot') as $type) {
             $typeTemplate = $this->buildTemplate('common/Models/Pivot', [
                 '{{pivotName}}'       => $type->getPivot(),
                 '{{massAssignables}}' => implode("', '", $type->getTypeColumns()),
@@ -32,7 +32,7 @@ class Model extends BaseGenerator implements GeneratorInterface
             $generatedFiles[] = $fullFilePath;
         }
         
-        foreach($this->module->getFilteredColumns(['hasModel', 'hasOptions']) as $type){
+        foreach ($this->module->getFilteredColumns(['hasModel', 'hasOptions']) as $type) {
             $pivotModel = Str::singular($type->getPivot());
             $typeTemplate = $this->buildTemplate('common/Models/Model', [
                 '{{modelName}}'       => $pivotModel,
@@ -66,10 +66,10 @@ class Model extends BaseGenerator implements GeneratorInterface
     protected function getUsedModels($pivotModel = false) {
         $usedModels = "";
         $classes = [];
-        foreach($this->module->getFilteredColumns(['hasSingleRelation', 'hasPivot', 'hasModel']) as $type){
+        foreach ($this->module->getFilteredColumns(['hasSingleRelation', 'hasPivot', 'hasModel']) as $type) {
             $model = $type->getRelatedModel();
             $class = ($model == 'User') ? config('laragen.options.user_model') : "App\\Models\\".$model;
-            if(in_array($class, $classes) || $model == $this->module->getModelName() || $model == $pivotModel){
+            if (in_array($class, $classes) || $model == $this->module->getModelName() || $model == $pivotModel) {
                 continue;
             }
             $classes[] = $class;
@@ -81,7 +81,7 @@ class Model extends BaseGenerator implements GeneratorInterface
     protected function getForeignMethods()
     {
         $foreignMethods = "";
-        foreach($this->module->getFilteredColumns(['hasPivot', 'hasSingleRelation', 'hasModel']) as $type){
+        foreach ($this->module->getFilteredColumns(['hasPivot', 'hasSingleRelation', 'hasModel']) as $type) {
             $stub = $type->getStub('foreignMethod') ?: 'common/Models/fragments/hasOne';
             $foreignMethods .= $this->buildTemplate($stub, [
                 '{{columnName}}'   => $type->getColumn(),
@@ -89,7 +89,7 @@ class Model extends BaseGenerator implements GeneratorInterface
                 '{{relatedModel}}' => $type->getRelatedModel(),
                 '{{table}}'        => $type->getPivotTable(),
                 '{{parentModel}}' => $type->getParentModel(),
-                '{{parentId}}'     => $type->getParentModelLowercase() . "_id",
+                '{{parentId}}'     => $type->getParentModelLowercase()."_id",
                 '{{childId}}'      => $type->getChildKey(),
             ]);
         }

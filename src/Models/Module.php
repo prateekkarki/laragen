@@ -45,11 +45,11 @@ class Module
             $data = new TypeResolver($this->name, $column, $typeOptions);
             $type = $data->getLaragenType();
             $this->columnsData[$column] = $type;
-            if($type->isDisplay())
+            if ($type->isDisplay())
                 $this->displayColumns[] = $type;
         }
 
-        if(sizeof($this->displayColumns)==0){
+        if (sizeof($this->displayColumns) == 0) {
             $this->displayColumns[] = array_values($this->columnsData)[0];
         }
 
@@ -111,8 +111,8 @@ class Module
     public function getPivotalColumns()
     {
         $relativeTypes = [];
-        foreach($this->columnsData as $type){
-            if($type->isRelational()&&$type->hasPivot()){
+        foreach ($this->columnsData as $type) {
+            if ($type->isRelational() && $type->hasPivot()) {
                 $relativeTypes[] = $type;
             }
         }
@@ -123,9 +123,9 @@ class Module
     {
         $filteredTypes = [];
         $options = is_array($options) ? $options : [$options];
-        foreach($this->columnsData as $type){
+        foreach ($this->columnsData as $type) {
             foreach ($options as $option) {
-                if($type->$option()){
+                if ($type->$option()) {
                     $filteredTypes[] = $columnsOnly ? $type->getColumn() : $type;
                     break;
                 }
@@ -137,13 +137,13 @@ class Module
     public function getColumns($onlyNonRelational = false, $columnsOnly = false)
     {
         $columns = [];
-        foreach($this->columnsData as $type){
-            if($onlyNonRelational && $type->isRelational()){
+        foreach ($this->columnsData as $type) {
+            if ($onlyNonRelational && $type->isRelational()) {
                 continue;
             }
-            if($columnsOnly){
+            if ($columnsOnly) {
                 $columns[] = $type->getColumnKey(); 
-            }else{
+            } else {
                 $columns[$type->getColumnKey()] = $type;
             }
         }
@@ -158,8 +158,8 @@ class Module
     public function hasPivotRelations()
     {
         $hasRelations = false;
-        foreach($this->columnsData as $column => $type){
-            if($type->isRelational()&&$type->hasPivot()){
+        foreach ($this->columnsData as $column => $type) {
+            if ($type->isRelational() && $type->hasPivot()) {
                 $hasRelations = true;
                 break;
             }

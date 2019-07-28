@@ -8,7 +8,7 @@ use Prateekkarki\Laragen\Models\Types\Relational\MultipleType;
 class RelatedType extends MultipleType
 {
     protected $hasPivot = true;
-	protected $formType = 'related';
+    protected $formType = 'related';
     protected $stubs = [
         'foreignMethod' => 'common/Models/fragments/belongsToMany'
     ];
@@ -20,7 +20,7 @@ class RelatedType extends MultipleType
         $schema .= '$table->bigInteger("'.$this->getParentKey().'")->unsigned()->nullable();'.PHP_EOL.$this->getTabs(3);
         $schema .= '$table->foreign("'.$this->getParentKey().'")->references("id")->on("'.$moduleName.'")->onDelete("set null");'.PHP_EOL.$this->getTabs(3);
 
-        $schema .= '$table->bigInteger("'. $this->getChildKey() .'")->unsigned()->nullable();'.PHP_EOL.$this->getTabs(3);
+        $schema .= '$table->bigInteger("'.$this->getChildKey().'")->unsigned()->nullable();'.PHP_EOL.$this->getTabs(3);
         $schema .= '$table->foreign("'.$this->getChildKey().'")->references("id")->on("'.$this->typeOption.'")->onDelete("set null");'.PHP_EOL;
 
         return $schema;
@@ -43,7 +43,7 @@ class RelatedType extends MultipleType
 
     public function getChildKey()
     {
-        return Str::singular($this->columnName) ."_id";
+        return Str::singular($this->columnName)."_id";
     }
 
     public function getChildModel()
@@ -89,6 +89,6 @@ class RelatedType extends MultipleType
 
     public function getTypeColumns()
     {
-        return [$this->getParentModelLowercase().'_id', strtolower(Str::singular($this->typeOption)) . '_id'];
+        return [$this->getParentModelLowercase().'_id', strtolower(Str::singular($this->typeOption)).'_id'];
     }
 }
