@@ -19,7 +19,7 @@ class OptionType extends SingleType
 
     public function getDbData()
     {
-        return explode(':',$this->optionArray[0]);
+        return explode(':', $this->optionArray[0]);
     }
 
     public function getPivotSchema()
@@ -36,17 +36,17 @@ class OptionType extends SingleType
     
     public function getPivotTable()
     {
-        return $this->getParentModelLowercase() . "_" . Str::plural($this->columnName);
+        return $this->getParentModelLowercase()."_".Str::plural($this->columnName);
     }
 
     public function getMigrationPivot()
     {
-        return $this->getParentModel() . Str::plural($this->getChildModel());
+        return $this->getParentModel().Str::plural($this->getChildModel());
     }
 
     public function getPivot()
     {
-        return $this->getParentModel() . $this->getChildModel();
+        return $this->getParentModel().$this->getChildModel();
     }
     
     public function getTypeColumns()

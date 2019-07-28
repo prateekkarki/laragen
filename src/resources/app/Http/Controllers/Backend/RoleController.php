@@ -12,8 +12,8 @@ class RoleController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(function ($request, $next) {
-            if(!auth()->user()->getRoleNames()->contains('super-admin'))
+        $this->middleware(function($request, $next) {
+            if (!auth()->user()->getRoleNames()->contains('super-admin'))
                 abort(403, 'Access denied');
             return $next($request);
         });
@@ -39,12 +39,12 @@ class RoleController extends Controller
     {
         return view('backend.roles.edit', [
             'role' => $role, 
-            'groupedPermissions' => Permission::all('name', 'id')->map(function ($perm) {
+            'groupedPermissions' => Permission::all('name', 'id')->map(function($perm) {
                 $perm->name = str_replace('_', ' ', $perm->name);
                 return $perm;
-            })->groupBy(function ($perm) { 
+            })->groupBy(function($perm) { 
                 foreach (array_keys(app('laragen')->getModules()) as $module) {
-                    if(Str::contains($perm->name, str_replace('_', ' ', $module)))
+                    if (Str::contains($perm->name, str_replace('_', ' ', $module)))
                         return Str::title(str_replace('_', ' ', $module));
                 }
                 return "Others";
@@ -58,12 +58,12 @@ class RoleController extends Controller
     public function create()
     {
         return view('backend.roles.create', [
-            'groupedPermissions' => Permission::all('name', 'id')->map(function ($perm) {
+            'groupedPermissions' => Permission::all('name', 'id')->map(function($perm) {
                 $perm->name = str_replace('_', ' ', $perm->name);
                 return $perm;
-            })->groupBy(function ($perm) { 
+            })->groupBy(function($perm) { 
                 foreach (array_keys(app('laragen')->getModules()) as $module) {
-                    if(Str::contains($perm->name, str_replace('_', ' ', $module)))
+                    if (Str::contains($perm->name, str_replace('_', ' ', $module)))
                         return Str::title(str_replace('_', ' ', $module));
                 }
                 return "Others";
@@ -76,8 +76,9 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        if (!$request->name)
-            return redirect()->back()->withErrors(['name' => 'Name cannot be empty.']);
+        if (!$request->name) {
+                    return redirect()->back()->withErrors(['name' => 'Name cannot be empty.']);
+        }
 
         $role = Role::create(['name' => $request->name]);
         $role->permissions()->attach($request->permissions);

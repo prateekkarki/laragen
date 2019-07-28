@@ -108,8 +108,8 @@ class UploadController extends Controller
     {
         $messages = ['errors'=>[]];
         $filePath = $this->temp_path.$moduleName.'/'.$filename;
-        $filenameToStore=$this->getFilenameToStore($filename);
-        $fileToStore = $this->file_path.$moduleName.'/'. $filenameToStore;
+        $filenameToStore = $this->getFilenameToStore($filename);
+        $fileToStore = $this->file_path.$moduleName.'/'.$filenameToStore;
 
         try {
             move_uploaded_file($filePath, $fileToStore);
@@ -128,7 +128,7 @@ class UploadController extends Controller
     {
         $messages = ['errors'=>[]];
         $filePath = $this->temp_path.$moduleName.'/'.$filename;
-        $filenameToStore=$this->getFilenameToStore($filename);
+        $filenameToStore = $this->getFilenameToStore($filename);
         $img = Image::make($filePath);
         $imgSize = $img->filesize();
         
@@ -194,8 +194,9 @@ class UploadController extends Controller
 
     protected function getPath($path)
     {
-        if (!is_dir($path))
-            mkdir($path, 0755, true);
+        if (!is_dir($path)) {
+                    mkdir($path, 0755, true);
+        }
 
         return $path;
     }

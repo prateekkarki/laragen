@@ -30,7 +30,7 @@ class LaragenServiceProvider extends ServiceProvider
             '--provider' => 'Prateekkarki\Laragen\LaragenServiceProvider'
         ]);
 
-		Artisan::call('vendor:publish', [
+        Artisan::call('vendor:publish', [
             '--provider' => 'Spatie\Permission\PermissionServiceProvider'
         ]);
 
@@ -50,7 +50,7 @@ class LaragenServiceProvider extends ServiceProvider
         $this->app->register(ImageServiceProvider::class);
         AliasLoader::getInstance()->alias('Image', Image::class);
 
-        $this->app->singleton('laragen', function () {
+        $this->app->singleton('laragen', function() {
             return LaragenOptions::getInstance();
         });
 
@@ -70,10 +70,12 @@ class LaragenServiceProvider extends ServiceProvider
 
         $routeFile = app_path('Providers/LaragenRouteServiceProvider.php');
         $observerFile = app_path('Providers/LaragenObserverServiceProvider.php');
-        if (file_exists($routeFile))
-            $this->app->register("\App\Providers\LaragenRouteServiceProvider");
-        if (file_exists($observerFile))
-            $this->app->register("\App\Providers\LaragenObserverServiceProvider");
+        if (file_exists($routeFile)) {
+                    $this->app->register("\App\Providers\LaragenRouteServiceProvider");
+        }
+        if (file_exists($observerFile)) {
+                    $this->app->register("\App\Providers\LaragenObserverServiceProvider");
+        }
     }
     /**
      * To register laragen as first level command. E.g. laragen:generate

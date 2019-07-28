@@ -61,10 +61,9 @@ class View extends BaseGenerator implements GeneratorInterface
         foreach ($columns as $column) {
             $headings .= 
                 $simple ? 
-                "<th>" . $column->getDisplay() . "</th>" : 
-                "<th> 
-                    <a href=\"{{ route('backend." . $this->module->getModuleName() . ".index') }}?sort=" . $column->getColumn() . "&sort_dir={{ request()->input('sort_dir')=='asc' ? 'desc' : 'asc' }}\">" . $column->getDisplay() . " 
-                        @if(request()->input('sort')=='" . $column->getColumn() . "')
+                "<th>".$column->getDisplay()."</th>" : "<th> 
+                    <a href=\"{{ route('backend." . $this->module->getModuleName().".index') }}?sort=".$column->getColumn()."&sort_dir={{ request()->input('sort_dir')=='asc' ? 'desc' : 'asc' }}\">".$column->getDisplay()." 
+                        @if(request()->input('sort')=='" . $column->getColumn()."')
                             {!! request()->input('sort_dir')=='asc' ? '<i class=\"fas fa-arrow-down\"></i>' : '<i class=\"fas fa-arrow-up\"></i>' !!}
                         @endif
                     </a>
@@ -78,11 +77,11 @@ class View extends BaseGenerator implements GeneratorInterface
         $tabs = $this->module->getTabTitles();
         $data = "";
         foreach ($tabs as $key => $tab) {
-            $activeClass = ($key==0) ? 'active' : '';
+            $activeClass = ($key == 0) ? 'active' : '';
             $data .= '<li class="nav-item">'.PHP_EOL.$this->getTabs(7);
-            $data .= '<a class="nav-link '. $activeClass .'" id="base-tab'.$key.'" data-toggle="tab" aria-controls="tab'.$key.'" href="#tab'.$key.'" aria-expanded="true">'.$tab. '</a>' . PHP_EOL . $this->getTabs(6);
+            $data .= '<a class="nav-link '.$activeClass.'" id="base-tab'.$key.'" data-toggle="tab" aria-controls="tab'.$key.'" href="#tab'.$key.'" aria-expanded="true">'.$tab.'</a>'.PHP_EOL.$this->getTabs(6);
             $data .= '</li>';
-            $data .= ($tab!==last($tabs)) ? PHP_EOL . $this->getTabs(6) : '';
+            $data .= ($tab !== last($tabs)) ? PHP_EOL . $this->getTabs(6) : '';
         }
         return $data;
     }
@@ -92,7 +91,7 @@ class View extends BaseGenerator implements GeneratorInterface
         $columns = $module->getDisplayColumns();
         $data = "";
         foreach ($columns as $column) {
-            $data .= "<td> {{ $" . $model . "->" . $column->getColumn() . " }}</td>" . PHP_EOL;
+            $data .= "<td> {{ $".$model."->".$column->getColumn()." }}</td>".PHP_EOL;
         }
         return $data;
     }
@@ -104,7 +103,7 @@ class View extends BaseGenerator implements GeneratorInterface
             $relatedModule = app('laragen')->getModule(Str::plural(strtolower(Str::snake($type->getRelatedModel()))));
             $displayColumn = $relatedModule->getDisplayColumns()[0]->getColumn();
         }
-        $formElement = $this->buildTemplate('backend/views/formelements/' . $page . '/' . $type->getFormType(), [
+        $formElement = $this->buildTemplate('backend/views/formelements/'.$page.'/'.$type->getFormType(), [
             '{{key}}'                       => $type->getColumnKey(),
             '{{column}}'                    => $type->getColumn(),
             '{{label}}'                     => $type->getDisplay(),
@@ -115,7 +114,7 @@ class View extends BaseGenerator implements GeneratorInterface
             '{{modelNameLowercase}}'        => $this->module->getModelNameLowercase(),
             '{{moduleName}}'                => $this->module->getModuleName(),
         ]);
-        return  "@if(auth()->user()->can('view_".$this->module->getModuleName()."_".$type->getColumnKey()."') || auth()->user()->can('edit_".$this->module->getModuleName()."_".$type->getColumnKey()."') )" . PHP_EOL . $formElement . PHP_EOL . "@endif" . PHP_EOL . PHP_EOL;
+        return  "@if(auth()->user()->can('view_".$this->module->getModuleName()."_".$type->getColumnKey()."') || auth()->user()->can('edit_".$this->module->getModuleName()."_".$type->getColumnKey()."') )".PHP_EOL.$formElement.PHP_EOL."@endif".PHP_EOL.PHP_EOL;
     }
 
 
@@ -124,7 +123,7 @@ class View extends BaseGenerator implements GeneratorInterface
         $displayColumn = $type->getRelatedModule() == 'users' ? 'name' : 'title';
         $relatedModule = app('laragen')->getModule($this->module->getModelNameLowercase()."_".$type->getColumn());
         $displayColumn = $relatedModule->getDisplayColumns()[0]->getColumn();
-        $formElement = $this->buildTemplate('backend/views/formelements/' . $page . '/' . $type->getFormType(), [
+        $formElement = $this->buildTemplate('backend/views/formelements/'.$page.'/'.$type->getFormType(), [
             '{{key}}'                       => $type->getColumn(),
             '{{label}}'                     => $type->getDisplay(),
             '{{relatedModule}}'             => $type->getRelatedModule(),
@@ -134,16 +133,18 @@ class View extends BaseGenerator implements GeneratorInterface
             '{{relatedModelDisplayColumn}}' => $displayColumn,
             '{{modelNameLowercase}}'        => $this->module->getModelNameLowercase(),
             '{{modulename}}'                => $this->module->getModuleName(),
-        ]) . PHP_EOL;
+        ]).PHP_EOL;
         return $formElement;
     }
 
     public function tabContents($page = "create")
     {
-        if (!in_array($page, ['create', 'edit'])) return "";
+        if (!in_array($page, ['create', 'edit'])) {
+            return "";
+        }
         $tabs = $this->module->getTabs();
         $tabTitles = $this->module->getTabTitles();
-        $viewTemplate ='<div class="tab-content px-1 pt-1">'.PHP_EOL;
+        $viewTemplate = '<div class="tab-content px-1 pt-1">'.PHP_EOL;
         foreach ($tabs as $key => $tab) {
             $activeClass = ($key == 0) ? 'active' : '';
             $viewTemplate .= $this->getTabs(6).'<div role="tabpanel" class="tab-pane '.$activeClass.'" id="tab'.$key.'" aria-expanded="true" aria-labelledby="base-tab'.$key.'">'.PHP_EOL;
@@ -152,17 +153,17 @@ class View extends BaseGenerator implements GeneratorInterface
 
 
             $typeTemplate = "";
-            if(is_string($tab)&&!in_array($tab, ['hasFile', 'hasImage', 'Seo'])){
+            if (is_string($tab) && !in_array($tab, ['hasFile', 'hasImage', 'Seo'])) {
                 $types = $this->module->getColumnsData();
                 $type = $types[Str::plural(strtolower(Str::snake($tab)))];
                 $typeTemplate .= $this->buildMultiple($page, $type);
-            }else{
+            } else {
                 foreach ($this->module->getFilteredColumns($tab) as $type) {
                     $typeTemplate .= $this->buildFormElement($page, $type);
                 }
             }
             
-            $viewTemplate .= $this->getTabs(9)."@include('backend.".$this->module->getModuleName().".".$page.".form_parts.". strtolower(Str::title($tabTitles[$key])) ."')".PHP_EOL;
+            $viewTemplate .= $this->getTabs(9)."@include('backend.".$this->module->getModuleName().".".$page.".form_parts.".strtolower(Str::title($tabTitles[$key]))."')".PHP_EOL;
             
             $fullFilePath = $this->getPath("resources/views/backend/".$this->module->getModuleName()."/".$page."/form_parts/").strtolower(Str::title($tabTitles[$key])).".blade.php";
             file_put_contents($fullFilePath, $typeTemplate);

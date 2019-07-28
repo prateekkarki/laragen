@@ -9,9 +9,9 @@ class Observer extends BaseGenerator implements GeneratorInterface
     protected static $initializeFlag = 0;
     public function generate()
     {   
-        $generatedFiles=[]; 
+        $generatedFiles = []; 
         
-        if($this::$initializeFlag == 0){
+        if ($this::$initializeFlag == 0) {
             $laragen = app('laragen');
             $modules = $laragen->getModules();
             $models = [];
@@ -22,9 +22,9 @@ class Observer extends BaseGenerator implements GeneratorInterface
             $modelsCode = '';
             $usedClasses = '';
             foreach ($models as $model) {
-                $modelsCode .= $model ."::observe(". $model ."Observer::class);" . PHP_EOL. $this->getTabs(2);
-                $usedClasses .= "use App\Observers\\". $model . "Observer;" . PHP_EOL;
-                $usedClasses .= "use App\Models\\". $model . ";" . PHP_EOL;
+                $modelsCode .= $model."::observe(".$model."Observer::class);".PHP_EOL.$this->getTabs(2);
+                $usedClasses .= "use App\Observers\\".$model."Observer;".PHP_EOL;
+                $usedClasses .= "use App\Models\\".$model.";".PHP_EOL;
             }
 
             $observerProviderTemplate = $this->buildTemplate('common/LaragenObserverServiceProvider', [

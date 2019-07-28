@@ -5,7 +5,7 @@ use Prateekkarki\Laragen\Models\Types\File\MultipleType;
 class AttachmentType extends MultipleType
 {
     protected $hasFile = true;
-	protected $formType = 'multipleFiles';
+    protected $formType = 'multipleFiles';
 
     public function getLaragenColumns()
     {

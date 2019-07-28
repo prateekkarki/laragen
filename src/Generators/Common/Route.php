@@ -26,7 +26,7 @@ class Route extends BaseGenerator implements GeneratorInterface
             ]);
         }
 
-        if(app('laragen')->generatorExists('Frontend\\Controller')){
+        if (app('laragen')->generatorExists('Frontend\\Controller')) {
             $this->insertIntoFile(
                 $webRouteFile,
                 "<?php\n",
@@ -41,7 +41,7 @@ class Route extends BaseGenerator implements GeneratorInterface
             $generatedFiles[] = $webRouteFile;
         }
         
-        if(app('laragen')->generatorExists('Backend\\Controller')){
+        if (app('laragen')->generatorExists('Backend\\Controller')) {
             $this->insertIntoFile(
                 $backendWebRouteFile,
                 "<?php\n",
@@ -56,7 +56,7 @@ class Route extends BaseGenerator implements GeneratorInterface
             $generatedFiles[] = $backendWebRouteFile;
         }
         
-        if(app('laragen')->generatorExists('Backend\\Api')){
+        if (app('laragen')->generatorExists('Backend\\Api')) {
             $this->insertIntoFile(
                 $backendApiRouteFile,
                 "<?php\n",

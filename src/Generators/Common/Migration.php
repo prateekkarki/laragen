@@ -11,11 +11,11 @@ class Migration extends BaseGenerator implements GeneratorInterface
 
     public function generate()
     {
-        if(self::$counter==0){
+        if (self::$counter == 0) {
             $existingMigrationFiles = is_dir(database_path('migrations/laragen/')) ? scandir(database_path('migrations/laragen/')) : [];
 
             foreach ($existingMigrationFiles as $file) {
-                $file = database_path("migrations/laragen") . "/" . $file;
+                $file = database_path("migrations/laragen")."/".$file;
                 if (is_file($file))
                     unlink($file);
             }
@@ -23,7 +23,7 @@ class Migration extends BaseGenerator implements GeneratorInterface
 
         $generatedFiles = [];
 
-        foreach($this->module->getFilteredColumns('needsTableInit') as $type){
+        foreach ($this->module->getFilteredColumns('needsTableInit') as $type) {
             $migrationTemplate = $this->buildTemplate('common/migrations/pivot', [
                 '{{pivotName}}'        => $type->getMigrationPivot(),
                 '{{pivotTableName}}'   => $type->getPivotTable(),
@@ -46,7 +46,7 @@ class Migration extends BaseGenerator implements GeneratorInterface
         file_put_contents($fullFilePath, $migrationTemplate);
         $generatedFiles[] = $fullFilePath;
         
-        foreach($this->module->getFilteredColumns(['hasPivot']) as $type){
+        foreach ($this->module->getFilteredColumns(['hasPivot']) as $type) {
             $migrationTemplate = $this->buildTemplate('common/migrations/pivot', [
                 '{{pivotName}}'        => $type->getMigrationPivot(),
                 '{{pivotTableName}}'   => $type->getPivotTable(),
@@ -73,7 +73,7 @@ class Migration extends BaseGenerator implements GeneratorInterface
     {
         $fileCounter = sprintf('%06d', (int) date('His') + ++self::$counter);
         $filenamePrefix = date('Y_m_d_').$fileCounter."_";
-        $fileName = "create_". $related->getPivotTable()."_table.php";
+        $fileName = "create_".$related->getPivotTable()."_table.php";
 
         return $this->getPath("database/migrations/laragen/").$filenamePrefix.$fileName;
     }

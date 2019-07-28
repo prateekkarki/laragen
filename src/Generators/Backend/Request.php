@@ -20,15 +20,15 @@ class Request extends BaseGenerator implements GeneratorInterface
         $fullFilePath = $this->getPath("app/Http/Requests/Backend/").$this->module->getModelName()."Request".".php";
         file_put_contents($fullFilePath, $controllerTemplate);
         return $fullFilePath;
-	}
+    }
 	
     protected function getRules()
     {
         $validation = [];
-        foreach($this->module->getColumns(true) as $column){
-            $validation[] =  "'{$column->getColumnKey()}'" . " => " .  $column->getValidationLine();
+        foreach ($this->module->getColumns(true) as $column) {
+            $validation[] = "'{$column->getColumnKey()}'"." => ".$column->getValidationLine();
         }
         $delimiter = ",\n{$this->getTabs(3)}";
         return (implode($delimiter, $validation));
-	}
+    }
 }
