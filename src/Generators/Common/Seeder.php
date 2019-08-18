@@ -97,7 +97,7 @@ class Seeder extends BaseGenerator implements GeneratorInterface
             $typeTemplate = $this->buildTemplate('common/Factories/Factory', [
                 '{{modelName}}'      => $type->getPivot(),
                 '{{usedModels}}'     => $this->getUsedModels($type->getFilteredColumns('hasSingleRelation'), $type->getPivot()),
-                '{{dataDefinition}}' => $this->getDataDefinition($type->getFilteredColumns('general')),
+                '{{dataDefinition}}' => "",
                 '{{foreignData}}'    => $this->getForeignData($type->getFilteredColumns('hasSingleRelation'))
             ]);
             
@@ -210,7 +210,7 @@ class Seeder extends BaseGenerator implements GeneratorInterface
             $this->insertIntoFile(
                 $laragenSeederFile,
                 "\n        // End factories",
-                "\n".$this->getTabs(2)."factory(".$type->getPivot()."::class, ".(int) config('laragen.options.seed_rows') * 2.")->create();",
+                "\n".$this->getTabs(2)."factory(".$type->getPivot()."::class, " . ((int) config('laragen.options.seed_rows') * 2) . ")->create();",
                 false
             );
         }
