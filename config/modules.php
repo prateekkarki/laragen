@@ -63,8 +63,8 @@ return [
             'skills'            => 'related:skills',
         ],
         'additional_fields' => [
-            'generic' => false,
-            'seo' => false
+            'generic' => true,
+            'seo' => true
         ]
     ],
 
@@ -74,7 +74,7 @@ return [
             'members'   => 'related:employees',
         ],
         'additional_fields' => [
-            'seo' => false
+            'generic' => true
         ]
     ],
     
@@ -89,10 +89,6 @@ return [
         'data'=>[
             'Web project X', 'Web project Y', 'App project Z', 
         ],
-        'additional_fields' => [
-            'generic' => false,
-            'seo' => true
-        ]
     ],
 
 ];
