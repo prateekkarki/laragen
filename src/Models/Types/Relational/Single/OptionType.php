@@ -46,7 +46,7 @@ class OptionType extends SingleType
 
     public function getPivot()
     {
-        return $this->getParentModel().$this->getChildModel();
+        return $this->getParentModel().ucfirst(Str::camel($this->columnName));
     }
     
     public function getTypeColumns()
