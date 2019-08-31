@@ -7,7 +7,6 @@ class Module
 {
     protected $name;
 
-
     public function __construct($moduleName, $moduleData)
     {
         $this->name = $moduleName;
@@ -52,8 +51,6 @@ class Module
         if (sizeof($this->displayColumns) == 0) {
             $this->displayColumns[] = array_values($this->columnsData)[0];
         }
-
-
     }
 
     public function getTabTitles()
@@ -158,7 +155,7 @@ class Module
     public function hasPivotRelations()
     {
         $hasRelations = false;
-        foreach ($this->columnsData as $column => $type) {
+        foreach ($this->columnsData as $type) {
             if ($type->isRelational() && $type->hasPivot()) {
                 $hasRelations = true;
                 break;

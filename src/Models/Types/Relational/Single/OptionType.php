@@ -41,7 +41,7 @@ class OptionType extends SingleType
 
     public function getMigrationPivot()
     {
-        return $this->getParentModel().Str::plural($this->getChildModel());
+        return $this->getParentModel().Str::plural(ucfirst(Str::camel($this->columnName)));
     }
 
     public function getPivot()
