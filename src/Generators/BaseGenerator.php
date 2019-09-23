@@ -9,20 +9,19 @@ class BaseGenerator
     protected $module;
     protected $fileSystem;
 
+    protected $fileExtension = "php";
+    protected $fileSuffix = "";
+    protected $childTemplate  = "backend/EmptyClass";
+
     public function __construct(Module $module)
     {
-        $this->setModule($module);
+        $this->module = $module;
         $this->fileSystem = new FileSystem();
     }
 
     public function getModule()
     {
         return $this->module;
-    }
-
-    public function setModule(Module $module)
-    {
-        $this->module = $module;
     }
 
     public function getStub($type)
@@ -35,6 +34,12 @@ class BaseGenerator
         return str_replace("\r", '', $string);
     }
 
+    /**
+     * Get complete directory path by creating if not existing dir
+     *
+     * @param string $path
+     * @return string
+     */
     public function getPath($path)
     {
         $dir = base_path($path);
@@ -44,6 +49,52 @@ class BaseGenerator
         }
 
         return $dir;
+    }
+
+    /**
+     * Get file path for the base class of current generator
+     *
+     * @param string $fileName
+     * @return string
+     */
+    public function getFilePath($fileName = null)
+    {
+        return $this->getPath($this->destination."/") . ($fileName ?? $this->module->getModelName()) . $this->fileSuffix . "." . $this->fileExtension;
+    }
+
+    /**
+     * Get file path for the child class of current generator
+     *
+     * @param string $fileName
+     * @return string
+     */
+    public function getChildClassFilePath($fileName = null)
+    {
+        return $this->getPath($this->childDestination."/") . ($fileName ?? $this->module->getModelName()) . $this->fileSuffix . "." . $this->fileExtension;
+    }
+
+    /**
+     * Generate file using the content and return the generated filename
+     *
+     * @param string $content
+     * @param string $file
+     * @return string
+     */
+    public function generateFile($content, $filename = null)
+    {
+        $file = $this->getFilePath($filename);
+        file_put_contents($file, $content);
+
+        $childFile = $this->getChildClassFilePath($filename);
+        if(!file_exists($childFile)){
+            $childFileContent = $this->buildTemplate($this->childTemplate, [
+                '{{namespace}}'          => $this->childNamespace,
+                '{{className}}'          => $this->module->getModelName(),
+                '{{extendsClass}}'       => $this->namespace . '\\' . $this->module->getModelName()
+            ]);
+            file_put_contents($childFile, $childFileContent);
+        }
+        return $file;
     }
 
     public function deleteFiles($target) {
@@ -58,11 +109,6 @@ class BaseGenerator
         } elseif(is_file($target)) {
             unlink( $target );
         }
-    }
-
-    public function moduleToModelName($moduleName)
-    {
-        return ucfirst(Str::camel(Str::singular($moduleName)));
     }
 
     public function initializeFile($fullFilePath, $stub, $initializeWithText = false) {

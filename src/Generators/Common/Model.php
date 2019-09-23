@@ -7,76 +7,49 @@ use Illuminate\Support\Str;
 
 class Model extends BaseGenerator implements GeneratorInterface
 {
-    private static $destination = "laragen/app/Models";
-    private static $namespace  = "Laragen\App\Models";
-    private static $template = "common/Models/Model";
-    private static $pivotTemplate = "common/Models/Pivot";
+    protected $destination = "laragen/app/Models";
+    protected $namespace  = "Laragen\App\Models";
+    protected $template = "common/Models/Model";
+    protected $pivotTemplate = "common/Models/Pivot";
 
-    private static $childDestination = "app/Http/Models/Backend";
-    private static $childNamespace  = "App\Http\Models\Backend";
-    private static $childTemplate  = "backend/EmptyClass";
+    protected $childDestination = "app/Models";
+    protected $childNamespace  = "App\Models";
 
     public function generate()
     {
         $generatedFiles = [];
-        $modelTemplate = $this->buildTemplate(self::$template, [
-            '{{namespace}}'     => self::$namespace,
+        $modelTemplate = $this->buildTemplate($this->template, [
+            '{{namespace}}'     => $this->namespace,
             '{{modelName}}'       => $this->module->getModelName(),
             '{{massAssignables}}' => implode("', '", $this->module->getColumns(true, true)),
             '{{usedModels}}'      => $this->getUsedModels(),
             '{{foreignMethods}}'  => $this->getForeignMethods()
         ]);
 
-        $childTemplate = $this->buildTemplate(self::$childTemplate, [
-            '{{namespace}}'          => self::$childNamespace,
-            '{{className}}'          => $this->module->getModelName(),
-            '{{extendsClass}}'       => self::$namespace . '\\' . $this->module->getModelName()
-        ]);
-
-        $fullFilePath = $this->getPath(self::$destination."/").$this->module->getModelName().".php";
-        file_put_contents($fullFilePath, $modelTemplate);
-        $generatedFiles[] = $fullFilePath;
-
-        $fullFilePath = $this->getPath(self::$childDestination."/").$this->module->getModelName().".php";
-        file_put_contents($fullFilePath, $childTemplate);
-        $generatedFiles[] = $fullFilePath;
+        $generatedFiles[] = $this->generateFile($modelTemplate);
 
         foreach ($this->module->getFilteredColumns('hasPivot') as $type) {
-            $typeTemplate = $this->buildTemplate(self::$pivotTemplate, [
-                '{{namespace}}'     => self::$namespace,
+            $typeTemplate = $this->buildTemplate($this->pivotTemplate, [
+                '{{namespace}}'     => $this->namespace,
                 '{{pivotName}}'       => $type->getPivot(),
                 '{{massAssignables}}' => implode("', '", $type->getTypeColumns()),
                 '{{foreignMethods}}'  => $this->getTypeForeignMethods($type),
             ]);
-            $fullFilePath = $this->getPath(self::$destination."/").$type->getPivot().".php";
-            file_put_contents($fullFilePath, $typeTemplate);
-            $generatedFiles[] = $fullFilePath;
 
-            $childTemplate = $this->buildTemplate(self::$childTemplate, [
-                '{{namespace}}'          => self::$childNamespace,
-                '{{className}}'          => $type->getPivot(),
-                '{{extendsClass}}'       => self::$namespace . '\\' . $type->getPivot()
-            ]);
-
-            $fullFilePath = $this->getPath(self::$childDestination."/").$type->getPivot().".php";
-            file_put_contents($fullFilePath, $childTemplate);
-            $generatedFiles[] = $fullFilePath;
-
+            $generatedFiles[] = $this->generateFile($typeTemplate, $type->getPivot());
         }
 
         foreach ($this->module->getFilteredColumns(['hasModel', 'hasOptions']) as $type) {
             $pivotModel = Str::singular($type->getPivot());
-            $typeTemplate = $this->buildTemplate(self::$template, [
-                '{{namespace}}'     => self::$namespace,
+            $typeTemplate = $this->buildTemplate($this->template, [
+                '{{namespace}}'     => $this->namespace,
                 '{{modelName}}'       => $pivotModel,
                 '{{massAssignables}}' => implode("', '", $type->getTypeColumns()),
                 '{{usedModels}}'      => $this->getUsedModels($pivotModel),
                 '{{foreignMethods}}'  => $this->getTypeForeignMethods($type),
             ]);
 
-            $fullFilePath = $this->getPath(self::$destination."/").$pivotModel.".php";
-            file_put_contents($fullFilePath, $typeTemplate);
-            $generatedFiles[] = $fullFilePath;
+            $generatedFiles[] = $this->generateFile($typeTemplate, $pivotModel);
         }
 
         return $generatedFiles;

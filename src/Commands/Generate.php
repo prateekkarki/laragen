@@ -37,49 +37,49 @@ class Generate extends Command
         $this->filesToPublish = $laragen->getOption('files_to_publish') ?: [];
         $generatedFiles = [];
 
-//         $this->line("
-// ██▓    ▄▄▄       ██▀███   ▄▄▄        ▄████ ▓█████  ███▄    █ 
-// ▓██▒   ▒████▄    ▓██ ▒ ██▒▒████▄     ██▒ ▀█▒▓█   ▀  ██ ▀█   █ 
-// ▒██░   ▒██  ▀█▄  ▓██ ░▄█ ▒▒██  ▀█▄  ▒██░▄▄▄░▒███   ▓██  ▀█ ██▒
-// ▒██░   ░██▄▄▄▄██ ▒██▀▀█▄  ░██▄▄▄▄██ ░▓█  ██▓▒▓█  ▄ ▓██▒  ▐▌██▒
-// ░██████▒▓█   ▓██▒░██▓ ▒██▒ ▓█   ▓██▒░▒▓███▀▒░▒████▒▒██░   ▓██░
-// ░ ▒░▓  ░▒▒   ▓▒█░░ ▒▓ ░▒▓░ ▒▒   ▓▒█░ ░▒   ▒ ░░ ▒░ ░░ ▒░   ▒ ▒ 
-// ░ ░ ▒  ░ ▒   ▒▒ ░  ░▒ ░ ▒░  ▒   ▒▒ ░  ░   ░  ░ ░  ░░ ░░   ░ ▒░
-//     ░ ░    ░   ▒     ░░   ░   ░   ▒   ░ ░   ░    ░      ░   ░ ░ 
-//     ░  ░     ░  ░   ░           ░  ░      ░    ░  ░         ░ 
-//                                                                 ");
+        $this->line("
+██▓    ▄▄▄       ██▀███   ▄▄▄        ▄████ ▓█████  ███▄    █
+▓██▒   ▒████▄    ▓██ ▒ ██▒▒████▄     ██▒ ▀█▒▓█   ▀  ██ ▀█   █
+▒██░   ▒██  ▀█▄  ▓██ ░▄█ ▒▒██  ▀█▄  ▒██░▄▄▄░▒███   ▓██  ▀█ ██▒
+▒██░   ░██▄▄▄▄██ ▒██▀▀█▄  ░██▄▄▄▄██ ░▓█  ██▓▒▓█  ▄ ▓██▒  ▐▌██▒
+░██████▒▓█   ▓██▒░██▓ ▒██▒ ▓█   ▓██▒░▒▓███▀▒░▒████▒▒██░   ▓██░
+░ ▒░▓  ░▒▒   ▓▒█░░ ▒▓ ░▒▓░ ▒▒   ▓▒█░ ░▒   ▒ ░░ ▒░ ░░ ▒░   ▒ ▒
+░ ░ ▒  ░ ▒   ▒▒ ░  ░▒ ░ ▒░  ▒   ▒▒ ░  ░   ░  ░ ░  ░░ ░░   ░ ▒░
+    ░ ░    ░   ▒     ░░   ░   ░   ▒   ░ ░   ░    ░      ░   ░ ░
+    ░  ░     ░  ░   ░           ░  ░      ░    ░  ░         ░
+                                                                ");
 
-//         $this->line("Generating code...");
-//         $bar = $this->output->createProgressBar(count($modules) * (count($generators) + count($this->filesToPublish)));
-//         $bar->setOverwrite(true);
-//         $bar->start();
+        $this->line("Generating code...");
+        $bar = $this->output->createProgressBar(count($modules) * (count($generators) + count($this->filesToPublish)));
+        $bar->setOverwrite(true);
+        $bar->start();
         $fs = new FileSystem();
         foreach ($this->filesToPublish as $src) {
             $fs->clone($src, '/');
         }
 
         foreach ($modules as $module) {
-            
+
             foreach ($generators as $generator) {
                 $itemGenerator = new $generator($module);
                 $returnedFiles = $itemGenerator->generate();
 
-                if (!is_array($returnedFiles)) 
+                if (!is_array($returnedFiles))
                     $generatedFiles[] = $returnedFiles;
                 else
                     $generatedFiles = array_merge($generatedFiles, $returnedFiles);
-                
-                // $bar->advance();
+
+                $bar->advance();
             }
         }
-        // $bar->finish();
-        
-        // $this->line("\n");
+        $bar->finish();
+
+        $this->line("\n");
 
         foreach ($generatedFiles as $key => $file) {
             \Log::info("Generated file: ".str_replace(base_path()."\\", "", $file));
         }
-        // $this->info((isset($key) ? ++$key : 0)." files generated. Check log for details.");
-        // $this->info("Cheers!!!");
+        $this->info((isset($key) ? ++$key : 0)." files generated. Check log for details.");
+        $this->info("Cheers!!!");
     }
 }
