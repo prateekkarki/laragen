@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Observers;
+namespace {{namespace}};
 
 use App\Notifications\{{modelName}}CreatedNotification;
 use App\Notifications\{{modelName}}UpdatedNotification;

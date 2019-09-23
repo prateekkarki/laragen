@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Backend;
+namespace {{namespace}};
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
  * {{modelName}}Controller
  *
  * Handles {{moduleName}} on admin area
- * 
+ *
  */
 
 class {{modelName}}Controller extends Controller
@@ -42,7 +42,7 @@ class {{modelName}}Controller extends Controller
     public function edit({{modelName}} ${{modelNameLowercase}}): View
     {
         return view('backend.{{moduleName}}.edit', [
-            '{{modelNameLowercase}}' => ${{modelNameLowercase}}, 
+            '{{modelNameLowercase}}' => ${{modelNameLowercase}},
             {{foreignData}}
         ]);
     }

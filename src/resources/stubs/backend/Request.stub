@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Requests\Backend;
+namespace {{namespace}};
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -23,7 +23,7 @@ class {{modelName}}Request extends FormRequest
                 $errors[$inputField] = "You are not authorised to update " . $inputField;
             }
         }
-        
+
         return empty($errors) ?: redirect()->back()->withErrors($errors);
     }
 
