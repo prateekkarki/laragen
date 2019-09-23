@@ -6,9 +6,14 @@ use Prateekkarki\Laragen\Generators\GeneratorInterface;
 
 class Controller extends BaseGenerator implements GeneratorInterface
 {
+    private static $destination = "laragen/app/Http/Controllers/Backend";
+    private static $namespace  = "Laragen\App\Http\Controllers\Backend";
+    private static $template  = "backend/Controller";
+
     public function generate()
     {
-        $controllerTemplate = $this->buildTemplate('backend/Controller', [
+        $controllerTemplate = $this->buildTemplate(self::$template, [
+            '{{namespace}}'          => self::$namespace,
             '{{modelName}}'          => $this->module->getModelName(),
             '{{moduleName}}'         => $this->module->getModuleName(),
             '{{modelNameLowercase}}' => $this->module->getModelNameLowercase(),
@@ -20,7 +25,7 @@ class Controller extends BaseGenerator implements GeneratorInterface
             '{{perPage}}'            => config("laragen.options.listing_per_page")
         ]);
         
-        $fullFilePath = $this->getPath("app/Http/Controllers/Backend/").$this->module->getModelName()."Controller".".php";
+        $fullFilePath = $this->getPath(self::$destination."/").$this->module->getModelName()."Controller".".php";
         file_put_contents($fullFilePath, $controllerTemplate);
         return $fullFilePath;
     }

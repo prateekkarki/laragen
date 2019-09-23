@@ -6,7 +6,6 @@ class LaragenOptions
 {
     protected $modules;
     protected $options;
-
     private static $instance;
 
     private function __construct()

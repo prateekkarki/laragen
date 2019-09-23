@@ -11,6 +11,14 @@ class View extends BaseGenerator implements GeneratorInterface
     protected static $initializeFlag = 0;
     protected $generatedFiles = [];
 
+// ToDo: 
+//     private static $destination = "laragen/app/Http/Controllers/Backend";
+//     private static $namespace  = "Laragen\App\Http\Controllers\Backend";
+//     private static $template  = "backend/Request";
+// self::$template,
+//             '{{namespace}}'     => self::$namespace,
+// $this->getPath(self::$destination."/")
+
     public function generate()
     {
 

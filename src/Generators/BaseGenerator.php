@@ -45,6 +45,20 @@ class BaseGenerator
 
         return $dir;
     }
+    
+    function deleteFiles($target) {
+        if(is_dir($target)){
+            $files = glob( $target . '*', GLOB_MARK );
+
+            foreach( $files as $file ){
+                deleteFiles( $file );      
+            }
+
+            rmdir( $target );
+        } elseif(is_file($target)) {
+            unlink( $target );  
+        }
+    }
 
     public function moduleToModelName($moduleName)
     {

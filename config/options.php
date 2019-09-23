@@ -4,7 +4,7 @@ return [
         'Common' => [
             'Migration',
             'Model',
-            'Seeder',
+            // 'Seeder',
             'Route'
         ],
         'Frontend' => [
@@ -15,8 +15,8 @@ return [
             'Api',
             'Request',
             'View',
-            'Notification',
-            'Observer'
+            // 'Notification',
+            // 'Observer'
         ]
     ],
     'files_to_publish' => [

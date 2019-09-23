@@ -8,14 +8,16 @@ class Route extends BaseGenerator implements GeneratorInterface
 {
     protected static $initializeFlag = 0;
 
+    private static $destination = "routes";
+    
     public function generate()
     {
         $generatedFiles = [];
-
-        $backendAuthRouteFile = $this->getPath("routes/backend/")."auth.php";
-        $webRouteFile = $this->getPath("routes/frontend/")."web.php";
-        $backendApiRouteFile = $this->getPath("routes/backend/")."api.php";
-        $backendWebRouteFile = $this->getPath("routes/backend/")."web.php";
+        
+        $backendAuthRouteFile = $this->getPath(self::$destination."/backend//")."auth.php";
+        $webRouteFile = $this->getPath(self::$destination."/frontend//")."web.php";
+        $backendApiRouteFile = $this->getPath(self::$destination."/backend//")."api.php";
+        $backendWebRouteFile = $this->getPath(self::$destination."/backend//")."web.php";
 
         if (self::$initializeFlag++ == 0) {
             $this->initializeFiles([

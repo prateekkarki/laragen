@@ -8,16 +8,21 @@ use Prateekkarki\Laragen\Models\TypeResolver;
 
 class Request extends BaseGenerator implements GeneratorInterface
 {
+    private static $destination = "laragen/app/Http/Requests/Backend";
+    private static $namespace  = "Laragen\App\Http\Requests\Backend";
+    private static $template  = "backend/Request";
+
     public function generate()
     {
-        $controllerTemplate = $this->buildTemplate('backend/Request', [
+        $controllerTemplate = $this->buildTemplate(self::$template, [
+            '{{namespace}}'     => self::$namespace,
             '{{modelName}}'     => $this->module->getModelName(),
             '{{moduleName}}'    => $this->module->getModuleName(),
             '{{modelNameLowercase}}' => $this->module->getModelNameLowercase(),
             '{{rules}}' 		=> $this->getRules(),
         ]);
         
-        $fullFilePath = $this->getPath("app/Http/Requests/Backend/").$this->module->getModelName()."Request".".php";
+        $fullFilePath = $this->getPath(self::$destination."/").$this->module->getModelName()."Request".".php";
         file_put_contents($fullFilePath, $controllerTemplate);
         return $fullFilePath;
     }
