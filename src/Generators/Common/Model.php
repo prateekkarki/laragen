@@ -12,6 +12,10 @@ class Model extends BaseGenerator implements GeneratorInterface
     private static $template = "common/Models/Model";
     private static $pivotTemplate = "common/Models/Pivot";
 
+    private static $childDestination = "app/Http/Models/Backend";
+    private static $childNamespace  = "App\Http\Models\Backend";
+    private static $childTemplate  = "backend/EmptyClass";
+
     public function generate()
     {
         $generatedFiles = [];
@@ -22,11 +26,21 @@ class Model extends BaseGenerator implements GeneratorInterface
             '{{usedModels}}'      => $this->getUsedModels(),
             '{{foreignMethods}}'  => $this->getForeignMethods()
         ]);
-        
+
+        $childTemplate = $this->buildTemplate(self::$childTemplate, [
+            '{{namespace}}'          => self::$childNamespace,
+            '{{className}}'          => $this->module->getModelName(),
+            '{{extendsClass}}'       => self::$namespace . '\\' . $this->module->getModelName()
+        ]);
+
         $fullFilePath = $this->getPath(self::$destination."/").$this->module->getModelName().".php";
         file_put_contents($fullFilePath, $modelTemplate);
         $generatedFiles[] = $fullFilePath;
-        
+
+        $fullFilePath = $this->getPath(self::$childDestination."/").$this->module->getModelName().".php";
+        file_put_contents($fullFilePath, $childTemplate);
+        $generatedFiles[] = $fullFilePath;
+
         foreach ($this->module->getFilteredColumns('hasPivot') as $type) {
             $typeTemplate = $this->buildTemplate(self::$pivotTemplate, [
                 '{{namespace}}'     => self::$namespace,
@@ -37,8 +51,19 @@ class Model extends BaseGenerator implements GeneratorInterface
             $fullFilePath = $this->getPath(self::$destination."/").$type->getPivot().".php";
             file_put_contents($fullFilePath, $typeTemplate);
             $generatedFiles[] = $fullFilePath;
+
+            $childTemplate = $this->buildTemplate(self::$childTemplate, [
+                '{{namespace}}'          => self::$childNamespace,
+                '{{className}}'          => $type->getPivot(),
+                '{{extendsClass}}'       => self::$namespace . '\\' . $type->getPivot()
+            ]);
+
+            $fullFilePath = $this->getPath(self::$childDestination."/").$type->getPivot().".php";
+            file_put_contents($fullFilePath, $childTemplate);
+            $generatedFiles[] = $fullFilePath;
+
         }
-        
+
         foreach ($this->module->getFilteredColumns(['hasModel', 'hasOptions']) as $type) {
             $pivotModel = Str::singular($type->getPivot());
             $typeTemplate = $this->buildTemplate(self::$template, [
@@ -48,7 +73,7 @@ class Model extends BaseGenerator implements GeneratorInterface
                 '{{usedModels}}'      => $this->getUsedModels($pivotModel),
                 '{{foreignMethods}}'  => $this->getTypeForeignMethods($type),
             ]);
-            
+
             $fullFilePath = $this->getPath(self::$destination."/").$pivotModel.".php";
             file_put_contents($fullFilePath, $typeTemplate);
             $generatedFiles[] = $fullFilePath;

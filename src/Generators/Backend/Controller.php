@@ -10,8 +10,13 @@ class Controller extends BaseGenerator implements GeneratorInterface
     private static $namespace  = "Laragen\App\Http\Controllers\Backend";
     private static $template  = "backend/Controller";
 
+    private static $childDestination = "app/Http/Controllers/Backend";
+    private static $childNamespace  = "App\Http\Controllers\Backend";
+    private static $childTemplate  = "backend/EmptyClass";
+
     public function generate()
     {
+        $generatedFiles = [];
         $controllerTemplate = $this->buildTemplate(self::$template, [
             '{{namespace}}'          => self::$namespace,
             '{{modelName}}'          => $this->module->getModelName(),
@@ -24,10 +29,23 @@ class Controller extends BaseGenerator implements GeneratorInterface
             '{{usedModels}}'         => $this->getUsedModels(),
             '{{perPage}}'            => config("laragen.options.listing_per_page")
         ]);
-        
+
+        $childTemplate = $this->buildTemplate(self::$childTemplate, [
+            '{{namespace}}'          => self::$childNamespace,
+            '{{className}}'          => $this->module->getModelName()."Controller",
+            '{{extendsClass}}'       => self::$namespace . '\\' . $this->module->getModelName()."Controller"
+        ]);
+
+
         $fullFilePath = $this->getPath(self::$destination."/").$this->module->getModelName()."Controller".".php";
         file_put_contents($fullFilePath, $controllerTemplate);
-        return $fullFilePath;
+        $generatedFiles[] = $fullFilePath;
+
+        $fullFilePath = $this->getPath(self::$childDestination."/").$this->module->getModelName()."Controller".".php";
+        file_put_contents($fullFilePath, $childTemplate);
+        $generatedFiles[] = $fullFilePath;
+
+        return $generatedFiles;
     }
 
     protected function getCreateRelated() {
