@@ -7,11 +7,11 @@ use Prateekkarki\Laragen\Models\Module;
 use Illuminate\Support\Str;
 
 class View extends BaseGenerator implements GeneratorInterface
-{    
+{
     protected static $initializeFlag = 0;
     protected $generatedFiles = [];
 
-// ToDo: 
+// ToDo:
 //     private static $destination = "laragen/app/Http/Controllers/Backend";
 //     private static $namespace  = "Laragen\App\Http\Controllers\Backend";
 //     private static $template  = "backend/Request";
@@ -67,10 +67,10 @@ class View extends BaseGenerator implements GeneratorInterface
         $columns = $module->getDisplayColumns();
         $headings = "";
         foreach ($columns as $column) {
-            $headings .= 
-                $simple ? 
-                "<th>".$column->getDisplay()."</th>" : "<th> 
-                    <a href=\"{{ route('backend." . $this->module->getModuleName().".index') }}?sort=".$column->getColumn()."&sort_dir={{ request()->input('sort_dir')=='asc' ? 'desc' : 'asc' }}\">".$column->getDisplay()." 
+            $headings .=
+                $simple ?
+                "<th>".$column->getDisplay()."</th>" : "<th>
+                    <a href=\"{{ route('backend." . $this->module->getModuleName().".index') }}?sort=".$column->getColumn()."&sort_dir={{ request()->input('sort_dir')=='asc' ? 'desc' : 'asc' }}\">".$column->getDisplay()."
                         @if(request()->input('sort')=='" . $column->getColumn()."')
                             {!! request()->input('sort_dir')=='asc' ? '<i class=\"fas fa-arrow-down\"></i>' : '<i class=\"fas fa-arrow-up\"></i>' !!}
                         @endif
@@ -108,7 +108,7 @@ class View extends BaseGenerator implements GeneratorInterface
     {
         $displayColumn = $type->getRelatedModule() == 'users' ? 'name' : 'title';
         if (($type->hasPivot() || $type->isParent()) && $type->getRelatedModule() != 'users') {
-            $relatedModule = app('laragen')->getModule(Str::plural(strtolower(Str::snake($type->getRelatedModel()))));
+            $relatedModule = app('laragen')->getModule($type->getRelatedModule());
             $displayColumn = $relatedModule->getDisplayColumns()[0]->getColumn();
         }
         $formElement = $this->buildTemplate('backend/views/formelements/'.$page.'/'.$type->getFormType(), [
@@ -170,9 +170,9 @@ class View extends BaseGenerator implements GeneratorInterface
                     $typeTemplate .= $this->buildFormElement($page, $type);
                 }
             }
-            
+
             $viewTemplate .= $this->getTabs(9)."@include('backend.".$this->module->getModuleName().".".$page.".form_parts.".strtolower(Str::title($tabTitles[$key]))."')".PHP_EOL;
-            
+
             $fullFilePath = $this->getPath("resources/views/backend/".$this->module->getModuleName()."/".$page."/form_parts/").strtolower(Str::title($tabTitles[$key])).".blade.php";
             file_put_contents($fullFilePath, $typeTemplate);
             $this->generatedFiles[] = $fullFilePath;

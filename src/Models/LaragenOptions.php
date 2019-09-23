@@ -17,7 +17,7 @@ class LaragenOptions
             $this->modules = array_merge($this->modules, $this->getModulesRecursive($moduleName, $moduleData));
         }
     }
-    
+
     private function getValidatedModules()
     {
         // Validate laragen.modules
@@ -31,23 +31,26 @@ class LaragenOptions
         }
         return self::$instance;
     }
-    
+
     public function getOptions() {
         return $this->options;
     }
-    
+
     public function getOption($option) {
         return $this->options[$option] ?? null;
     }
-    
+
     public function getModules() {
         return $this->modules;
     }
-    
+
     public function getModule($name) {
-        return isset($this->modules[$name]) ? $this->modules[$name] : false;
+        if(isset($this->modules[$name]))
+            return $this->modules[$name];
+        else
+            throw new \Exception("Module '". $name. "' not found");
     }
-    
+
     protected function getModulesRecursive($moduleName, $moduleData) {
         $modules = [];
         $module = new Module($moduleName, $moduleData);
@@ -58,11 +61,11 @@ class LaragenOptions
         }
         return $modules;
     }
-    
+
     public function getGenerators() {
         return $this->configToGenerators($this->options['items_to_generate']);
     }
-    
+
     public function generatorExists($str) {
         foreach ($this->getGenerators() as $generator) {
             if (substr($generator, -strlen($str)) === $str) {
@@ -71,7 +74,7 @@ class LaragenOptions
         }
         return false;
     }
-    
+
     protected function configToGenerators($array) {
         $generators = [];
         foreach ($array as $ns => $items) {
