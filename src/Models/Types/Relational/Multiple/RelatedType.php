@@ -30,7 +30,7 @@ class RelatedType extends MultipleType
     {
         return $this->getParentModelLowercase()."_id";
     }
-    
+
     public function getRelatedModel()
     {
         return $this->getOptionModel();
@@ -76,13 +76,12 @@ class RelatedType extends MultipleType
     {
         $columnModels = [];
         $columns = [
-            $this->getParentModelLowercase() => 'parent:'.$this->getParentModule(), 
-            Str::singular($this->columnName) => 'parent:'.$this->typeOption, 
+            $this->getParentModelLowercase() => 'parent:'.$this->getParentModule(),
+            Str::singular($this->columnName) => 'parent:'.$this->typeOption,
         ];
-        
+
         foreach ($columns as $column => $optionString) {
-            $data = new TypeResolver($this->getPivotTable(), $column, $optionString);
-            $columnModels[$column] = $data->getLaragenType();
+            $columnModels[$column] = TypeResolver::getType($this->getPivotTable(), $column, $optionString);
         }
         return $columnModels;
     }

@@ -5,13 +5,58 @@ use Illuminate\Support\Str;
 
 class Module
 {
+    /**
+     * The module name in plural snake case
+     *
+     * @var string
+     */
     protected $name;
+
+    /**
+     * Option to generate seo fields like 'seo_keywords', 'seo_descriptions', etc.
+     *
+     * @var boolean
+     */
     protected $seoFields;
+
+    /**
+     * Option to generate generic fields like 'status' and 'sort'
+     *
+     * @var boolean
+     */
     protected $genericFields;
+
+    /**
+     * Array of data to be seeded, this data is generated in LaragenSeeder,
+     * Data is seeded when running laragen:seed
+     *
+     * @var array|null
+     */
     protected $seedableData;
+
+    /**
+     * Array of multiple columns inside current module.
+     * Contains data for child modules of current module
+     *
+     * @var array
+     */
     protected $multipleData;
+
+    /**
+     * Array of all the columns in the module.
+     * Contains array of different instances of \Prateekkarki\Laragen\Models\Types\LaragenType
+     *
+     * @var array
+     */
     protected $columnsData;
-    protected $seedData;
+
+    /**
+     * Array of columns of module that are considered 'display columns',
+     * first item of display column is used in Frontend as title,
+     * other items are (to be) displayed in listind page of backend
+     *
+     * @var array
+     */
     protected $displayColumns;
 
     public function __construct($moduleName, $moduleData)
@@ -22,13 +67,12 @@ class Module
         $this->genericFields = $moduleData['additional_fields']['generic'] ?? config('laragen.options.generic_fields');
         unset($moduleData['additional_fields']);
 
-        $this->seedableData = $moduleData['data'] ?? false;
+        $this->seedableData = $moduleData['data'] ?? null;
         unset($moduleData['data']);
 
         $moduleStructure = $moduleData['structure'] ?? (!empty($moduleData) ? $moduleData : ['title' => 'string|max:128']);
         unset($moduleData['structure']);
 
-        // $this->multipleData = [];
         $this->multipleData = array_filter($moduleStructure, function($elem) {
             return (is_array($elem)) ? true : false;
         });
@@ -45,11 +89,9 @@ class Module
         }
 
         $this->columnsData = [];
-        $this->seedData = $moduleData['data'] ?? null;
         $this->displayColumns = [];
         foreach ($moduleStructure as $column => $typeOptions) {
-            $data = new TypeResolver($this->name, $column, $typeOptions);
-            $type = $data->getLaragenType();
+            $type = TypeResolver::getType($this->name, $column, $typeOptions);
             $this->columnsData[$column] = $type;
             if ($type->isDisplay())
                 $this->displayColumns[] = $type;

@@ -9,7 +9,6 @@ use Prateekkarki\Laragen\Commands\Generate;
 use Prateekkarki\Laragen\Commands\Seeder;
 use Prateekkarki\Laragen\Commands\Migrate;
 use Prateekkarki\Laragen\Commands\Execute;
-use Prateekkarki\Laragen\Commands\Initialize;
 use Prateekkarki\Laragen\Models\LaragenOptions;
 use Spatie\Permission\PermissionServiceProvider;
 use Artisan;

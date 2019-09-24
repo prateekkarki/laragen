@@ -53,8 +53,7 @@ class MultipleDataType extends MultipleType
     {
         $columns = [];
         foreach ($this->getLaragenColumns() as $column => $optionString) {
-            $data = new TypeResolver($this->getPivotTable(), $column, $optionString);
-            $columns[$column] = $data->getLaragenType();
+            $columns[$column] = TypeResolver::getType($this->getPivotTable(), $column, $optionString);
         }
         return $columns;
     }

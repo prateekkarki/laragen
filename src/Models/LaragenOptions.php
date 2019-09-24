@@ -20,7 +20,7 @@ class LaragenOptions
 
     private function getValidatedModules()
     {
-        // Validate laragen.modules
+        // ToDo: Validate laragen.modules
         return config('laragen.modules');
     }
 

@@ -16,20 +16,15 @@ use Prateekkarki\Laragen\Models\Types\Relational\Single\OptionType;
 use Prateekkarki\Laragen\Models\Types\Relational\Multiple\MultipleDataType;
 use Prateekkarki\Laragen\Models\Types\Relational\Multiple\RelatedType;
 
+/**
+ * Contains static properties and methods usable in other classes
+ */
 class TypeResolver
 {
     const TYPE_PARENT = 'parent';
     const TYPE_RELATED = 'related';
     const COLUMN_UNIQUE = 'unique';
     const COLUMN_REQUIRED = 'required';
-
-    protected $specialType;
-    protected $uniqueFlag;
-    protected $requiredFlag;
-    protected $size;
-    protected $column;
-    protected $dataType;
-    protected $laragenType;
 
     /**
      * List of all types of data.
@@ -62,35 +57,11 @@ class TypeResolver
     ];
 
     /**
-     * Array of data type options
-     *
-     * @var array
-     */
-    protected $optionArray;
-
-
-    /**
-     * Key to type conversion array.
-     *
-     * @var array
-     */
-    protected $keyToType = [
-        'integer' =>'integer',
-        'string' =>'string',
-        'image' =>'string',
-        'file' =>'string',
-        'boolean' =>'boolean',
-        'text' =>'text',
-        'datetime' =>'datetime',
-        'date' =>'date'
-    ];
-
-    /**
      * Key to laragen type conversion array.
      *
      * @var array
      */
-    protected $keyToLaragenType = [
+    protected static $keyToLaragenType = [
         'string' => StringType::class,
         'boolean' => BooleanType::class,
         'integer' => IntegerType::class,
@@ -107,20 +78,29 @@ class TypeResolver
         'multiple' => MultipleDataType::class
     ];
 
-    public function __construct($moduleName, $columnName, $optionString)
+    /**
+     * Finds the data type of of given column and
+     * returns an implementation of \Prateekkarki\Laragen\Models\Types\LaragenType
+     *
+     * @param string $moduleName
+     * @param string $columnName
+     * @param string $optionString
+     * @return \Prateekkarki\Laragen\Models\Types\LaragenType
+     */
+    public static function getType($moduleName, $columnName, $optionString)
     {
+        // Find the datatype from the option string
         if (is_array($optionString)) {
-            $this->dataType = 'multiple';
+            $dataType = 'multiple';
         } else {
-            $this->optionArray = explode('|', $optionString);
-            $typePieces = array_shift($this->optionArray);
+            $optionArray = explode('|', $optionString);
+            $typePieces = array_shift($optionArray);
             $types = explode(':', $typePieces);
-            $this->dataType = $types[0];
+            $dataType = $types[0];
         }
-        $this->laragenType = new $this->keyToLaragenType[$this->dataType]($moduleName, $columnName, $optionString);
-    }
 
-    public function getLaragenType() {
-        return $this->laragenType;
+        // Create and return an instance of required type
+        $class = self::$keyToLaragenType[$dataType];
+        return new $class($moduleName, $columnName, $optionString);
     }
 }
