@@ -86,10 +86,10 @@ class BaseGenerator
     {
         $customThemeStub = base_path('laragen/stubs/' . $stubPath.".stub");
 
-        // Set stub file to the one from custom folder i.e laragen/stubs if it exists, else use default from laragen package
+        // Set stub file to the one from custom folder i.e. laragen/stubs if it exists, else use default from laragen package
         $stubFilePath = file_exists($customThemeStub) ?
             base_path('laragen/stubs/' . $stubPath.".stub") :
-            realpath(__DIR__."/../resources/stubs"). "/$stubPath.stub";
+            realpath(__DIR__."/../stubs"). "/$stubPath.stub";
 
         return $this->getFileContents($stubFilePath);
     }

@@ -28,6 +28,8 @@ class TypeResolver
     protected $requiredFlag;
     protected $size;
     protected $column;
+    protected $dataType;
+    protected $laragenType;
 
     /**
      * List of all types of data.
@@ -43,9 +45,9 @@ class TypeResolver
         'datetime'
     ];
 
-    public static $fileTypes = [   
+    public static $fileTypes = [
         'image',
-        'file'     
+        'file'
     ];
 
     public static $specialTypes = [
@@ -66,7 +68,7 @@ class TypeResolver
      */
     protected $optionArray;
 
-    
+
     /**
      * Key to type conversion array.
      *
@@ -106,14 +108,14 @@ class TypeResolver
     ];
 
     public function __construct($moduleName, $columnName, $optionString)
-    { 
+    {
         if (is_array($optionString)) {
             $this->dataType = 'multiple';
         } else {
             $this->optionArray = explode('|', $optionString);
             $typePieces = array_shift($this->optionArray);
-            $type = explode(':', $typePieces);
-            $this->dataType = is_array($type) ? $type[0] : $type;
+            $types = explode(':', $typePieces);
+            $this->dataType = $types[0];
         }
         $this->laragenType = new $this->keyToLaragenType[$this->dataType]($moduleName, $columnName, $optionString);
     }

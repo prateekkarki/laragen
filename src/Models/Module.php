@@ -6,6 +6,13 @@ use Illuminate\Support\Str;
 class Module
 {
     protected $name;
+    protected $seoFields;
+    protected $genericFields;
+    protected $seedableData;
+    protected $multipleData;
+    protected $columnsData;
+    protected $seedData;
+    protected $displayColumns;
 
     public function __construct($moduleName, $moduleData)
     {
@@ -25,7 +32,7 @@ class Module
         $this->multipleData = array_filter($moduleStructure, function($elem) {
             return (is_array($elem)) ? true : false;
         });
-        
+
         if ($this->genericFields) {
             $moduleStructure['sort'] = 'integer';
             $moduleStructure['status'] = 'boolean';
@@ -139,7 +146,7 @@ class Module
                 continue;
             }
             if ($columnsOnly) {
-                $columns[] = $type->getColumnKey(); 
+                $columns[] = $type->getColumnKey();
             } else {
                 $columns[$type->getColumnKey()] = $type;
             }
@@ -175,7 +182,7 @@ class Module
         $lastColumn = array_pop($keyArray);
         return $lastColumn;
     }
-    
+
     public function getModuleName()
     {
         return $this->name;

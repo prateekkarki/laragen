@@ -21,6 +21,8 @@ abstract class LaragenType
     protected $moduleName;
     protected $columnName;
     protected $optionString;
+    protected $optionArray;
+    protected $typeOption;
 
     public function __construct($moduleName, $columnName, $optionString)
     {
