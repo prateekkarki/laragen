@@ -58,14 +58,12 @@ class LaragenServiceProvider extends ServiceProvider
         $this->app->bind('command.laragen:seed', Seeder::class);
         $this->app->bind('command.laragen:migrate', Migrate:: class);
         $this->app->bind('command.laragen:exec', Execute::class);
-        $this->app->bind('command.laragen:init', Initialize::class);
-        
+
         $this->commands([
             'command.laragen:make',
             'command.laragen:seed',
             'command.laragen:migrate',
             'command.laragen:exec',
-            'command.laragen:init',
         ]);
 
         $routeFile = app_path('Providers/LaragenRouteServiceProvider.php');
@@ -86,5 +84,5 @@ class LaragenServiceProvider extends ServiceProvider
     {
         return ['laragen'];
     }
-    
+
 }

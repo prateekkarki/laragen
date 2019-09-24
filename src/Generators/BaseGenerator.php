@@ -9,14 +9,14 @@ class BaseGenerator
     /**
      * Module instance to be generated
      *
-     * @var Prateekkarki\Laragen\Models\Module
+     * @var \Prateekkarki\Laragen\Models\Module
      */
     protected $module;
 
     /**
      * Filesystem instance used to write files
      *
-     * @var Prateekkarki\Laragen\Models\FileSystem
+     * @var \Prateekkarki\Laragen\Models\FileSystem
      */
     protected $fileSystem;
 
@@ -68,7 +68,7 @@ class BaseGenerator
     /**
      * Get current module being generated
      *
-     * @return Prateekkarki\Laragen\Models\Module
+     * @return \Prateekkarki\Laragen\Models\Module
      */
     public function getModule()
     {

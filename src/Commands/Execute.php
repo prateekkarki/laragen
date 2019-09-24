@@ -13,12 +13,20 @@ class Execute extends Command
      * @var string
      */
     protected $signature = 'laragen:exec';
+
     /**
      * The console command description.
      *
      * @var string
      */
     protected $description = 'Generate/Migrate/Seed your project';
+
+    /**
+     * The composer instance
+     *
+     * @var Composer
+     */
+    protected $composer = 'Generate/Migrate/Seed your project';
 
 
     /**

@@ -6,6 +6,7 @@ use Prateekkarki\Laragen\Models\TypeResolver;
 
  /**
   * @method integer getSize()
+  * @method array getPivotColumns()
   */
 abstract class LaragenType
 {

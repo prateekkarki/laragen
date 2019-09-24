@@ -100,15 +100,15 @@ class Seeder extends BaseGenerator implements GeneratorInterface
                 '{{dataDefinition}}' => "",
                 '{{foreignData}}'    => $this->getForeignData($type->getFilteredColumns('hasSingleRelation'))
             ]);
-            
+
             $fullFilePath = $this->getPath("database/factories/").Str::singular($type->getPivot())."Factory.php";
             file_put_contents($fullFilePath, $typeTemplate);
             $generatedFiles[] = $fullFilePath;
         }
-        
+
         $generatedFiles[] = $this->updateSeeder();
-        
-        return $generatedFiles;         
+
+        return $generatedFiles;
     }
 
     protected function getUsedModels($types = false, $model = false) {
@@ -135,7 +135,7 @@ class Seeder extends BaseGenerator implements GeneratorInterface
 
         foreach ($columns as $type) {
             $specialTypes = array_keys($this->specialTypesToDefinition);
-            $dataDefinition .= in_array($type->getColumn(), $specialTypes) ? 
+            $dataDefinition .= in_array($type->getColumn(), $specialTypes) ?
                 $this->getTabs(2)."'{$type->getColumn()}'"." => ".'$faker->'.$this->specialTypesToDefinition[$type->getColumn()] : $this->getTabs(2)."'{$type->getColumn()}'"." => ".'$faker->'.$this->typeToDefinition[$type->getDataType()];
             $dataDefinition .= ",".PHP_EOL;
         }
@@ -157,7 +157,10 @@ class Seeder extends BaseGenerator implements GeneratorInterface
     }
 
     protected function updateSeeder() {
-        $laragenSeederFile = (self::$initializeFlag++ == 0) ? $this->initializeFile($this->getPath("database/seeds/")."LaragenSeeder.php", 'common/Seeder') : $this->getPath("database/seeds/")."LaragenSeeder.php";
+        $laragenSeederFile = $this->getPath("database/seeds/")."LaragenSeeder.php";
+
+        if(self::$initializeFlag++ == 0)
+            $this->initializeFile($laragenSeederFile, 'common/Seeder');
 
         $this->insertIntoFile(
             $laragenSeederFile,
@@ -174,7 +177,7 @@ class Seeder extends BaseGenerator implements GeneratorInterface
         );
 
         foreach ($this->module->getFilteredColumns(['needsTableInit']) as $type) {
-            
+
             $this->insertIntoFile(
                 $laragenSeederFile,
                 "use Illuminate\Database\Seeder;",
@@ -199,7 +202,7 @@ class Seeder extends BaseGenerator implements GeneratorInterface
         }
 
         foreach ($this->module->getFilteredColumns(['hasPivot']) as $type) {
-            
+
             $this->insertIntoFile(
                 $laragenSeederFile,
                 "use Illuminate\Database\Seeder;",
