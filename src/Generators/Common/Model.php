@@ -94,7 +94,7 @@ class Model extends BaseGenerator implements GeneratorInterface
                 '{{parent}}'       => $type->getParentModelLowercase(),
                 '{{relatedModel}}' => $type->getRelatedModel(),
                 '{{table}}'        => $type->getPivotTable(),
-                '{{parentModel}}' => $type->getParentModel(),
+                '{{parentModel}}'  => $type->getParentModel(),
                 '{{parentId}}'     => $type->getParentModelLowercase()."_id",
                 '{{childId}}'      => $type->getChildKey(),
             ]);
