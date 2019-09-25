@@ -12,12 +12,14 @@ class Migrate extends Command
      * @var string
      */
     protected $signature = 'laragen:migrate';
+
     /**
      * The console command description.
      *
      * @var string
      */
     protected $description = 'Laragen Migrate Database for your project';
+
     /**
      * Execute the console command.
      *

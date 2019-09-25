@@ -4,7 +4,7 @@ return [
         'Common' => [
             'Migration',
             'Model',
-            // 'Seeder',
+            'Seeder',
             'Route'
         ],
         'Frontend' => [

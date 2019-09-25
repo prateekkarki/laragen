@@ -1,9 +1,10 @@
 <?php
 namespace Prateekkarki\Laragen\Generators\Common;
 
+use Illuminate\Support\Str;
+use Prateekkarki\Laragen\Models\LaragenOptions;
 use Prateekkarki\Laragen\Generators\BaseGenerator;
 use Prateekkarki\Laragen\Generators\GeneratorInterface;
-use Illuminate\Support\Str;
 
 class Seeder extends BaseGenerator implements GeneratorInterface
 {
@@ -47,7 +48,7 @@ class Seeder extends BaseGenerator implements GeneratorInterface
         $generatedFiles = [];
 
         if ($this::$initializeFlag == 0) {
-            $laragen = app('laragen');
+            $laragen = LaragenOptions::getInstance();
             $modules = $laragen->getModules();
             $permissions = [];
             $editPermissions = [];

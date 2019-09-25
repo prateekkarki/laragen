@@ -1,6 +1,7 @@
 <?php
 namespace Prateekkarki\Laragen\Generators\Common;
 
+use Prateekkarki\Laragen\Models\LaragenOptions;
 use Prateekkarki\Laragen\Generators\BaseGenerator;
 use Prateekkarki\Laragen\Generators\GeneratorInterface;
 
@@ -9,11 +10,11 @@ class Route extends BaseGenerator implements GeneratorInterface
     protected static $initializeFlag = 0;
 
     private static $destination = "routes";
-    
+
     public function generate()
     {
         $generatedFiles = [];
-        
+
         $backendAuthRouteFile = $this->getPath(self::$destination."/backend//")."auth.php";
         $webRouteFile = $this->getPath(self::$destination."/frontend//")."web.php";
         $backendApiRouteFile = $this->getPath(self::$destination."/backend//")."api.php";
@@ -28,13 +29,14 @@ class Route extends BaseGenerator implements GeneratorInterface
             ]);
         }
 
-        if (app('laragen')->generatorExists('Frontend\\Controller')) {
+        $laragen = LaragenOptions::getInstance();
+        if ($laragen->generatorExists('Frontend\\Controller')) {
             $this->insertIntoFile(
                 $webRouteFile,
                 "<?php\n",
                 "use App\\Http\\Controllers\\".$this->module->getModelName()."Controller;\n"
             );
-    
+
             $this->insertIntoFile(
                 $webRouteFile,
                 "/"."* Insert your routes here */",
@@ -42,8 +44,8 @@ class Route extends BaseGenerator implements GeneratorInterface
             );
             $generatedFiles[] = $webRouteFile;
         }
-        
-        if (app('laragen')->generatorExists('Backend\\Controller')) {
+
+        if ($laragen->generatorExists('Backend\\Controller')) {
             $this->insertIntoFile(
                 $backendWebRouteFile,
                 "<?php\n",
@@ -57,8 +59,8 @@ class Route extends BaseGenerator implements GeneratorInterface
             );
             $generatedFiles[] = $backendWebRouteFile;
         }
-        
-        if (app('laragen')->generatorExists('Backend\\Api')) {
+
+        if ($laragen->generatorExists('Backend\\Api')) {
             $this->insertIntoFile(
                 $backendApiRouteFile,
                 "<?php\n",
@@ -70,10 +72,10 @@ class Route extends BaseGenerator implements GeneratorInterface
                 "/"."* Insert your routes here */",
                 "\n".$this->getTabs(1)."Route::resource('".$this->module->getModuleName()."', ".$this->module->getModelName()."Controller::class);"
             );
-            
+
             $generatedFiles[] = $backendApiRouteFile;
         }
-        
-        return $generatedFiles;         
+
+        return $generatedFiles;
     }
 }

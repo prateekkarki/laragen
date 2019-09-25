@@ -1,7 +1,8 @@
 <?php
 namespace Prateekkarki\Laragen\Commands;
+
 use Illuminate\Console\Command;
-use Prateekkarki\Laragen\Models\FileSystem;
+use Prateekkarki\Laragen\Models\LaragenOptions;
 
 class Generate extends Command
 {
@@ -11,18 +12,13 @@ class Generate extends Command
      * @var string
      */
     protected $signature = 'laragen:make';
+
     /**
      * The console command description.
      *
      * @var string
      */
     protected $description = 'Generate code for your project';
-    /**
-     * Files to publish in development
-     *
-     * @var array
-     */
-
 
     /**
      * Execute the console command.
@@ -31,7 +27,7 @@ class Generate extends Command
      */
     public function handle()
     {
-        $laragen = app('laragen');
+        $laragen = LaragenOptions::getInstance();
         $modules = $laragen->getModules();
         $generators = $laragen->getGenerators();
         $generatedFiles = [];
@@ -52,7 +48,6 @@ class Generate extends Command
         $bar = $this->output->createProgressBar(count($modules) * count($generators));
         $bar->setOverwrite(true);
         $bar->start();
-        $fs = new FileSystem();
 
         foreach ($modules as $module) {
 

@@ -163,7 +163,7 @@ class BaseGenerator
      *
      * @param  string      $content
      * @param  string|null $file
-     * @return string
+     * @return string absolute path of generated file
      */
     public function generateFile($content, $filename = null)
     {

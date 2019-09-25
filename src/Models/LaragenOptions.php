@@ -45,10 +45,12 @@ class LaragenOptions
     }
 
     public function getModule($name) {
-        if(isset($this->modules[$name]))
+        if(isset($this->modules[$name])){
             return $this->modules[$name];
-        else
+        }
+        else{
             throw new \Exception("Module '". $name. "' not found");
+        }
     }
 
     protected function getModulesRecursive($moduleName, $moduleData) {

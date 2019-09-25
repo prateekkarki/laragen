@@ -1,10 +1,10 @@
 <?php
 namespace Prateekkarki\Laragen\Generators\Backend;
 
+use Illuminate\Support\Str;
+use Prateekkarki\Laragen\Models\LaragenOptions;
 use Prateekkarki\Laragen\Generators\BaseGenerator;
 use Prateekkarki\Laragen\Generators\GeneratorInterface;
-use Prateekkarki\Laragen\Models\Module;
-use Illuminate\Support\Str;
 
 class View extends BaseGenerator implements GeneratorInterface
 {
@@ -108,7 +108,7 @@ class View extends BaseGenerator implements GeneratorInterface
     {
         $displayColumn = $type->getRelatedModule() == 'users' ? 'name' : 'title';
         if (($type->hasPivot() || $type->isParent()) && $type->getRelatedModule() != 'users') {
-            $relatedModule = app('laragen')->getModule($type->getRelatedModule());
+            $relatedModule = LaragenOptions::getInstance()->getModule($type->getRelatedModule());
             $displayColumn = $relatedModule->getDisplayColumns()[0]->getColumn();
         }
         $formElement = $this->buildTemplate('backend/views/formelements/'.$page.'/'.$type->getFormType(), [
@@ -129,7 +129,7 @@ class View extends BaseGenerator implements GeneratorInterface
     public function buildMultiple($page, $type)
     {
         $displayColumn = $type->getRelatedModule() == 'users' ? 'name' : 'title';
-        $relatedModule = app('laragen')->getModule($this->module->getModelNameLowercase()."_".$type->getColumn());
+        $relatedModule = LaragenOptions::getInstance()->getModule($this->module->getModelNameLowercase()."_".$type->getColumn());
         $displayColumn = $relatedModule->getDisplayColumns()[0]->getColumn();
         $formElement = $this->buildTemplate('backend/views/formelements/'.$page.'/'.$type->getFormType(), [
             '{{key}}'                       => $type->getColumn(),
