@@ -34,7 +34,6 @@ class Generate extends Command
         $laragen = app('laragen');
         $modules = $laragen->getModules();
         $generators = $laragen->getGenerators();
-        $this->filesToPublish = $laragen->getOption('files_to_publish') ?: [];
         $generatedFiles = [];
 
         $this->line("
@@ -50,13 +49,10 @@ class Generate extends Command
                                                                 ");
 
         $this->line("Generating code...");
-        $bar = $this->output->createProgressBar(count($modules) * (count($generators) + count($this->filesToPublish)));
+        $bar = $this->output->createProgressBar(count($modules) * count($generators));
         $bar->setOverwrite(true);
         $bar->start();
         $fs = new FileSystem();
-        foreach ($this->filesToPublish as $src) {
-            $fs->clone($src, '/');
-        }
 
         foreach ($modules as $module) {
 

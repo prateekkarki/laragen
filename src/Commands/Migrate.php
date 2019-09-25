@@ -2,7 +2,6 @@
 namespace Prateekkarki\Laragen\Commands;
 
 use Illuminate\Console\Command;
-use Prateekkarki\Laragen\Generators\Common\Migration as MigrationGenerator;
 use Artisan;
 
 class Migrate extends Command
@@ -30,7 +29,7 @@ class Migrate extends Command
         $this->line(Artisan::output());
 
         $migrationDirs = [
-            'laragenDir' => MigrationGenerator::$destination,
+            'laragenDir' => 'laragen/database/migrations',
             'laravelDir' => 'database/migrations/laragen'
         ];
 
