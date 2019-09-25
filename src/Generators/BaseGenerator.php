@@ -191,7 +191,7 @@ class BaseGenerator
      *
      * ToDo: functionality to check for modules to be added
      *
-     * @return boolean
+     * @return boolean value of the property
      */
     public function needsChildGeneration(){
         return $this->needsChildGeneration;

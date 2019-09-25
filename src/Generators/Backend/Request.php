@@ -48,9 +48,29 @@ class Request extends BaseGenerator implements GeneratorInterface
     {
         $validation = [];
         foreach ($this->module->getColumns(true) as $column) {
-            $validation[] = "'{$column->getColumnKey()}'"." => ".$column->getValidationLine();
+            $validation[] = "'{$column->getColumnKey()}'"." => ".$this->getValidationLine($column);
         }
         $delimiter = ",\n{$this->getTabs(3)}";
         return (implode($delimiter, $validation));
+    }
+
+
+    public function getValidationLine($type)
+    {
+        $validationSegments = [];
+        $modelname = $this->module->getModelName();
+
+        $validationSegments[] = $type->isRequired() ? 'required' : 'nullable';
+        $validationSegments[] = $type->getValidationRule() ?? $type->getDataType();
+        $rules = implode('|', $validationSegments);
+
+        if ($type->isUnique()) {
+            $validationLine = '($this->'.$modelname.') ? \'';
+            $validationLine .= $rules.'|unique:'.$type->moduleName.','.$type->getColumn().','.'\''.'.$this->'.$modelname.'->id : \'';
+            $validationLine .= $rules.'|unique:'.$type->moduleName.'\'';
+        } else {
+            $validationLine = "'{$rules}'";
+        }
+        return $validationLine;
     }
 }
