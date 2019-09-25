@@ -4,14 +4,14 @@ namespace Prateekkarki\Laragen\Models\Types;
 use Illuminate\Support\Str;
 use Prateekkarki\Laragen\Models\TypeResolver;
 
- /**
+/**
   * @method integer getSize()
   * @method array getPivotColumns()
   */
 abstract class LaragenType
 {
-    protected $uniqueFlag;
-    protected $requiredFlag;
+    protected $unique;
+    protected $required;
     protected $isDisplay;
     protected $dataType;
     protected $formType;
@@ -46,7 +46,7 @@ abstract class LaragenType
         }
     }
 
-    public function __call($method, $params) {
+    protected function __call($method, $params) {
         $var = lcfirst(substr($method, 3));
 
         if (strncasecmp($method, "get", 3) === 0) {
@@ -58,11 +58,6 @@ abstract class LaragenType
         }
 
         return property_exists($this, $method) ? $this->$method : "";
-    }
-
-    public function isRelational()
-    {
-        return $this->relationalType;
     }
 
     public function getSchema()
@@ -91,31 +86,11 @@ abstract class LaragenType
         return $filteredTypes;
     }
 
-    public function getValidationLine()
-    {
-        $validationSegments = [];
-        $modelname = strtolower(Str::camel(Str::singular($this->moduleName)));
-
-        $validationSegments[] = $this->isRequired() ? 'required' : 'nullable';
-        $validationSegments[] = $this->getValidationRule() ?? $this->getDataType();
-        $rules = implode('|', $validationSegments);
-
-        if ($this->isUnique()) {
-            $validationLine = '($this->'.$modelname.') ? \'';
-            $validationLine .= $rules.'|unique:'.$this->moduleName.','.$this->getColumn().','.'\''.'.$this->'.$modelname.'->id : \'';
-            $validationLine .= $rules.'|unique:'.$this->moduleName.'\'';
-        } else {
-            $validationLine = "'{$rules}'";
-        }
-        return $validationLine;
-    }
-
     public function getFormOptions() {
         $options = "";
         $options .= $this->isRequired() ? 'required="required" ' : '';
         return $options;
     }
-
 
     public function getForeignKey()
     {
@@ -162,24 +137,20 @@ abstract class LaragenType
         return isset($this->stubs[$type]) ? $this->stubs[$type] : false;
     }
 
-
     public function getTextRows() {
         if (!$this->size) {
-                    return 4;
+           return 4;
         }
 
         return floor($this->getsize() / 120);
     }
+
     public function isUnique() {
-        return $this->uniqueFlag;
+        return $this->unique;
     }
 
     public function isRequired() {
-        return $this->requiredFlag;
-    }
-
-    public function optionArray() {
-        return $this->optionArray;
+        return $this->required;
     }
 
     public function getDisplay()
@@ -195,30 +166,6 @@ abstract class LaragenType
     public function getColumnKey()
     {
         return $this->columnName;
-    }
-
-    public function getDataType() {
-        return $this->dataType;
-    }
-
-    public function getValidationRule() {
-        return $this->validationRule;
-    }
-
-    protected function setUnique($set = true) {
-        $this->uniqueFlag = ($set === true) ? true : false;
-    }
-
-    protected function setRequired($set = true) {
-        $this->requiredFlag = ($set === true) ? true : false;
-    }
-
-    protected function setIsDisplay($set = true) {
-        $this->isDisplay = ($set === true) ? true : false;
-    }
-
-    protected function setSize($size = null) {
-        $this->size = $size;
     }
 
     protected function setOptions($optionType, $optionParam) {
