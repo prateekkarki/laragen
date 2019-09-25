@@ -2,6 +2,7 @@
 namespace Prateekkarki\Laragen\Commands;
 
 use Illuminate\Console\Command;
+use Prateekkarki\Laragen\Generators\Common\Migration as MigrationGenerator;
 use Artisan;
 
 class Migrate extends Command
@@ -27,9 +28,19 @@ class Migrate extends Command
     {
         Artisan::call('migrate:fresh');
         $this->line(Artisan::output());
-        Artisan::call('migrate', [
-            '--path' => 'database/migrations/laragen'
-        ]);
-        $this->line(Artisan::output());
+
+        $migrationDirs = [
+            'laragenDir' => MigrationGenerator::$destination,
+            'laravelDir' => 'database/migrations/laragen'
+        ];
+
+        foreach ($migrationDirs as $dir) {
+            if(is_dir(base_path($dir)) && count(glob( base_path($dir) . '*', GLOB_MARK ))){
+                Artisan::call('migrate', [
+                    '--path' => $dir
+                ]);
+                $this->line(Artisan::output());
+            }
+        }
     }
 }

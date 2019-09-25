@@ -8,7 +8,7 @@ class Migration extends BaseGenerator implements GeneratorInterface
 {
     protected static $counter = 0;
 
-    private static $destination = "laragen/database/migrations/laragen";
+    private static $destination = "laragen/database/migrations";
     private static $tableTemplate = "common/migrations/table";
     private static $pivotTemplate = "common/migrations/pivot";
 
@@ -25,7 +25,7 @@ class Migration extends BaseGenerator implements GeneratorInterface
                 '{{pivotTableName}}'   => $type->getPivotTable(),
                 '{{pivotTableSchema}}' => $type->getPivotSchema()
             ]);
-            
+
             $fullFilePath = $this->getPivotFile($type);
             file_put_contents($fullFilePath, $migrationTemplate);
             $generatedFiles[] = $fullFilePath;
@@ -37,18 +37,18 @@ class Migration extends BaseGenerator implements GeneratorInterface
             '{{moduleName}}'        => $this->module->getModuleName(),
             '{{modelTableSchema}}'  => $this->getSchema()
         ]);
-        
+
         $fullFilePath = $this->getMigrationFile();
         file_put_contents($fullFilePath, $migrationTemplate);
         $generatedFiles[] = $fullFilePath;
-        
+
         foreach ($this->module->getFilteredColumns(['hasPivot']) as $type) {
             $migrationTemplate = $this->buildTemplate(self::$pivotTemplate, [
                 '{{pivotName}}'        => $type->getMigrationPivot(),
                 '{{pivotTableName}}'   => $type->getPivotTable(),
                 '{{pivotTableSchema}}' => $type->getPivotSchema()
             ]);
-            
+
             $fullFilePath = $this->getPivotFile($type);
             file_put_contents($fullFilePath, $migrationTemplate);
             $generatedFiles[] = $fullFilePath;
@@ -80,7 +80,7 @@ class Migration extends BaseGenerator implements GeneratorInterface
         foreach ($this->module->getColumns(true) as $type) {
 
             $schema .= $type->getSchema();
-            
+
             if ($type->getColumn() != $this->module->getLastColumn()) {
                 $schema .= PHP_EOL.$this->getTabs(3);
             }

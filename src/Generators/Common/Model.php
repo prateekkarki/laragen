@@ -3,7 +3,6 @@ namespace Prateekkarki\Laragen\Generators\Common;
 
 use Prateekkarki\Laragen\Generators\BaseGenerator;
 use Prateekkarki\Laragen\Generators\GeneratorInterface;
-use Illuminate\Support\Str;
 
 class Model extends BaseGenerator implements GeneratorInterface
 {
@@ -40,7 +39,7 @@ class Model extends BaseGenerator implements GeneratorInterface
         }
 
         foreach ($this->module->getFilteredColumns(['hasModel', 'hasOptions']) as $type) {
-            $pivotModel = Str::singular($type->getPivot());
+            $pivotModel = $type->getPivot();
             $typeTemplate = $this->buildTemplate($this->template, [
                 '{{namespace}}'     => $this->namespace,
                 '{{modelName}}'       => $pivotModel,

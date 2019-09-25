@@ -196,28 +196,6 @@ class Module
         return $columns;
     }
 
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    public function hasPivotRelations()
-    {
-        $hasRelations = false;
-        foreach ($this->columnsData as $type) {
-            if ($type->isRelational() && $type->hasPivot()) {
-                $hasRelations = true;
-                break;
-            }
-        }
-        return $hasRelations;
-    }
-
-    public function getMultipleColumns()
-    {
-        return $this->multipleData;
-    }
-
     public function getLastColumn()
     {
         $keyArray = array_keys($this->getColumns(true, true));
