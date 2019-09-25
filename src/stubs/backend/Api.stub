@@ -1,0 +1,87 @@
+<?php
+
+namespace {{namespace}};
+
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Backend\{{modelName}}Request;
+use App\Http\Controllers\Backend\UploadController;
+use Illuminate\Http\Request;
+{{usedModels}}
+
+/**
+ * {{modelName}}Controller
+ *
+ * Handles Api calls for {{moduleName}}
+ *
+ */
+
+class {{modelName}}Controller extends Controller
+{
+    public function __construct(UploadController $uploader)
+    {
+        $this->uploader = $uploader;
+    }
+
+    /**
+     * Show the application {{moduleName}} index.
+     */
+    public function index(Request $request)
+    {
+        $sortDirection = $request->input('sort_dir') ?: 'asc';
+        $sortColumn = $request->input('sort') ?: 'created_at';
+        return {{modelName}}::orderBy($sortColumn, $sortDirection)->paginate({{perPage}});
+    }
+
+    /**
+     * Show the application {{moduleName}} index.
+     */
+    public function show({{modelName}} ${{modelNameLowercase}})
+    {
+        return ${{modelNameLowercase}};
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store({{modelName}}Request $request)
+    {
+        {{fileUploads}}
+
+        if (isset($errors)) {
+            return $errors;
+        }else{
+            ${{modelNameLowercase}} = {{modelName}}::create($request->all());
+            {{createRelated}}
+            return ${{modelNameLowercase}};
+        }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update({{modelName}}Request $request, {{modelName}} ${{modelNameLowercase}})
+    {
+        {{fileUploads}}
+
+        {{relatedUpdates}}
+
+        if (isset($errors)) {
+            return $errors;
+        }else{
+            ${{modelNameLowercase}}->update($request->validated());
+            return ${{modelNameLowercase}};
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy({{modelName}}  ${{modelNameLowercase}})
+    {
+        ${{modelNameLowercase}}->delete();
+
+        return '{{moduleName}}.deleted';
+    }
+}

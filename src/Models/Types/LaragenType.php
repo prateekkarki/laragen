@@ -6,6 +6,7 @@ use Prateekkarki\Laragen\Models\TypeResolver;
 
  /**
   * @method integer getSize()
+  * @method array getPivotColumns()
   */
 abstract class LaragenType
 {
@@ -20,7 +21,9 @@ abstract class LaragenType
     protected $moduleName;
     protected $columnName;
     protected $optionString;
-	
+    protected $optionArray;
+    protected $typeOption;
+
     public function __construct($moduleName, $columnName, $optionString)
     {
         $this->moduleName = $moduleName;
@@ -42,10 +45,10 @@ abstract class LaragenType
             $this->setIsDisplay();
         }
     }
-    
+
     public function __call($method, $params) {
         $var = lcfirst(substr($method, 3));
-        
+
         if (strncasecmp($method, "get", 3) === 0) {
             return property_exists($this, $var) ? $this->$var : "";
         }
@@ -56,7 +59,7 @@ abstract class LaragenType
 
         return property_exists($this, $method) ? $this->$method : "";
     }
-	
+
     public function isRelational()
     {
         return $this->relationalType;
@@ -87,7 +90,7 @@ abstract class LaragenType
         }
         return $filteredTypes;
     }
-    
+
     public function getValidationLine()
     {
         $validationSegments = [];
@@ -112,8 +115,8 @@ abstract class LaragenType
         $options .= $this->isRequired() ? 'required="required" ' : '';
         return $options;
     }
-    
-    
+
+
     public function getForeignKey()
     {
         return $this->columnName . "_id";
@@ -126,7 +129,7 @@ abstract class LaragenType
 
     public function getRelatedModule()
     {
-        return Str::snake(Str::plural($this->getRelatedModel()));
+        return Str::plural(strtolower(Str::snake($this->getRelatedModel())));
     }
 
     public function getRelatedModelLowercase()
@@ -138,7 +141,7 @@ abstract class LaragenType
     {
         return ucfirst(Str::camel(Str::singular($this->typeOption ?? $this->columnName )));
     }
-    
+
     public function getParentModel()
     {
         return ucfirst(Str::camel(Str::singular($this->moduleName)));
@@ -164,7 +167,7 @@ abstract class LaragenType
         if (!$this->size) {
                     return 4;
         }
-        
+
         return floor($this->getsize() / 120);
     }
     public function isUnique() {
@@ -193,11 +196,11 @@ abstract class LaragenType
     {
         return $this->columnName;
     }
-    
+
     public function getDataType() {
         return $this->dataType;
     }
-    
+
     public function getValidationRule() {
         return $this->validationRule;
     }
@@ -223,7 +226,7 @@ abstract class LaragenType
             case 'max':
                 $this->setSize($optionParam);
                 break;
-            
+
             default:
                 $this->$optionType = $optionParam;
                 break;
@@ -233,7 +236,7 @@ abstract class LaragenType
     public function getTabs($number)
     {
         $schema = "";
-        for ($i = 0; $i < $number; $i++) { 
+        for ($i = 0; $i < $number; $i++) {
             $schema .= "    ";
         }
         return $schema;

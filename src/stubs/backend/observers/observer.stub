@@ -1,0 +1,36 @@
+<?php
+
+namespace {{namespace}};
+
+use App\Notifications\{{modelName}}CreatedNotification;
+use App\Notifications\{{modelName}}UpdatedNotification;
+use App\Notifications\{{modelName}}DeletedNotification;
+use App\Models\{{modelName}};
+use App\User;
+
+class {{modelName}}Observer
+{
+    public function created({{modelName}} ${{modelNameLowercase}})
+    {
+        $users = [User::first()];
+        \Notification::send($users,new {{modelName}}CreatedNotification);
+    }
+
+    public function updated({{modelName}} ${{modelNameLowercase}})
+    {
+        $users =[User::first()];
+        \Notification::send($users,new {{modelName}}UpdatedNotification);
+    }
+
+    public function deleted({{modelName}} ${{modelNameLowercase}})
+    {
+        $users =[User::first()];
+        \Notification::send($users,new {{modelName}}DeletedNotification);
+    }
+
+    public function restored({{modelName}} ${{modelNameLowercase}})
+    {}
+
+    public function forceDeleted({{modelName}} ${{modelNameLowercase}})
+    {}
+}

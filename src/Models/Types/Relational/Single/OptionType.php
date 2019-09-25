@@ -28,12 +28,12 @@ class OptionType extends SingleType
         $schema .= '$table->timestamps();'.PHP_EOL.$this->getTabs(3);
         return $schema;
     }
-    
+
     public function getRelatedModel()
     {
         return $this->getPivot();
     }
-    
+
     public function getPivotTable()
     {
         return $this->getParentModelLowercase()."_".Str::plural($this->columnName);
@@ -48,7 +48,7 @@ class OptionType extends SingleType
     {
         return $this->getParentModel().ucfirst(Str::camel($this->columnName));
     }
-    
+
     public function getTypeColumns()
     {
         return [$this->getParentModelLowercase().'_id', 'title'];

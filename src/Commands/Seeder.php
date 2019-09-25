@@ -12,12 +12,14 @@ class Seeder extends Command
      * @var string
      */
     protected $signature = 'laragen:seed';
+
     /**
      * The console command description.
      *
      * @var string
      */
     protected $description = 'Seeds Database for your project';
+
     /**
      * Execute the console command.
      *

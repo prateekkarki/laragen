@@ -1,6 +1,7 @@
 <?php
 namespace Prateekkarki\Laragen\Generators\Backend;
 
+use Prateekkarki\Laragen\Models\LaragenOptions;
 use Prateekkarki\Laragen\Generators\BaseGenerator;
 use Prateekkarki\Laragen\Generators\GeneratorInterface;
 
@@ -8,15 +9,15 @@ class Observer extends BaseGenerator implements GeneratorInterface
 {
     protected static $initializeFlag = 0;
     public function generate()
-    {   
-        $generatedFiles = []; 
-        
+    {
+        $generatedFiles = [];
+
         if ($this::$initializeFlag == 0) {
-            $laragen = app('laragen');
+            $laragen = LaragenOptions::getInstance();
             $modules = $laragen->getModules();
             $models = [];
             foreach ($modules as $module) {
-                $models[] = $module->getModelName(); 
+                $models[] = $module->getModelName();
             }
 
             $modelsCode = '';
@@ -43,7 +44,7 @@ class Observer extends BaseGenerator implements GeneratorInterface
             '{{modelName}}'           => $this->module->getModelName(),
             '{{modelNameLowercase}}' => $this->module->getModelNameLowercase(),
         ]);
-        
+
         $fullFilePath = $this->getPath("app/Observers/").$this->module->getModelName()."Observer".".php";
         file_put_contents($fullFilePath, $controllerTemplate);
         $generatedFiles[] = $fullFilePath;

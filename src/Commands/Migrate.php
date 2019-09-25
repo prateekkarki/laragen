@@ -12,12 +12,14 @@ class Migrate extends Command
      * @var string
      */
     protected $signature = 'laragen:migrate';
+
     /**
      * The console command description.
      *
      * @var string
      */
     protected $description = 'Laragen Migrate Database for your project';
+
     /**
      * Execute the console command.
      *
@@ -27,9 +29,19 @@ class Migrate extends Command
     {
         Artisan::call('migrate:fresh');
         $this->line(Artisan::output());
-        Artisan::call('migrate', [
-            '--path' => 'database/migrations/laragen'
-        ]);
-        $this->line(Artisan::output());
+
+        $migrationDirs = [
+            'laragenDir' => 'laragen/database/migrations',
+            'laravelDir' => 'database/migrations/laragen'
+        ];
+
+        foreach ($migrationDirs as $dir) {
+            if(is_dir(base_path($dir)) && count(glob( base_path($dir) . '*', GLOB_MARK ))){
+                Artisan::call('migrate', [
+                    '--path' => $dir
+                ]);
+                $this->line(Artisan::output());
+            }
+        }
     }
 }

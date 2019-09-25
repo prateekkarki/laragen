@@ -14,7 +14,7 @@ class MultipleType extends FileType
         'modelMethod' => 'common/Models/fragments/belongsTo',
         'foreignMethod' => 'common/Models/fragments/hasMany'
     ];
-    
+
     public function getPivotSchema()
     {
         $modelName = $this->getParentModelLowercase();
@@ -46,13 +46,12 @@ class MultipleType extends FileType
     {
         return $this->getParentModel().$this->getChildModel();
     }
-    
+
     public function getPivotColumns()
     {
         $columnModels = [];
         foreach ($this->getLaragenColumns() as $column => $optionString) {
-            $data = new TypeResolver($this->getPivotTable(), $column, $optionString);
-            $columnModels[$column] = $data->getLaragenType();
+            $columnModels[$column] = TypeResolver::getType($this->getPivotTable(), $column, $optionString);
         }
         return $columnModels;
     }
