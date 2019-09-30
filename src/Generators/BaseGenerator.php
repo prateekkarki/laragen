@@ -162,7 +162,7 @@ class BaseGenerator
      * Generate file using the content and return the generated filename
      *
      * @param  string      $content
-     * @param  string|null $file
+     * @param  string|null $filename
      * @return string absolute path of generated file
      */
     public function generateFile($content, $filename = null)
@@ -176,8 +176,8 @@ class BaseGenerator
             if(!file_exists($childFile)){
                 $childFileContent = $this->buildTemplate($this->childTemplate, [
                     '{{namespace}}'          => $this->childNamespace,
-                    '{{className}}'          => $this->module->getModelName(),
-                    '{{extendsClass}}'       => $this->namespace . '\\' . $this->module->getModelName()
+                    '{{className}}'          => $filename ?? $this->module->getModelName(),
+                    '{{extendsClass}}'       => $this->namespace . '\\' . ($filename ?? $this->module->getModelName())
                 ]);
                 $this->fileSystem->dumpFile($childFile, $childFileContent);
             }

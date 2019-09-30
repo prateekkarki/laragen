@@ -25,6 +25,7 @@ class TypeResolver
     const TYPE_RELATED = 'related';
     const COLUMN_UNIQUE = 'unique';
     const COLUMN_REQUIRED = 'required';
+    const COLUMN_DISPLAY = 'display';
 
     /**
      * List of all types of data.

@@ -63,15 +63,21 @@ class Module
     {
         $this->name = $moduleName;
 
-        $this->seoFields = $moduleData['additional_fields']['seo'] ?? config('laragen.options.seo_fields');
-        $this->genericFields = $moduleData['additional_fields']['generic'] ?? config('laragen.options.generic_fields');
-        unset($moduleData['additional_fields']);
+        if(isset($moduleData['additional_fields'])){
+            $this->seoFields = $moduleData['additional_fields']['seo'] ?? config('laragen.options.seo_fields');
+            $this->genericFields = $moduleData['additional_fields']['generic'] ?? config('laragen.options.generic_fields');
+            unset($moduleData['additional_fields']);
+        }
 
-        $this->seedableData = $moduleData['data'] ?? null;
-        unset($moduleData['data']);
+        if(isset($moduleData['data'])){
+            $this->seedableData = $moduleData['data'] ?? null;
+            unset($moduleData['data']);
+        }
 
         $moduleStructure = $moduleData['structure'] ?? (!empty($moduleData) ? $moduleData : ['title' => 'string|max:128']);
-        unset($moduleData['structure']);
+        if(isset($moduleData['structure'])){
+            unset($moduleData['structure']);
+        }
 
         $this->multipleData = array_filter($moduleStructure, function($elem) {
             return (is_array($elem)) ? true : false;
@@ -90,11 +96,12 @@ class Module
 
         $this->columnsData = [];
         $this->displayColumns = [];
-        foreach ($moduleStructure as $column => $typeOptions) {
-            $type = TypeResolver::getType($this->name, $column, $typeOptions);
-            $this->columnsData[$column] = $type;
-            if ($type->isDisplay())
-                $this->displayColumns[] = $type;
+
+        foreach ($moduleStructure as $columnName => $columnOptions) {
+            $column = TypeResolver::getType($this->name, $columnName, $columnOptions);
+            $this->columnsData[$columnName] = $column;
+            if ($column->isDisplay())
+                $this->displayColumns[] = $column;
         }
 
         if (sizeof($this->displayColumns) == 0) {
@@ -115,8 +122,8 @@ class Module
             $tabs[] = 'Images';
         }
         if (sizeof($this->getFilteredColumns('isMultipleType'))) {
-            foreach ($this->getFilteredColumns('isMultipleType') as $type) {
-                $tabs[] = Str::plural($type->getChildModel());
+            foreach ($this->getFilteredColumns('isMultipleType') as $column) {
+                $tabs[] = Str::plural($column->getChildModel());
             }
         }
         $tabs[] = 'Seo';
@@ -136,8 +143,8 @@ class Module
             $tabs[] = 'hasImage';
         }
         if (sizeof($this->getFilteredColumns('isMultipleType'))) {
-            foreach ($this->getFilteredColumns('isMultipleType') as $type) {
-                $tabs[] = Str::plural($type->getChildModel());
+            foreach ($this->getFilteredColumns('isMultipleType') as $column) {
+                $tabs[] = Str::plural($column->getChildModel());
             }
         }
         $tabs[] = 'Seo';
@@ -157,9 +164,9 @@ class Module
     public function getPivotalColumns()
     {
         $relativeTypes = [];
-        foreach ($this->columnsData as $type) {
-            if ($type->isRelational() && $type->hasPivot()) {
-                $relativeTypes[] = $type;
+        foreach ($this->columnsData as $column) {
+            if ($column->isRelational() && $column->hasPivot()) {
+                $relativeTypes[] = $column;
             }
         }
         return $relativeTypes;
@@ -169,10 +176,10 @@ class Module
     {
         $filteredTypes = [];
         $options = is_array($options) ? $options : [$options];
-        foreach ($this->columnsData as $type) {
+        foreach ($this->columnsData as $column) {
             foreach ($options as $option) {
-                if ($type->$option()) {
-                    $filteredTypes[] = $columnsOnly ? $type->getColumn() : $type;
+                if ($column->$option()) {
+                    $filteredTypes[] = $columnsOnly ? $column->getColumn() : $column;
                     break;
                 }
             }
@@ -183,14 +190,14 @@ class Module
     public function getColumns($onlyNonRelational = false, $columnsOnly = false)
     {
         $columns = [];
-        foreach ($this->columnsData as $type) {
-            if ($onlyNonRelational && $type->isRelational()) {
+        foreach ($this->columnsData as $column) {
+            if ($onlyNonRelational && $column->isRelational()) {
                 continue;
             }
             if ($columnsOnly) {
-                $columns[] = $type->getColumnKey();
+                $columns[] = $column->getColumnKey();
             } else {
-                $columns[$type->getColumnKey()] = $type;
+                $columns[$column->getColumnKey()] = $column;
             }
         }
         return $columns;
