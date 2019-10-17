@@ -171,7 +171,7 @@ class Module
 
     public function getModelName()
     {
-        return ucfirst(Str::camel(str_singular($this->name)));
+        return ucfirst(Str::camel(Str::singular($this->name)));
     }
 
     public function getModelNamePlural()
