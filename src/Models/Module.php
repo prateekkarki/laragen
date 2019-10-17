@@ -122,7 +122,7 @@ class Module
                 continue;
             }
             if($columnsOnly){
-                $columns[] = $type->getColumnKey(); 
+                $columns[] = $type->getColumnKey();
             }else{
                 $columns[$type->getColumnKey()] = $type;
             }
@@ -138,7 +138,7 @@ class Module
     public function hasPivotRelations()
     {
         $hasRelations = false;
-        foreach($this->columnsData as $column => $type){
+        foreach($this->columnsData as $type){
             if($type->isRelational()&&$type->hasPivot()){
                 $hasRelations = true;
                 break;
@@ -158,7 +158,7 @@ class Module
         $lastColumn = array_pop($keyArray);
         return $lastColumn;
     }
-    
+
     public function getModuleName()
     {
         return $this->name;
