@@ -6,42 +6,24 @@ use Prateekkarki\Laragen\Generators\GeneratorInterface;
 
 class Request extends BaseGenerator implements GeneratorInterface
 {
-    private static $destination = "laragen/app/Http/Requests/Backend";
-    private static $namespace  = "Laragen\App\Http\Requests\Backend";
-    private static $template  = "backend/Request";
+    protected $destination = "laragen/app/Http/Requests/Backend";
+    protected $namespace  = "Laragen\App\Http\Requests\Backend";
+    protected $template  = "backend/Request";
 
-    private static $childDestination = "app/Http/Requests/Backend";
-    private static $childNamespace  = "App\Http\Requests\Backend";
-    private static $childTemplate  = "backend/EmptyClass";
+    protected $childDestination = "app/Http/Requests/Backend";
+    protected $childNamespace  = "App\Http\Requests\Backend";
 
     public function generate()
     {
-        $generatedFiles = [];
-
-        $requestTemplate = $this->buildTemplate(self::$template, [
-            '{{namespace}}'     => self::$namespace,
+        $requestTemplate = $this->buildTemplate($this->template, [
+            '{{namespace}}'     => $this->namespace,
             '{{modelName}}'     => $this->module->getModelName(),
             '{{moduleName}}'    => $this->module->getModuleName(),
             '{{modelNameLowercase}}' => $this->module->getModelNameLowercase(),
             '{{rules}}' 		=> $this->getRules(),
         ]);
 
-        $childTemplate = $this->buildTemplate(self::$childTemplate, [
-            '{{namespace}}'          => self::$childNamespace,
-            '{{className}}'          => $this->module->getModelName()."Request",
-            '{{extendsClass}}'       => self::$namespace . '\\' . $this->module->getModelName()."Request"
-        ]);
-
-        $fullFilePath = $this->getPath(self::$destination."/").$this->module->getModelName()."Request".".php";
-        file_put_contents($fullFilePath, $requestTemplate);
-        $generatedFiles[] = $fullFilePath;
-
-        $fullFilePath = $this->getPath(self::$childDestination."/").$this->module->getModelName()."Request".".php";
-        file_put_contents($fullFilePath, $childTemplate);
-        $generatedFiles[] = $fullFilePath;
-
-        return $generatedFiles;
-
+        return $this->generateFile($requestTemplate);
     }
 
     protected function getRules()

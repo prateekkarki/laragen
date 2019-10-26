@@ -6,19 +6,17 @@ use Prateekkarki\Laragen\Generators\GeneratorInterface;
 
 class Controller extends BaseGenerator implements GeneratorInterface
 {
-    private static $destination = "laragen/app/Http/Controllers/Backend";
-    private static $namespace  = "Laragen\App\Http\Controllers\Backend";
-    private static $template  = "backend/Controller";
+    protected $destination = "laragen/app/Http/Controllers/Backend";
+    protected $namespace  = "Laragen\App\Http\Controllers\Backend";
+    protected $template  = "backend/Controller";
 
-    private static $childDestination = "app/Http/Controllers/Backend";
-    private static $childNamespace  = "App\Http\Controllers\Backend";
-    private static $childTemplate  = "backend/EmptyClass";
+    protected $childDestination = "app/Http/Controllers/Backend";
+    protected $childNamespace  = "App\Http\Controllers\Backend";
 
     public function generate()
     {
-        $generatedFiles = [];
-        $controllerTemplate = $this->buildTemplate(self::$template, [
-            '{{namespace}}'          => self::$namespace,
+        $controllerTemplate = $this->buildTemplate($this->template, [
+            '{{namespace}}'          => $this->namespace,
             '{{modelName}}'          => $this->module->getModelName(),
             '{{moduleName}}'         => $this->module->getModuleName(),
             '{{modelNameLowercase}}' => $this->module->getModelNameLowercase(),
@@ -30,22 +28,7 @@ class Controller extends BaseGenerator implements GeneratorInterface
             '{{perPage}}'            => config("laragen.options.listing_per_page")
         ]);
 
-        $childTemplate = $this->buildTemplate(self::$childTemplate, [
-            '{{namespace}}'          => self::$childNamespace,
-            '{{className}}'          => $this->module->getModelName()."Controller",
-            '{{extendsClass}}'       => self::$namespace . '\\' . $this->module->getModelName()."Controller"
-        ]);
-
-
-        $fullFilePath = $this->getPath(self::$destination."/").$this->module->getModelName()."Controller".".php";
-        file_put_contents($fullFilePath, $controllerTemplate);
-        $generatedFiles[] = $fullFilePath;
-
-        $fullFilePath = $this->getPath(self::$childDestination."/").$this->module->getModelName()."Controller".".php";
-        file_put_contents($fullFilePath, $childTemplate);
-        $generatedFiles[] = $fullFilePath;
-
-        return $generatedFiles;
+        return  $this->generateFile($controllerTemplate);
     }
 
     protected function getCreateRelated() {
