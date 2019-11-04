@@ -3,6 +3,7 @@ namespace Prateekkarki\Laragen\Commands;
 
 use Illuminate\Console\Command;
 use Prateekkarki\Laragen\Models\LaragenOptions;
+use Prateekkarki\Laragen\Models\FileSystem;
 
 class Generate extends Command
 {
@@ -31,6 +32,7 @@ class Generate extends Command
         $modules = $laragen->getModules();
         $generators = $laragen->getGenerators();
         $generatedFiles = [];
+        $fileSystem = new FileSystem();
 
         $this->line("
 ██▓    ▄▄▄       ██▀███   ▄▄▄        ▄████ ▓█████  ███▄    █
@@ -43,6 +45,14 @@ class Generate extends Command
     ░ ░    ░   ▒     ░░   ░   ░   ▒   ░ ░   ░    ░      ░   ░ ░
     ░  ░     ░  ░   ░           ░  ░      ░    ░  ░         ░
                                                                 ");
+
+        $this->line("Cleaning code directory ...");
+
+        foreach ([base_path('laragen/app'), base_path('laragen/database')] as $dir) {
+            if(file_exists($dir)){
+                $fileSystem->remove($dir);
+            }
+        }
 
         $this->line("Generating code...");
         $bar = $this->output->createProgressBar(count($modules) * count($generators));
