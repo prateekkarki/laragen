@@ -17,11 +17,6 @@ class OptionType extends SingleType
         return $schema;
     }
 
-    public function getDbData()
-    {
-        return explode(':', $this->optionArray[0]);
-    }
-
     public function getPivotSchema()
     {
         $schema = '$table->string("title", 192);'.PHP_EOL.$this->getTabs(3);

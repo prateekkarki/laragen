@@ -7,15 +7,15 @@ class SingleType extends RelationalType
     protected $dataType = 'integer';
     protected $hasSingleRelation = true;
     protected $size = false;
-    protected $relationalType = false;
+    protected $isRelational = false;
     protected $formType = 'parent';
-    
+
     protected $stubs = [
         'modelMethod' => 'common/Models/fragments/hasOne',
         'foreignMethod' => 'common/Models/fragments/belongsTo'
     ];
 
-    
+
     public function getValidationRule() {
         return 'exists:'.$this->getRelatedModule().',id';
     }

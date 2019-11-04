@@ -4,45 +4,118 @@ namespace Prateekkarki\Laragen\Models\Types;
 use Illuminate\Support\Str;
 use Prateekkarki\Laragen\Models\TypeResolver;
 
- /**
+/**
+  * The LaragenType abstract class. This class cannot be instantiated. It's implementations are used to create new types.
+  * Column instances are created from types that are implementations of this class.
+  *
   * @method integer getSize()
+  * @method integer getDataType()
   * @method array getPivotColumns()
+  * @method void setSize()
+  * @method void setIsRequired()
+  * @method void setIsUnique()
+  * @method void setIsDisplay()
   */
 abstract class LaragenType
 {
-    protected $uniqueFlag;
-    protected $requiredFlag;
+    /**
+     * Denotes if the column is unique.
+     *
+     * @var bool
+     */
+    protected $isUnique;
+
+    /**
+     * Denotes if the column is required.
+     *
+     * @var bool
+     */
+    protected $isRequired;
+
+    /**
+     * Denotes if the column is used as title. Can be in case of select or checkboxes.
+     *
+     * @var bool
+     */
     protected $isDisplay;
+
+    /**
+     * The data type of column used in the database.
+     * Stores name of a column creation method of \Illuminate\Database\Schema\Blueprint
+     *
+     * @var string
+     */
     protected $dataType;
+
+    /**
+     * The stub to be used in form generation of column.
+     *
+     * @var string
+     */
     protected $formType;
+
+    /**
+     * Defines additional stubs to be used for
+     * Defines stubs for relational types to be used in models generation
+     *
+     * @var array
+     */
     protected $stubs = [];
-    protected $size = false;
+
+    /**
+     * The size of column in the database.
+     *
+     * @var int
+     */
+    protected $size = 0;
+
+    /**
+     * Validation rule for the column to be used in Request file.
+     *
+     * @var string|null
+     */
     protected $validationRule = null;
+
+    /**
+     * Name of the module the column belongs to.
+     *
+     * @var string
+     */
     protected $moduleName;
+
+    /**
+     * Name of the column.
+     * e.g for 'short_description' => 'string|max:512', 'short_description' is the columnName.
+     *
+     * @var string
+     */
     protected $columnName;
-    protected $optionString;
-    protected $optionArray;
+
+    /**
+     * Special type assigned to the column e.g parent, related
+     *
+     * @var string|null
+     */
     protected $typeOption;
 
     public function __construct($moduleName, $columnName, $optionString)
     {
         $this->moduleName = $moduleName;
         $this->columnName = $columnName;
-        $this->optionString = $optionString;
 
-        $this->optionArray = is_string($optionString) ? explode('|', $optionString) : [];
-        $typePieces = array_shift($this->optionArray);
+        $optionArray = is_string($optionString) ? explode('|', $optionString) : [];
+        $typePieces = array_shift($optionArray);
         $type = explode(':', $typePieces);
-        $this->typeOption = is_array($type) && count($type) >= 2 ? $type[1] : false;
+        $this->typeOption = is_array($type) && count($type) >= 2 ? $type[1] : null;
 
-        if (in_array(TypeResolver::COLUMN_UNIQUE, $this->optionArray)) {
-            $this->setUnique();
+        if (in_array(TypeResolver::COLUMN_UNIQUE, $optionArray)) {
+            $this->setsIsUnique(true);
         }
-        if (in_array(TypeResolver::COLUMN_REQUIRED, $this->optionArray)) {
-            $this->setRequired();
+        if (in_array(TypeResolver::COLUMN_REQUIRED, $optionArray)) {
+            $this->setIsRequired(true);
         }
-        if (in_array("*", $this->optionArray)) {
-            $this->setIsDisplay();
+        if (in_array(TypeResolver::COLUMN_DISPLAY, $optionArray)) {
+            $this->setIsDisplay(true);
         }
     }
 
@@ -58,11 +131,6 @@ abstract class LaragenType
         }
 
         return property_exists($this, $method) ? $this->$method : "";
-    }
-
-    public function isRelational()
-    {
-        return $this->relationalType;
     }
 
     public function getSchema()
@@ -91,31 +159,11 @@ abstract class LaragenType
         return $filteredTypes;
     }
 
-    public function getValidationLine()
-    {
-        $validationSegments = [];
-        $modelname = strtolower(Str::camel(Str::singular($this->moduleName)));
-
-        $validationSegments[] = $this->isRequired() ? 'required' : 'nullable';
-        $validationSegments[] = $this->getValidationRule() ?? $this->getDataType();
-        $rules = implode('|', $validationSegments);
-
-        if ($this->isUnique()) {
-            $validationLine = '($this->'.$modelname.') ? \'';
-            $validationLine .= $rules.'|unique:'.$this->moduleName.','.$this->getColumn().','.'\''.'.$this->'.$modelname.'->id : \'';
-            $validationLine .= $rules.'|unique:'.$this->moduleName.'\'';
-        } else {
-            $validationLine = "'{$rules}'";
-        }
-        return $validationLine;
-    }
-
     public function getFormOptions() {
         $options = "";
         $options .= $this->isRequired() ? 'required="required" ' : '';
         return $options;
     }
-
 
     public function getForeignKey()
     {
@@ -162,24 +210,12 @@ abstract class LaragenType
         return isset($this->stubs[$type]) ? $this->stubs[$type] : false;
     }
 
-
     public function getTextRows() {
         if (!$this->size) {
-                    return 4;
+           return 4;
         }
 
         return floor($this->getsize() / 120);
-    }
-    public function isUnique() {
-        return $this->uniqueFlag;
-    }
-
-    public function isRequired() {
-        return $this->requiredFlag;
-    }
-
-    public function optionArray() {
-        return $this->optionArray;
     }
 
     public function getDisplay()
@@ -195,30 +231,6 @@ abstract class LaragenType
     public function getColumnKey()
     {
         return $this->columnName;
-    }
-
-    public function getDataType() {
-        return $this->dataType;
-    }
-
-    public function getValidationRule() {
-        return $this->validationRule;
-    }
-
-    protected function setUnique($set = true) {
-        $this->uniqueFlag = ($set === true) ? true : false;
-    }
-
-    protected function setRequired($set = true) {
-        $this->requiredFlag = ($set === true) ? true : false;
-    }
-
-    protected function setIsDisplay($set = true) {
-        $this->isDisplay = ($set === true) ? true : false;
-    }
-
-    protected function setSize($size = null) {
-        $this->size = $size;
     }
 
     protected function setOptions($optionType, $optionParam) {

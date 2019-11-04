@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 class MultipleType extends FileType
 {
     protected $hasModel = true;
-    protected $relationalType = true;
+    protected $isRelational = true;
     protected $hasMultipleFiles = true;
     protected $formType = 'multipleFiles';
     protected $stubs = [

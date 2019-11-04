@@ -6,14 +6,18 @@ use Prateekkarki\Laragen\Generators\GeneratorInterface;
 
 class Api extends BaseGenerator implements GeneratorInterface
 {
-    private static $destination = "laragen/app/Http/Controllers/Backend/Api";
-    private static $namespace = "Laragen\App\Http\Controllers\Backend\Api";
-    private static $template = "backend/Api";
+    protected $destination = "laragen/app/Http/Controllers/Backend/Api";
+    protected $namespace  = "Laragen\App\Http\Controllers\Backend\Api";
+    protected $template  = "backend/Api";
+    protected $fileSuffix  = "ApiController";
+
+    protected $childDestination = "app/Http/Controllers/Backend/Api";
+    protected $childNamespace  = "App\Http\Controllers\Backend\Api";
 
     public function generate()
     {
-        $controllerTemplate = $this->buildTemplate(self::$template, [
-            '{{namespace}}'          => self::$namespace,
+        $apiControllerTemplate = $this->buildTemplate($this->template, [
+            '{{namespace}}'          => $this->namespace,
             '{{modelName}}'          => $this->module->getModelName(),
             '{{moduleName}}'         => $this->module->getModuleName(),
             '{{modelNameLowercase}}' => $this->module->getModelNameLowercase(),
@@ -24,16 +28,14 @@ class Api extends BaseGenerator implements GeneratorInterface
             '{{usedModels}}'         => $this->getUsedModels(),
             '{{perPage}}'            => config("laragen.options.listing_per_page")
         ]);
-        
-        $fullFilePath = $this->getPath(self::$destination."/").$this->module->getModelName()."Controller".".php";
-        file_put_contents($fullFilePath, $controllerTemplate);
-        return $fullFilePath;
+
+        return $this->generateFile($apiControllerTemplate);
     }
 
     protected function getCreateRelated() {
         $relatedUpdates = "";
         $relatedTypes = $this->module->getFilteredColumns(['hasPivot']);
-        
+
         if (empty($relatedTypes)) {
             return "";
         }

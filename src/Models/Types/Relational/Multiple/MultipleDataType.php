@@ -58,13 +58,8 @@ class MultipleDataType extends MultipleType
         return $columns;
     }
 
-    public function getLaragenColumns()
-    {
-        return array_merge($this->optionString, [$this->getParentModelLowercase() => 'parent:'.$this->getParentModule()]);
-    }
-
     public function getTypeColumns()
     {
-        return array_merge(array_keys($this->optionString), [$this->getParentModelLowercase().'_id']);
+        return [$this->columnName, $this->getParentModelLowercase().'_id'];
     }
 }

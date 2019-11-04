@@ -22,7 +22,6 @@ class Route extends BaseGenerator implements GeneratorInterface
 
         if (self::$initializeFlag++ == 0) {
             $this->initializeFiles([
-                $webRouteFile => "Route",
                 $backendAuthRouteFile => "backend/routes/auth",
                 $backendApiRouteFile => "backend/routes/api",
                 $backendWebRouteFile => "backend/routes/web"
