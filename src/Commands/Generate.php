@@ -50,7 +50,7 @@ class Generate extends Command
 
         foreach ([base_path('laragen/app'), base_path('laragen/database')] as $dir) {
             if(file_exists($dir)){
-                $fileSystem->remove($dir);
+                $fileSystem->removeDir($dir);
             }
         }
 
