@@ -9,6 +9,7 @@ class Request extends BaseGenerator implements GeneratorInterface
     protected $destination = "laragen/app/Http/Requests/Backend";
     protected $namespace  = "Laragen\App\Http\Requests\Backend";
     protected $template  = "backend/Request";
+    protected $fileSuffix  = "Request";
 
     protected $childDestination = "app/Http/Requests/Backend";
     protected $childNamespace  = "App\Http\Requests\Backend";

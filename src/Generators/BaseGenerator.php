@@ -176,8 +176,8 @@ class BaseGenerator
             if(!file_exists($childFile)){
                 $childFileContent = $this->buildTemplate($this->childTemplate, [
                     '{{namespace}}'          => $this->childNamespace,
-                    '{{className}}'          => $filename ?? $this->module->getModelName(),
-                    '{{extendsClass}}'       => $this->namespace . '\\' . ($filename ?? $this->module->getModelName())
+                    '{{className}}'          => $filename ?? $this->module->getModelName() . $this->fileSuffix,
+                    '{{extendsClass}}'       => $this->namespace . '\\' . ($filename ?? $this->module->getModelName() . $this->fileSuffix)
                 ]);
                 $this->fileSystem->dumpFile($childFile, $childFileContent);
             }

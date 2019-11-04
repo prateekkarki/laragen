@@ -9,6 +9,7 @@ class Api extends BaseGenerator implements GeneratorInterface
     protected $destination = "laragen/app/Http/Controllers/Backend/Api";
     protected $namespace  = "Laragen\App\Http\Controllers\Backend\Api";
     protected $template  = "backend/Api";
+    protected $fileSuffix  = "ApiController";
 
     protected $childDestination = "app/Http/Controllers/Backend/Api";
     protected $childNamespace  = "App\Http\Controllers\Backend\Api";

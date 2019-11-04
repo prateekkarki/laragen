@@ -9,6 +9,7 @@ class Controller extends BaseGenerator implements GeneratorInterface
     protected $destination = "laragen/app/Http/Controllers/Backend";
     protected $namespace  = "Laragen\App\Http\Controllers\Backend";
     protected $template  = "backend/Controller";
+    protected $fileSuffix  = "Controller";
 
     protected $childDestination = "app/Http/Controllers/Backend";
     protected $childNamespace  = "App\Http\Controllers\Backend";
