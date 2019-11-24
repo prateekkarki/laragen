@@ -10,7 +10,7 @@ class Module
      *
      * @var string
      */
-    protected $name;
+    protected $moduleName;
 
     /**
      * Option to generate seo fields like 'seo_keywords', 'seo_descriptions', etc.
@@ -53,7 +53,7 @@ class Module
     /**
      * Array of columns of module that are considered 'display columns',
      * first item of display column is used in Frontend as title,
-     * other items are (to be) displayed in listind page of backend
+     * other items are (to be) displayed in listing page of backend
      *
      * @var array
      */
@@ -61,23 +61,37 @@ class Module
 
     public function __construct($moduleName, $moduleData)
     {
-        $this->name = $moduleName;
+        $this->moduleName = $moduleName;
+        $this->moduleData = $moduleData;
 
-        if(isset($moduleData['additional_fields'])){
-            $this->seoFields = $moduleData['additional_fields']['seo'] ?? config('laragen.options.seo_fields');
-            $this->genericFields = $moduleData['additional_fields']['generic'] ?? config('laragen.options.generic_fields');
-            unset($moduleData['additional_fields']);
-        }
+        $this->setAdditionalFields();
+        $this->setSeedableData();
+        $this->setColumnsData();
+        $this->setDisplayColumns();
+    }
 
-        if(isset($moduleData['data'])){
-            $this->seedableData = $moduleData['data'] ?? null;
-            unset($moduleData['data']);
+    private function setAdditionalFields()
+    {
+        if(isset($this->moduleData['additional_fields'])){
+            $this->seoFields = $this->moduleData['additional_fields']['seo'] ?? config('laragen.options.seo_fields');
+            $this->genericFields = $this->moduleData['additional_fields']['generic'] ?? config('laragen.options.generic_fields');
+            unset($this->moduleData['additional_fields']);
         }
+    }
 
-        $moduleStructure = $moduleData['structure'] ?? (!empty($moduleData) ? $moduleData : ['title' => 'string|max:128']);
-        if(isset($moduleData['structure'])){
-            unset($moduleData['structure']);
+    private function setSeedableData()
+    {
+        if(isset($this->moduleData['data'])){
+            $this->seedableData = $this->moduleData['data'] ?? null;
+            unset($this->moduleData['data']);
         }
+    }
+
+    private function setColumnsData()
+    {
+        $this->columnsData = [];
+
+        $moduleStructure = $this->moduleData['structure'] ?? (!empty($this->moduleData) ? $this->moduleData : ['title' => 'string|max:128']);
 
         $this->multipleData = array_filter($moduleStructure, function($elem) {
             return (is_array($elem)) ? true : false;
@@ -93,13 +107,17 @@ class Module
             $moduleStructure['seo_keywords'] = 'string|max:256';
             $moduleStructure['seo_description'] = 'string|max:500';
         }
+        foreach ($moduleStructure as $columnName => $columnOptions) {
+            $column = TypeResolver::getType($this->moduleName, $columnName, $columnOptions);
+            $this->columnsData[$columnName] = $column;
+        }
+    }
 
-        $this->columnsData = [];
+    private function setDisplayColumns()
+    {
         $this->displayColumns = [];
 
-        foreach ($moduleStructure as $columnName => $columnOptions) {
-            $column = TypeResolver::getType($this->name, $columnName, $columnOptions);
-            $this->columnsData[$columnName] = $column;
+        foreach ($this->columnsData as $column) {
             if ($column->isDisplay())
                 $this->displayColumns[] = $column;
         }
@@ -212,26 +230,26 @@ class Module
 
     public function getModuleName()
     {
-        return $this->name;
+        return $this->moduleName;
     }
 
     public function getModuleDisplayName()
     {
-        return Str::title(str_replace('_', '', $this->name));
+        return Str::title(str_replace('_', '', $this->moduleName));
     }
 
     public function getModelName()
     {
-        return ucfirst(Str::camel(Str::singular($this->name)));
+        return ucfirst(Str::camel(Str::singular($this->moduleName)));
     }
 
     public function getModelNamePlural()
     {
-        return ucfirst(Str::camel($this->name));
+        return ucfirst(Str::camel($this->moduleName));
     }
 
     public function getModelNameLowercase()
     {
-        return Str::singular($this->name);
+        return Str::singular($this->moduleName);
     }
 }
