@@ -1,0 +1,39 @@
+<?php
+
+namespace {{namespace}};
+
+use App\Models\{{modelName}};
+use App\Http\Controllers\Controller;
+use App\Http\Resources\{{modelName}}Resource;
+use App\Http\Resources\{{modelName}}ResourceCollection;
+
+class {{modelName}}ApiController extends Controller
+{
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return App\Http\Resources\{{modelName}}ResourceCollection
+     */
+    public function index(): {{modelName}}ResourceCollection
+    {
+        return new {{modelName}}ResourceCollection({{modelName}}::paginate());
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return App\Http\Resources\{{modelName}}Resource
+     */
+    public function show({{modelName}} ${{modelNameSingularLowerCase}}): {{modelName}}Resource
+    {
+        $res = new {{modelName}}Resource(${{modelNameSingularLowerCase}});
+        $res->with = [
+            'status'  => 200,
+            'message' => '{{modelName}} information has been pulled successfully',
+            'errors' => []
+        ];
+        return $res;
+    }
+}

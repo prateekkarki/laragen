@@ -1,21 +1,22 @@
 <?php
+
 namespace Prateekkarki\Laragen\Models\Types;
 
 use Illuminate\Support\Str;
 use Prateekkarki\Laragen\Models\TypeResolver;
 
 /**
-  * The LaragenType abstract class. This class cannot be instantiated. It's implementations are used to create new types.
-  * Column instances are created from types that are implementations of this class.
-  *
-  * @method integer getSize()
-  * @method integer getDataType()
-  * @method array getPivotColumns()
-  * @method void setSize()
-  * @method void setIsRequired()
-  * @method void setIsUnique()
-  * @method void setIsDisplay()
-  */
+ * The LaragenType abstract class. This class cannot be instantiated. It's implementations are used to create new types.
+ * Column instances are created from types that are implementations of this class.
+ *
+ * @method integer getSize()
+ * @method integer getDataType()
+ * @method array getPivotColumns()
+ * @method void setSize()
+ * @method void setIsRequired()
+ * @method void setIsUnique()
+ * @method void setIsDisplay()
+ */
 abstract class LaragenType
 {
     /**
@@ -119,7 +120,8 @@ abstract class LaragenType
         }
     }
 
-    public function __call($method, $params) {
+    public function __call($method, $params)
+    {
         $var = lcfirst(substr($method, 3));
 
         if (strncasecmp($method, "get", 3) === 0) {
@@ -135,7 +137,7 @@ abstract class LaragenType
 
     public function getSchema()
     {
-        $schema = '$table->'.$this->getDataType()."('{$this->getColumn()}'";
+        $schema = '$table->' . $this->getDataType() . "('{$this->getColumn()}'";
         $schema .= $this->getSize() ? ", {$this->getSize()})" : ")";
         $schema .= $this->isUnique() ? "->unique()" : "";
         $schema .= $this->isRequired() ? "" : "->nullable()";
@@ -148,9 +150,9 @@ abstract class LaragenType
     {
         $filteredTypes = [];
         $options = is_array($options) ? $options : [$options];
-        foreach($this->getPivotColumns() as $type){
+        foreach ($this->getPivotColumns() as $type) {
             foreach ($options as $option) {
-                if($type->$option()){
+                if ($type->$option()) {
                     $filteredTypes[] = $columnsOnly ? $type->getColumn() : $type;
                     break;
                 }
@@ -159,10 +161,16 @@ abstract class LaragenType
         return $filteredTypes;
     }
 
-    public function getFormOptions() {
+    public function getFormOptions()
+    {
         $options = "";
         $options .= $this->isRequired() ? 'required="required" ' : '';
         return $options;
+    }
+
+    public function getResourceTransformer()
+    {
+        return '$this->' . $this->getColumnKey();
     }
 
     public function getForeignKey()
@@ -187,7 +195,7 @@ abstract class LaragenType
 
     public function getChildModel()
     {
-        return ucfirst(Str::camel(Str::singular($this->typeOption ?? $this->columnName )));
+        return ucfirst(Str::camel(Str::singular($this->typeOption ?? $this->columnName)));
     }
 
     public function getParentModel()
@@ -210,9 +218,10 @@ abstract class LaragenType
         return isset($this->stubs[$type]) ? $this->stubs[$type] : false;
     }
 
-    public function getTextRows() {
+    public function getTextRows()
+    {
         if (!$this->size) {
-           return 4;
+            return 4;
         }
 
         return floor($this->getsize() / 120);
@@ -233,7 +242,8 @@ abstract class LaragenType
         return $this->columnName;
     }
 
-    protected function setOptions($optionType, $optionParam) {
+    protected function setOptions($optionType, $optionParam)
+    {
         switch ($optionType) {
             case 'max':
                 $this->setSize($optionParam);

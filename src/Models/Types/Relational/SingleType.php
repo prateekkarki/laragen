@@ -1,5 +1,7 @@
 <?php
+
 namespace Prateekkarki\Laragen\Models\Types\Relational;
+
 use Prateekkarki\Laragen\Models\Types\RelationalType;
 
 class SingleType extends RelationalType
@@ -16,17 +18,23 @@ class SingleType extends RelationalType
     ];
 
 
-    public function getValidationRule() {
-        return 'exists:'.$this->getRelatedModule().',id';
+    public function getValidationRule()
+    {
+        return 'exists:' . $this->getRelatedModule() . ',id';
     }
 
-    public function hasSelfParent() {
+    public function hasSelfParent()
+    {
         return ($this->typeOption == $this->getParentModule() || $this->typeOption == "self");
     }
 
     public function getColumnKey()
     {
-        return $this->columnName."_id";
+        return $this->columnName . "_id";
     }
 
+    public function getResourceTransformer()
+    {
+        return 'new ' . $this->getRelatedModel() . 'Resource($this->' . $this->getColumn() . ')';
+    }
 }
